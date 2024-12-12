@@ -68,7 +68,7 @@ const Navbar = () => {
             <Link href="/testimonials">Testimonials</Link>
           </li>
           <li>
-            <Link href="/info-centre">Info Centre</Link>
+            <Link href="/pages/info-centre">Info Centre</Link>
           </li>
         </ul>
       </nav>

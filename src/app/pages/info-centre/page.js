@@ -10,7 +10,7 @@ const InfoCentreHome = () => {
     <div>
       <h1> Hello World </h1>
 
-      <Link href="/info-centre/item"> Go To Item </Link>
+      <Link href="/pages/info-centre/item"> Go To Item </Link>
     </div>
   );
 };
