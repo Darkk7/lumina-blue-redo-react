@@ -19,16 +19,32 @@ const App = () => {
   const [primaryColor, setPrimaryColor] = useState('orange');
   const [address, setAddress] = useState('');
   const [currentTeamMember, setCurrentTeamMember] = useState(0);
+  const [showCounterPanel, setShowCounterPanel] = useState(true);
+  const [showTeamPanel, setShowTeamPanel] = useState(true);
+
+  const renderCounterPanel = () => {
+    if (showCounterPanel === true) {
+      return <CounterPage />
+    }
+    return null;
+  }
+
+  const renderTeamPanel = () => {
+    if (showTeamPanel === true) {
+      return <TeamPage />
+    }
+    return null;
+  }
 
   return (
     <div>
       <Navbar />
       <HomePage />
-      <CounterPage />
+      {renderCounterPanel()}
       <AboutPage />
       <ServicesPage />
       <ConnectWithUsPage />
-      <TeamPage />
+      {renderTeamPanel()}
       <BrandsPage />
       <TestimonialsPage />
       <FooterPage />

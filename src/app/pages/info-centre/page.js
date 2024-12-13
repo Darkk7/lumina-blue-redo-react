@@ -1,6 +1,8 @@
 "use client"
 
 import React from "react";
+import Navbar from "../../pages/Navbar";
+import InfoCentreHomePage from "../../pages/InfoCentreHomePage";
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 
@@ -8,9 +10,8 @@ const InfoCentreHome = () => {
 
   return (
     <div>
-      <h1> Hello World </h1>
-
-      <Link href="/pages/info-centre/item"> Go To Item </Link>
+      <Navbar />
+      <InfoCentreHomePage />      
     </div>
   );
 };

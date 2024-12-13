@@ -44,31 +44,25 @@ const Navbar = () => {
       <nav className="flex gap-8 text-xl font-medium">
         <ul className="flex gap-4">
           <li>
-            <Link href="/">Home</Link>
+            <Link href="/" className="hover:text-primary">Home</Link>
+          </li>          
+          <li>
+            <Link href="/#about" className="hover:text-primary">About</Link>
           </li>
           <li>
-            <Link href="/counter">Counter</Link>
+            <Link href="/services" className="hover:text-primary">Services</Link>
+          </li>          
+          <li>
+            <Link href="/team" className="hover:text-primary">Team</Link>
+          </li>          
+          <li>
+            <Link href="/testimonials" className="hover:text-primary">Feedback</Link>
           </li>
           <li>
-            <Link href="/#about">About</Link>
+            <Link href="/pages/info-centre" className="hover:text-primary">Info Centre</Link>
           </li>
           <li>
-            <Link href="/services">Services</Link>
-          </li>
-          <li>
-            <Link href="/connect">Connect With Us</Link>
-          </li>
-          <li>
-            <Link href="/team">Team</Link>
-          </li>
-          <li>
-            <Link href="/brands">Brands</Link>
-          </li>
-          <li>
-            <Link href="/testimonials">Testimonials</Link>
-          </li>
-          <li>
-            <Link href="/pages/info-centre">Info Centre</Link>
+            <Link href="/pages/info-centre" className="hover:text-primary">News Feed</Link>
           </li>
         </ul>
       </nav>
