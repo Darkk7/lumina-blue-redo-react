@@ -62,7 +62,7 @@ const Navbar = () => {
             <Link href="/pages/info-centre" className="hover:text-primary">Info Centre</Link>
           </li>
           <li>
-            <Link href="/pages/info-centre" className="hover:text-primary">News Feed</Link>
+            <Link href="/pages/blog" className="hover:text-primary">News Feed</Link>
           </li>
         </ul>
       </nav>

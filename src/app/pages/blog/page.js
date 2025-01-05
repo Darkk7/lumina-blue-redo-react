@@ -2,20 +2,21 @@
 
 import React from "react";
 import Navbar from "../../pages/Navbar";
-import InfoCentreHomePage from "../../pages/InfoCentreHomePage";
+import BlogHomePage from "../../pages/BlogHomePage";
 import FooterPage from "../../pages/FooterPage";
 import { useEffect, useState } from 'react';
 import Link from "next/link";
+import InfoCentreHomePage from "../InfoCentreHomePage";
 
-const InfoCentreHome = () => {
+const BlogHome = () => {
 
   return (
     <div>
       <Navbar />
-      <InfoCentreHomePage />
+      <BlogHomePage />
       <FooterPage />
     </div>
   );
 };
 
-export default InfoCentreHome;
+export default BlogHome;
