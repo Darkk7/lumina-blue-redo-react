@@ -13,7 +13,7 @@ const BlogHomePage = () => {
     },
     {
       id: 2,
-      imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Info-centre-thumbnails-cat-rxlenses.jpg",
+      imgSrc: "https://s3.eu-west-2.amazonaws.com/luminablue-blogs/uploads/glasses-v-contact-lenses-thumb.png",
       title: "Pros and Cons of Spectacle Lenses and Contact Lenses",
     },
     {
@@ -38,12 +38,9 @@ const BlogHomePage = () => {
       {/* Background Image Section */}
       <div className="w-full h-[600px] bg-[url('https://www.imageeyecareoptometrists.com/assets/info_centre_banner-4940284541b3ff321b2a3d735fc5ef1caa0f4c66de9804905118656edf31c88d.jpg')] bg-cover bg-center text-center text-white">
         <div className="bg-black bg-opacity-50 h-full flex flex-col items-center justify-center p-4">
-          <p className="text-3xl mb-8">
-            Serving the community for over 75 years delivering the highest quality care and products for our customers
-          </p>
-          <button className="px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-white hover:text-primary hover:border-orange-500 border-1 transition">
-            Make A Booking
-          </button>
+          <p className="text-6xl mb-8">
+            Image Eye Care News Feed
+          </p>          
         </div>
       </div>
 
