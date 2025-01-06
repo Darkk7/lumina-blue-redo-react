@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
 
 // Mock data for testing
 const mockData = {
@@ -214,7 +216,7 @@ const SocialLink = ({ href, icon, label }) => (
 );
 
 const Services = () => (
-  <section className="w-full bg-gray-100 py-12">
+  <section className="w-full bg-white py-12">
     <div className="container mx-auto px-6">
       <h2 className="text-4xl font-bold text-center text-gray-800 mb-8">
         Our Services
@@ -262,53 +264,69 @@ const Testimonials = () => (
     <p className="text-1xl mb-8 text-black">
       Some of the recent feedback from our customers.
     </p>
-    <div className="flex flex-wrap justify-center gap-8">
-      <div className="p-6 bg-white shadow-lg rounded-lg w-80">
-        <div className="flex justify-center mb-4">
-          <Image
-            src="/images/PiersThomson.png"
-            alt="Piers Thomson"
-            width={90}
-            height={90}
-            className="rounded-full"
-          />
+    <Swiper
+      spaceBetween={50}
+      slidesPerView={1}
+      navigation
+      loop
+      autoplay={{
+        delay: 5000,  // Change slides every 5 seconds
+        disableOnInteraction: true,  // Allows the autoplay to continue after user interaction
+      }}
+      className="flex justify-center items-center"
+    >
+      <SwiperSlide>
+        <div className="p-6 bg-white shadow-lg rounded-lg w-80 mx-auto">
+          <div className="flex justify-center mb-4">
+            <Image
+              src="/images/PiersThomson.png"
+              alt="Piers Thomson"
+              width={90}
+              height={90}
+              className="rounded-full"
+            />
+          </div>
+          <p className="text-gray-600 italic">
+            "First time visit. Best eye test I've had since a kid."
+          </p>
+          <p className="text-black mt-4 font-semibold">Piers Thomson</p>
         </div>
-        <p className="text-gray-600 italic">
-          "First time visit. Best eye test I've had since a kid."
-        </p>
-        <p className="text-black mt-4 font-semibold">Piers Thomson</p>
-      </div>
-      <div className="p-6 bg-white shadow-lg rounded-lg w-80">
-        <div className="flex justify-center mb-4">
-          <Image
-            src="/images/MariaGrobler.png"
-            alt="Maria Grobler"
-            width={90}
-            height={90}
-            className="rounded-full"
-          />
+      </SwiperSlide>
+      <SwiperSlide>
+        <div className="p-6 bg-white shadow-lg rounded-lg w-80 mx-auto">
+          <div className="flex justify-center mb-4">
+            <Image
+              src="/images/MariaGrobler.png"
+              alt="Maria Grobler"
+              width={90}
+              height={90}
+              className="rounded-full"
+            />
+          </div>
+          <p className="text-gray-600 italic">
+            "Friendly staff and informative consultation."
+          </p>
+          <p className="text-black mt-4 font-semibold">Maria Grobler</p>
         </div>
-        <p className="text-gray-600 italic">
-          "Friendly staff and informative consultation."
-        </p>
-        <p className="text-black mt-4 font-semibold">Maria Grobler</p>
-      </div>
-      <div className="p-6 bg-white shadow-lg rounded-lg w-80">
-        <div className="flex justify-center mb-4">
-          <Image
-            src="/images/JohnOlivier.png"
-            alt="John Olivier"
-            width={90}
-            height={90}
-            className="rounded-full"
-          />
+      </SwiperSlide>
+      <SwiperSlide>
+        <div className="p-6 bg-white shadow-lg rounded-lg w-80 mx-auto">
+          <div className="flex justify-center mb-4">
+            <Image
+              src="/images/JohnOlivier.png"
+              alt="John Olivier"
+              width={90}
+              height={90}
+              className="rounded-full"
+            />
+          </div>
+          <p className="text-gray-600 italic">
+            "I would not consider ever going anywhere else!"
+          </p>
+          <p className="text-black mt-4 font-semibold">John Olivier</p>
         </div>
-        <p className="text-gray-600 italic">
-          "I would not consider ever going anywhere else!"
-        </p>
-        <p className="text-black mt-4 font-semibold">John Olivier</p>
-      </div>
-    </div>
+      </SwiperSlide>
+    </Swiper>
     <div className="mt-8">
       <p className="text-1xl text-black">
         Please rate your experience with our practice online.
