@@ -4,7 +4,8 @@ import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'react-phone-input-2/lib/style.css';
-import PhoneInput from 'react-phone-input-2'
+import PhoneInput from 'react-phone-input-2';
+import Link from "next/link";
 
 // Mock data for testing
 const mockData = {
@@ -119,7 +120,7 @@ export default function HomePage({ customerCode }) {
               backgroundColor: customerData.secondaryColor,
             }}
           >
-            {customerData.buttonText}
+            <Link href="/#booking">{customerData.buttonText} </Link>
           </button>
         </div>
       </div>
@@ -516,7 +517,7 @@ const Bookings = () => (
               id="appointment-time"
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             >
-              <option value="">--Select Time--</option>
+              <option value="">-- Select Time --</option>
               <option value="09:00 AM">09:00</option>
               <option value="09:30 AM">09:30</option>
               <option value="10:00 AM">10:00</option>
@@ -552,9 +553,26 @@ const Bookings = () => (
           </div>
         </form>
       </div>
+
+      {/* Practice Details Card */}
+      <div className="w-full md:w-1/2 mt-8 md:mt-0">
+        <div className="bg-white p-4 shadow-lg rounded-lg min-h-[450px] flex flex-col justify-center">
+          <p className="text-base mt-2 text-gray-600"><strong className="text-primary">Physical Address</strong> <br /> <br /> 190 Circular Drive, Lorraine, Port Elizabeth</p>
+          <p className="text-base text-gray-600"><strong className="text-primary"> <br /> Trading Hours  </strong></p>          
+          <br /> Monday - Friday: 9:00 AM - 6:00 PM <br/>
+            Saturday: 9:00 AM - 1:00 PM <br/>
+            Sunday: Closed <br />
+          <br />
+          <p className="text-base text-gray-600 mt-2"><strong className="text-primary">Contact Details <br /></strong></p>
+          <p className="text-base text-gray-600"> <br /> +27 41 880 0051</p>
+          <p className="text-base text-gray-600"> info@imageeyecareoptometrists.com</p>
+        </div>
+      </div>
+
     </div>
   </section>
 );
+
 
 const FooterPage = () => (
   <footer className="w-full py-8 bg-white">
