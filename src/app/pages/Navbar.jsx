@@ -55,13 +55,13 @@ const Navbar = () => {
             <Link href="/#about" className="hover:text-primary">About</Link>
           </li>
           <li>
-            <Link href="/services" className="hover:text-primary">Services</Link>
+            <Link href="/#services" className="hover:text-primary">Services</Link>
           </li>          
           <li>
             <Link href="/team" className="hover:text-primary">Team</Link>
           </li>          
           <li>
-            <Link href="/testimonials" className="hover:text-primary">Feedback</Link>
+            <Link href="/#testimonials" className="hover:text-primary">Feedback</Link>
           </li>
           <li>
             <Link href="/pages/info-centre" className="hover:text-primary">Info Centre</Link>
@@ -82,7 +82,7 @@ const Navbar = () => {
       <div
         className={`${
           isMenuOpen ? "block" : "hidden"
-        } md:hidden absolute top-16 left-0 w-full bg-white shadow-lg z-10`}
+        } md:hidden absolute top-16 left-0 w-full bg-white shadow-lg z-10 text-black`}
       >
         <ul className="flex flex-col items-center gap-4 py-4 text-xl font-medium">
           <li>
@@ -92,7 +92,7 @@ const Navbar = () => {
             <Link href="/#about" className="hover:text-primary" onClick={handleMenuToggle}>About</Link>
           </li>
           <li>
-            <Link href="/services" className="hover:text-primary" onClick={handleMenuToggle}>Services</Link>
+            <Link href="/#services" className="hover:text-primary" onClick={handleMenuToggle}>Services</Link>
           </li>          
           <li>
             <Link href="/team" className="hover:text-primary" onClick={handleMenuToggle}>Team</Link>
