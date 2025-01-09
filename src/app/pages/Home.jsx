@@ -93,15 +93,19 @@ export default function HomePage({ customerCode }) {
 
       {/* Counter Section */}
       <section className="w-full bg-gray-100 py-16">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="flex justify-between space-x-8">
+        <div className="max-w-6xl mx-auto text-center px-4 md:px-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Counter Content */}
             <Counter
               image="/images/GlassesInCase.svg"
               count="821"
               label="Number of brands"
             />
-            <Counter image="/images/Specs.svg" count="1550" label="Frame stock" />
+            <Counter
+              image="/images/Specs.svg"
+              count="1550"
+              label="Frame stock"
+            />
             <Counter
               image="/images/Suns.svg"
               count="780"
@@ -326,64 +330,54 @@ const Testimonials = () => (
           <p className="text-black mt-4 font-semibold">John Olivier</p>
         </div>
       </SwiperSlide>
-    </Swiper>
-    <div className="mt-8">
-      <p className="text-1xl text-black">
-        Please rate your experience with our practice online.
-      </p>
-      <button
-        className="mt-4 px-6 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-opacity-90 transition"
-        onClick={() => window.open("https://example.com/reviews", "_blank")}
-      >
-        Leave a Review
-      </button>
-    </div>
+    </Swiper>   
   </section>
 );
 
 const Brands = () => (
   <section id="brands" className="w-full bg-white py-16 text-center">   
-
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
-      <div className="flex justify-center items-center">
-        <Image
-          src="/images/OakleyEyewear.png"
-          alt="Oakley"
-          width={200}
-          height={200}
-        />
-      </div>
-      <div className="flex justify-center items-center">
-        <Image
-          src="/images/CooperVisionBrand.png"
-          alt="CooperVision"
-          width={200}
-          height={200}
-        />
-      </div>
-      <div className="flex justify-center items-center">
-        <Image
-          src="/images/NikeEyewear.png"
-          alt="Nike"
-          width={200}
-          height={200}
-        />
-      </div>
-      <div className="flex justify-center items-center">
-        <Image
-          src="/images/PoliceEyewear.png"
-          alt="Police"
-          width={200}
-          height={200}
-        />
-      </div>
-      <div className="flex justify-center items-center">
-        <Image
-          src="/images/HoyaBrand.png"
-          alt="Hoya"
-          width={200}
-          height={200}
-        />
+    <div className="max-w-6xl mx-auto px-4 md:px-0">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
+        <div className="flex justify-center items-center">
+          <Image
+            src="/images/OakleyEyewear.png"
+            alt="Oakley"
+            width={200}
+            height={200}
+          />
+        </div>
+        <div className="flex justify-center items-center">
+          <Image
+            src="/images/CooperVisionBrand.png"
+            alt="CooperVision"
+            width={200}
+            height={200}
+          />
+        </div>
+        <div className="flex justify-center items-center">
+          <Image
+            src="/images/NikeEyewear.png"
+            alt="Nike"
+            width={200}
+            height={200}
+          />
+        </div>
+        <div className="flex justify-center items-center">
+          <Image
+            src="/images/PoliceEyewear.png"
+            alt="Police"
+            width={200}
+            height={200}
+          />
+        </div>
+        <div className="flex justify-center items-center">
+          <Image
+            src="/images/HoyaBrand.png"
+            alt="Hoya"
+            width={200}
+            height={200}
+          />
+        </div>
       </div>
     </div>
   </section>
@@ -392,8 +386,8 @@ const Brands = () => (
 const Bookings = () => (
   <section id="booking" className="w-full py-16 bg-white">
     <h2 className="text-4xl font-bold mb-8 text-black text-center">Book an Appointment</h2>
-    <div className="max-w-6xl mx-auto flex gap-8">
-      <div className="w-1/2">
+    <div className="max-w-6xl mx-auto px-4 md:px-0 flex flex-col md:flex-row gap-8">
+      <div className="w-full md:w-1/2">
         <div className="relative">
           <iframe
             src="https://maps.google.com/maps?q=190+Circular+Drive,+Lorraine,+Port+Elizabeth&output=embed"
@@ -409,7 +403,7 @@ const Bookings = () => (
         </div>
       </div>
 
-      <div className="w-1/2 flex flex-col items-center text-black">
+      <div className="w-full md:w-1/2 flex flex-col items-center text-black">
         <form className="w-full max-w-md space-y-6">
           <select
             type="text"
@@ -473,7 +467,7 @@ const Bookings = () => (
             </select>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col md:flex-row gap-4">
             <button
               type="submit"
               className="w-full py-3 bg-primary text-white rounded-lg hover:bg-gray-600 transition"
@@ -492,6 +486,7 @@ const Bookings = () => (
     </div>
   </section>
 );
+
 
 const FooterPage = () => (
   <footer className="w-full py-8 bg-white">

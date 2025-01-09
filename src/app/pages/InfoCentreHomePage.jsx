@@ -1,56 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const InfoCentreHomePage = () => {
   const categories = [
-    {
-      id: 29,
-      imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Refractive-conditions-thumb.jpg",
-      title: "Refractive conditions",
-    },
-    {
-      id: 30,
-      imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Info-centre-thumbnails-cat-rxlenses.jpg",
-      title: "Rx lens options",
-    },
-    {
-      id: 37,
-      imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Info_thumb_cat_contactlenses.jpg",
-      title: "Contact lenses",
-    },
-    {
-      id: 34,
-      imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Cooper-Vision-thumb.jpg",
-      title: "Cooper Vision",
-    },
-    {
-      id: 36,
-      imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Info-centre-cat-pharma.jpg",
-      title: "Pharmaceuticals",
-    },
-    {
-      id: 31,
-      imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/External-%26-lid-pathology-thumb.jpg",
-      title: "External & lid pathology",
-    },
-    {
-      id: 32,
-      imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Anterior-%26-corneal-pathology-thumb.jpg",
-      title: "Anterior & corneal pathology",
-    },
-    {
-      id: 33,
-      imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Posterior-%26-retinal-pathology-thumb.jpg",
-      title: "Posterior & retinal pathology",
-    },
-    {
-      id: 35,
-      imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/General-Eyecare-thumb.jpg",
-      title: "General Eyecare",
-    },
+    { id: 29, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Refractive-conditions-thumb.jpg", title: "Refractive conditions" },
+    { id: 30, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Info-centre-thumbnails-cat-rxlenses.jpg", title: "Rx lens options" },
+    { id: 37, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Info_thumb_cat_contactlenses.jpg", title: "Contact lenses" },
+    { id: 34, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Cooper-Vision-thumb.jpg", title: "Cooper Vision" },
+    { id: 36, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Info-centre-cat-pharma.jpg", title: "Pharmaceuticals" },
+    { id: 31, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/External-%26-lid-pathology-thumb.jpg", title: "External & lid pathology" },
+    { id: 32, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Anterior-%26-corneal-pathology-thumb.jpg", title: "Anterior & corneal pathology" },
+    { id: 33, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Posterior-%26-retinal-pathology-thumb.jpg", title: "Posterior & retinal pathology" },
+    { id: 35, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/General-Eyecare-thumb.jpg", title: "General Eyecare" }
   ];
 
   return (
@@ -65,25 +28,17 @@ const InfoCentreHomePage = () => {
       </div>
 
       {/* Categories Cards Section */}
-      <div className="py-8">
+      <div className="py-8 px-4 md:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {categories.map((category) => (
             <div
-              className="bg-white rounded-lg shadow-lg overflow-hidden"
+              className="bg-white rounded-lg shadow-lg overflow-hidden p-4 transition-transform transform hover:scale-105"
               key={category.id}
+              style={{ maxWidth: '550px', margin: 'auto' }}
             >
-              <Link
-                href={`/info_centre/list/${category.id}`}
-                className="block text-center no-underline"
-              >
-                <Image
-                  className="w-full h-48 object-cover"
-                  src={category.imgSrc}
-                  alt={`${category.title} thumbnail`}
-                  width={300}
-                  height={200}
-                />
-                <div className="p-4">
+              <Link href={`/info_centre/list/${category.id}`} className="block text-center no-underline">
+                <Image className="w-full h-48 object-cover mb-4" src={category.imgSrc} alt={`${category.title} thumbnail`} width={550} height={550} />
+                <div>
                   <h4 className="text-lg font-semibold text-primary">{category.title}</h4>
                 </div>
               </Link>

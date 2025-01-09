@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
 import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa';
 
 const FooterPage = () => {
   return (
     <footer className="w-full py-8 bg-white">
-      <div className="flex justify-between items-center max-w-6xl mx-auto">
+      <div className="flex flex-col md:flex-row justify-between items-center max-w-6xl mx-auto px-4 md:px-0">
         {/* Left aligned links */}
-        <div className="text-blue-500">
+        <div className="text-blue-500 mb-4 md:mb-0">
           <a href="#privacy" className="hover:text-primary mx-2">Privacy</a> |
           <a href="#paia" className="hover:text-primary mx-2">PAIA</a> |
           <a href="#blogs" className="hover:text-primary mx-2">Blogs</a>
         </div>
 
         {/* Copyright text */}
-        <div className="text-blue-500 text-md">
+        <div className="text-blue-500 text-md mb-4 md:mb-0 text-center">
           © {new Date().getFullYear()}. All Rights Reserved.
         </div>
 

@@ -7,6 +7,7 @@ import Link from "next/link";
 const Navbar = () => {
   const [isSticky, setIsSticky] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,9 +25,13 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleMenuToggle = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <header
-      className={`w-full fixed top-0 left-0 z-10 flex justify-between items-center py-4 px-40 transition-all ${
+      className={`w-full fixed top-0 left-0 z-10 flex justify-between items-center py-4 px-6 md:px-40 transition-all ${
         isSticky ? "bg-white shadow-lg text-black" : "bg-transparent"
       }`}
     >
@@ -41,7 +46,7 @@ const Navbar = () => {
         height={200}
         className="text-2xl font-bold"
       />
-      <nav className="flex gap-8 text-xl font-medium">
+      <nav className="hidden md:flex gap-8 text-xl font-medium">
         <ul className="flex gap-4">
           <li>
             <Link href="/" className="hover:text-primary">Home</Link>
@@ -66,6 +71,43 @@ const Navbar = () => {
           </li>
         </ul>
       </nav>
+      <div className="md:hidden">
+        <button
+          className="text-3xl focus:outline-none"
+          onClick={handleMenuToggle}
+        >
+          ☰
+        </button>
+      </div>
+      <div
+        className={`${
+          isMenuOpen ? "block" : "hidden"
+        } md:hidden absolute top-16 left-0 w-full bg-white shadow-lg z-10`}
+      >
+        <ul className="flex flex-col items-center gap-4 py-4 text-xl font-medium">
+          <li>
+            <Link href="/" className="hover:text-primary" onClick={handleMenuToggle}>Home</Link>
+          </li>          
+          <li>
+            <Link href="/#about" className="hover:text-primary" onClick={handleMenuToggle}>About</Link>
+          </li>
+          <li>
+            <Link href="/services" className="hover:text-primary" onClick={handleMenuToggle}>Services</Link>
+          </li>          
+          <li>
+            <Link href="/team" className="hover:text-primary" onClick={handleMenuToggle}>Team</Link>
+          </li>          
+          <li>
+            <Link href="/testimonials" className="hover:text-primary" onClick={handleMenuToggle}>Feedback</Link>
+          </li>
+          <li>
+            <Link href="/pages/info-centre" className="hover:text-primary" onClick={handleMenuToggle}>Info Centre</Link>
+          </li>
+          <li>
+            <Link href="/pages/blog" className="hover:text-primary" onClick={handleMenuToggle}>News Feed</Link>
+          </li>
+        </ul>
+      </div>
     </header>
   );
 };
