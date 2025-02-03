@@ -35,33 +35,31 @@ const TestimonialsPage = () => {
   }, [testimonials.length]);
 
   return (
-    <>
-      <section id="testimonials" className="w-full bg-gray-100 py-16 text-center">
-        <h2 className="text-4xl font-bold mb-8 text-black">Clients Reviews</h2>
-        <p className="text-1xl mb-8 text-black">
-          Some of the recent feedback from our customers. Please rate your experience with our practice online.
-        </p>
-        <div className="flex justify-center items-center gap-8">
-          <div className="p-6 bg-white shadow rounded-lg w-96">
-            <div className="flex justify-center mb-4">
-              <Image
-                src={testimonials[currentTestimonial].img}
-                alt="Client"
-                width={90}
-                height={90}
-                className="rounded-full"
-              />
-            </div>
-            <p className="text-gray-600 italic">
-              "{testimonials[currentTestimonial].text}"
-            </p>
-            <p className="text-black mt-4 font-semibold">
-              {testimonials[currentTestimonial].name}
-            </p>
+    <section id="testimonials" className="w-full bg-gray-100 py-16 text-center">
+      <h2 className="text-4xl font-bold mb-8 text-black">Clients Reviews</h2>
+      <p className="text-1xl mb-8 text-black">
+        Some of the recent feedback from our customers. Please rate your experience with our practice online.
+      </p>
+      <div className="flex justify-center items-center gap-8">
+        <div className="p-6 bg-white shadow rounded-lg w-96">
+          <div className="flex justify-center mb-4">
+            <Image
+              src={testimonials[currentTestimonial].img}
+              alt="Client"
+              width={90}
+              height={90}
+              className="rounded-full"
+            />
           </div>
+          <p className="text-gray-600 italic">
+            "{testimonials[currentTestimonial].text}"
+          </p>
+          <p className="text-black mt-4 font-semibold">
+            {testimonials[currentTestimonial].name}
+          </p>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 

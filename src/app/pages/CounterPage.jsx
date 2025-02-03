@@ -1,83 +1,53 @@
 "use client";
 
 import Image from "next/image";
-import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useSiteSettings } from '../context/SiteSettingsContext';
+
+const Counter = ({ image, count, label }) => (
+  <div className="flex flex-col items-center">
+    <div className="flex items-center justify-center h-20">
+      <Image src={image} alt={label} width={50} height={50} className="mb-4" />
+    </div>
+    <p className="text-4xl font-bold text-primary">{count}</p>
+    <p className="text-md text-black">
+      <i>{label}</i>
+    </p>
+  </div>
+);
 
 const CounterPage = () => {
-  
-  const [primaryColor, setPrimaryColor] = useState('orange');
-
-  useEffect(() => {
-    setPrimaryColor('orange');
-  }, []);
+  const { siteSettings } = useSiteSettings();
+  const { counterSettings } = siteSettings;
+  const { brands, frames, customers, experience } = counterSettings;
 
   return (
-    <>
-      {/* Counter Section */}
-      <section className="w-full bg-gray-100 py-16">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="flex justify-between space-x-8">
-            {/* Counter 1 */}
-            <div className="flex flex-col items-center">
-              <div className="flex items-center justify-center h-20">
-              <Image
-                src="/images/GlassesInCase.svg"
-                alt="Number of Brands"
-                width={50}
-                height={50}
-                className="text-orange-500 mb-4"
-              />
-              </div>
-              <p className="text-4xl font-bold text-primary">821</p>
-              <p className="text-md text-black"><i>Number of brands</i></p>
-            </div>
-            {/* Counter 2 */}
-            <div className="flex flex-col items-center">
-              <div className="flex items-center justify-center h-20">
-                <Image
-                  src="/images/Specs.svg"
-                  alt="Frame Stock"
-                  width={50}
-                  height={50}
-                  className="mb-4"
-                />
-              </div>
-              <p className="text-4xl font-bold text-primary">1550</p>
-              <p className="text-md text-black"><i>Frame stock</i></p>
-            </div>
-            {/* Counter 3 */}
-            <div className="flex flex-col items-center">
-              <div className="flex items-center justify-center h-20">
-                <Image
-                  src="/images/Suns.svg"
-                  alt="Sunglasses Stock"
-                  width={50}
-                  height={50}
-                  className="mb-4"
-                />
-              </div>
-              <p className="text-4xl font-bold text-primary">780</p>
-              <p className="text-md text-black"><i>Sunglasses stock</i></p>
-            </div>
-            {/* Counter 4 */}
-            <div className="flex flex-col items-center">
-              <div className="flex items-center justify-center h-20">
-                <Image
-                  src="/images/Established.svg"
-                  alt="Established Year"
-                  width={50}
-                  height={50}
-                  className="mb-4"
-                />
-              </div>
-              <p className="text-4xl font-bold text-primary">1957</p>
-              <p className="text-md text-black"><i>Year (trading since)</i></p>
-            </div>
-          </div>
+    <section className="w-full bg-gray-100 py-16">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <Counter
+            image="/images/BrandsIcon.svg"
+            count={brands}
+            label="Brands"
+          />
+          <Counter
+            image="/images/FramesIcon.svg"
+            count={frames}
+            label="Frame Stock"
+          />
+          <Counter
+            image="/images/HappyCustomers.svg"
+            count={customers}
+            label="Happy Customers"
+          />
+          <Counter
+            image="/images/Experience.svg"
+            count={experience}
+            label="Years Experience"
+          />
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 

@@ -1,9 +1,9 @@
 "use client"
 
 import React from "react";
-import Navbar from "../../pages/Navbar";
-import InfoCentreHomePage from "../../pages/InfoCentreHomePage";
-import FooterPage from "../../pages/FooterPage";
+import Navbar from "../Navbar";
+import InfoCentreHomePage from "../InfoCentreHomePage";
+import FooterPage from "../FooterPage";
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 

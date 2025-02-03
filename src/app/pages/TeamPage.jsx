@@ -1,59 +1,44 @@
-import { useEffect, useState } from 'react';
+"use client";
 
-export default function TeamPage() {
-  const [currentTeamMember, setCurrentTeamMember] = useState(0);
-  const [teamTitle, setTeamTitle] = useState('');
-  const [teamDescription, setTeamDescription] = useState('');
+import Image from "next/image";
+import { useSiteSettings } from '../context/SiteSettingsContext';
 
-  useEffect(() => {
-    setTeamTitle('Meet Our Vibrant Team');
-  });
+const TeamPage = () => {
+  const { siteSettings } = useSiteSettings();
+  const { teamTitle, teamMembers } = siteSettings;
 
-  useEffect(() => {
-    setTeamDescription('We like to think we have have something pretty special here at Image Eyecare Optometry - an energetic team, committed to patient care, customer experience and doing good work.');
-  });
-
-  const teamMembers = [
-    { img: "/images/DrYonelaDube.png", name: "Dr Yonela Dube", role: "Paediatric Optometrist" },
-    { img: "/images/JillWalker.png", name: "Jill Walker", role: "Practice Manager" },
-    { img: "/images/MorneDuPlessis.png", name: "Morne Du Plessis", role: "Optical Dispenser" },
-  ];
-
-  const nextMember = () => {
-    setCurrentTeamMember((prevIndex) => (prevIndex + 1) % teamMembers.length);
-  };
-
-  const prevMember = () => {
-    setCurrentTeamMember(
-      (prevIndex) => (prevIndex - 1 + teamMembers.length) % teamMembers.length
-    );
-  };
+  console.log('TeamPage rendering with settings:', { teamTitle, teamMembers });
 
   return (
-    <div className="w-full bg-gray-50 py-12">
-      <div className="container mx-auto px-6">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
+    <section className="w-full bg-gray-100 py-16">
+      <div className="max-w-6xl mx-auto px-4">
+        <h2 className="text-4xl font-bold text-center mb-12 text-primary">
           {teamTitle}
-        </h1>
-        <p className="text-1xl text-center text-gray-800 mb-8"> {teamDescription} </p>
-        <div className="flex justify-center gap-8">
-          {teamMembers.map((member, index) => (
-            <div key={index} className="bg-white shadow-lg p-6 rounded-lg text-center w-64">
-              <img
-                src={member.img}
-                alt={member.name}
-                className="w-41 h-41 rounded-full mx-auto mb-4"
-              />
-              <h2 className="text-2xl font-semibold text-primary mb-2">
-                {member.name}
-              </h2>
-              <h3 className="text-lg font-medium text-gray-600 mb-4">
-                {member.role}
-              </h3>
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {teamMembers.map((member) => (
+            <div
+              key={member.id}
+              className="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform hover:scale-105"
+            >
+              <div className="relative h-64">
+                <Image
+                  src={member.image || "/images/default-avatar.jpg"}
+                  alt={member.name}
+                  fill
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-semibold text-primary mb-2">{member.name}</h3>
+                <p className="text-gray-600">{member.role}</p>
+              </div>
             </div>
           ))}
-        </div>        
+        </div>
       </div>
-    </div>
+    </section>
   );
-}
+};
+
+export default TeamPage;
