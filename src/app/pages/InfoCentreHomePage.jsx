@@ -45,6 +45,7 @@ const InfoCentreHomePage = () => {
                 </div>
                 <div className="p-6">
                   <h3 className="text-2xl font-semibold mb-3 text-primary">{category.title}</h3>
+                  <p className="text-gray-600">Read more {'>'} {'>'}</p>
                 </div>
               </div>
             </Link>

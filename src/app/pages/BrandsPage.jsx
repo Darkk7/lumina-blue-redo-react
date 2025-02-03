@@ -12,7 +12,7 @@ const BrandsPage = () => {
   ];
 
   return (
-    <section id="brands" className="w-full bg-white py-16 text-center">
+    <section id="brands" className="w-full bg-gray-100 py-16 text-center">
       <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-8">
         {brands.map((brand, index) => (
           <div key={index} className="flex justify-center items-center">

@@ -12,7 +12,9 @@ import CounterPage from "./CounterPage";
 import AboutPage from "./AboutPage";
 import ServicesPage from "./ServicesPage";
 import TeamPage from "./TeamPage";
+import RecentBlogs from "./RecentBlogs";
 import BrandsPage from "./BrandsPage";
+import BookingPage from "./BookingPage";
 import TestimonialsPage from "./TestimonialsPage";
 import ConnectWithUsPage from "./ConnectWithUsPage";
 
@@ -108,8 +110,10 @@ export default function HomePage({ customerCode }) {
       <ServicesPage />
       <ConnectWithUsPage />
       <TeamPage />
+      <RecentBlogs />
       <BrandsPage />
-      <TestimonialsPage />      
+      <TestimonialsPage /> 
+      <BookingPage />   
     </div>
   );
 }

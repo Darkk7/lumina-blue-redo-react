@@ -6,7 +6,7 @@ const BookingPage = () => {
   const [address] = useState('190 Circular Drive, Lorraine');
   
   return (
-    <section id="booking" className="w-full py-16 bg-white">
+    <section id="booking" className="w-full py-16 bg-gray-100">
       <div className="max-w-6xl mx-auto flex gap-8">
         <div className="w-1/2">
           <div className="relative">

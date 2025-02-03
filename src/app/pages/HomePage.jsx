@@ -151,13 +151,13 @@ export default function HomePage({ customerCode }) {
       </section>
       
       <AboutSection />
+
+      <Services />
       
       <ConnectWithUs />
 
       <Team teamTitle={teamTitle} teamDescription={teamDescription} teamMembers={teamMembers} />
       
-      <Services />
-
       <Testimonials />
 
       <Brands />

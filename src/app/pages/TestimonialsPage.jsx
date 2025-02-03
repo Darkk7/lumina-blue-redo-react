@@ -35,7 +35,7 @@ const TestimonialsPage = () => {
   }, [testimonials.length]);
 
   return (
-    <section id="testimonials" className="w-full bg-gray-100 py-16 text-center">
+    <section id="testimonials" className="w-full bg-white py-16 text-center">
       <h2 className="text-4xl font-bold mb-8 text-black">Clients Reviews</h2>
       <p className="text-1xl mb-8 text-black">
         Some of the recent feedback from our customers. Please rate your experience with our practice online.
