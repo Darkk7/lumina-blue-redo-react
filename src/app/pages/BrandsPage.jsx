@@ -12,11 +12,17 @@ const BrandsPage = () => {
   ];
 
   return (
-    <section id="brands" className="w-full bg-gray-100 py-16 text-center">
-      <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-8">
+    <section id="brands" className="w-full bg-white py-16 px-4 sm:px-8 lg:px-16 text-center">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
         {brands.map((brand, index) => (
           <div key={index} className="flex justify-center items-center">
-            <Image src={brand.src} alt={brand.alt} width={250} height={250} />
+            <Image
+              src={brand.src}
+              alt={brand.alt}
+              width={200}  // Adjusted image width for mobile
+              height={200}  // Adjusted image height for mobile
+              className="object-contain"  // Ensures images are not stretched
+            />
           </div>
         ))}
       </div>

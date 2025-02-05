@@ -6,30 +6,28 @@ const BookingPage = () => {
   const [address] = useState('190 Circular Drive, Lorraine');
   
   return (
-    <section id="booking" className="w-full py-16 bg-gray-100">
-      <div className="max-w-6xl mx-auto flex gap-8">
-        <div className="w-1/2">
+    <section id="booking" className="w-full py-16 bg-white">
+      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 px-4">
+        <div className="w-full lg:w-1/2">
           <div className="relative">
             <iframe
               src="https://maps.google.com/maps?q=190+Circular+Drive,+Lorraine,+Port+Elizabeth&output=embed"
               width="100%"
-              height="400"                
+              height="400"
               style={{ border: 0 }}
               allowFullScreen
             ></iframe>
             <div className="absolute bottom-4 left-4 bg-white p-4 shadow-lg rounded-lg">
               <h3 className="text-lg font-semibold text-black">Our Location</h3>
-              <p className="text-sm text-gray-600"> { address } </p>
+              <p className="text-sm text-gray-600">{address}</p>
             </div>
           </div>
         </div>
-        
-        <div className="w-1/2 flex flex-col items-center text-black">
-          <h2 className="text-2xl font-semibold mb-6 text-black">Book an Appointment</h2>
-          <form className="w-full max-w-md space-y-6">              
+
+        <div className="w-full lg:w-1/2 flex flex-col items-center text-black">
+          <h2 className="text-2xl font-semibold mb-6 text-center">Book An Appointment</h2>
+          <form className="w-full max-w-md space-y-6">
             <select
-              type="text"
-              placeholder="Select Appointment Type"
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">Select Appointment Type</option>
@@ -52,7 +50,6 @@ const BookingPage = () => {
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <textarea
-              type="tel"
               placeholder="Additional Comments"
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             ></textarea>
@@ -90,7 +87,7 @@ const BookingPage = () => {
               </select>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 flex-col lg:flex-row">
               <button
                 type="submit"
                 className="w-full py-3 bg-primary text-white rounded-lg hover:bg-gray-600 transition"

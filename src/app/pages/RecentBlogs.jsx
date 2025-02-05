@@ -16,7 +16,7 @@ const RecentBlogs = ({ blogs }) => {
   }, [blogs]);
 
   return (
-    <section className="w-full bg-white py-16">
+    <section className="w-full bg-gray-100 py-16">
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-4xl font-bold text-center mb-12 text-primary">
           {recentBlogsTitle}
