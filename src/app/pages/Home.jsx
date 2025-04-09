@@ -17,43 +17,13 @@ import BrandsPage from "./BrandsPage";
 import BookingPage from "./BookingPage";
 import TestimonialsPage from "./TestimonialsPage";
 import ConnectWithUsPage from "./ConnectWithUsPage";
-
-// Mock data for testing
-const mockData = {
-  A018: {
-    bannerImage: "https://example.com/banner-a018.png",
-    primaryColor: "#FF5733",
-    secondaryColor: "#33FF57",
-    welcomeText: "Welcome to A018's Practice!",
-    buttonText: "Book Now",
-  },
-  TOM001: {
-    bannerImage: "https://example.com/banner-tom001.png",
-    primaryColor: "#0000FF",
-    secondaryColor: "#FFC300",
-    welcomeText: "Welcome to TOM001's Practice!",
-    buttonText: "Schedule Appointment",
-  },
-  R003: {
-    bannerImage: "https://example.com/banner-r003.png",
-    primaryColor: "#900C3F",
-    secondaryColor: "#DAF7A6",
-    welcomeText: "Welcome to R003's Practice!",
-    buttonText: "Reserve Your Spot",
-  },
-  R004: {
-    bannerImage: "https://example.com/banner-r004.png",
-    primaryColor: "#581845",
-    secondaryColor: "#FF5733",
-    welcomeText: "Welcome to R004's Practice!",
-    buttonText: "Get Started",
-  },
-};
+import { useSiteSettings } from '../context/SiteSettingsContext';
 
 export default function HomePage({ customerCode }) {
-  const [customerData, setCustomerData] = useState({
+  const { siteSettings, isLoading, error } = useSiteSettings();
+  const [customerData, setCustomerData] = useState({    
     bannerImage: "https://s3.eu-west-2.amazonaws.com/luminablue-blogs/1721909136_67_banner.png",
-    secondaryColor: "#e58825",
+    secondaryColor: "var(--primary-color)",
     welcomeText: "Serving the community for over 80 years delivering the highest quality care and products for our customers",
     buttonText: "Make A Booking",
   });

@@ -4,45 +4,169 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const SiteSettingsContext = createContext();
 
-export function SiteSettingsProvider({ children }) {
-  const [siteSettings, setSiteSettings] = useState({
-    counterSettings: {
-      brands: 821,
-      frames: 1550,
-      customers: 2500,
-      experience: 25
-    },
-    aboutText: "Welcome to Lumina Blue Optometrists, where we blend cutting-edge eye care technology with personalized attention to ensure your vision health is in the best hands possible.",
-    teamTitle: "Meet Our Vibrant Team",
-    teamMembers: [
-      { id: 1, name: "Dr. John Doe", role: "Senior Optometrist" },
-      { id: 2, name: "Dr. Jane Smith", role: "Optometrist" },
-      { id: 3, name: "Sarah Johnson", role: "Optical Assistant" }
-    ],
-    services: [
-      { id: 1, title: "Comprehensive Eye Examinations", description: "Thorough vision and eye health assessments" },
-      { id: 2, title: "Contact Lens Fitting", description: "Expert fitting of all types of contact lenses" },
-      { id: 3, title: "Pediatric Eye Care", description: "Specialized care for children's vision" }
-    ]
-  });
+const getDefaultSettings = (practiceId) => ({
+  practiceId,
+  primaryColor: practiceId === '8' ? 'green' : 'orange',
+  counterSettings: {
+    brands: 0,
+    frames: 0,
+    customers: 0,
+    experience: 0
+  },
+  show_counters_panel: true,
+  show_custom_panel: true,
+  show_socials_panel: true,
+  show_teams_panel: true,
+  show_youtube_panel: true,
+  aboutText: "",
+  about: {},
+  member: {
+    member: []
+  },
+  services: [],
+  brands: [],
+  banners: [],
+  reviews: {
+    review: []
+  },
+  statitems: [],
+  name: ""
+});
+
+export function SiteSettingsProvider({ children, initialPracticeId }) {
+  const [siteSettings, setSiteSettings] = useState(getDefaultSettings(initialPracticeId));
+  const [practiceId, setPracticeId] = useState(initialPracticeId);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Load settings from localStorage on mount
-    const savedSettings = localStorage.getItem('siteSettings');
-    if (savedSettings) {
-      console.log('Loading settings from localStorage:', JSON.parse(savedSettings));
-      setSiteSettings(JSON.parse(savedSettings));
-    }
-  }, []);
+    console.log('Site Settings:', siteSettings); 
+    let isMounted = true;
 
-  const updateSettings = (newSettings) => {
-    console.log('Updating settings:', newSettings);
-    setSiteSettings(newSettings);
-    localStorage.setItem('siteSettings', JSON.stringify(newSettings));
+    async function fetchPracticeData() {
+      if (!practiceId) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const response = await fetch(`https://www.eyecareportal.com/api/website/${practiceId}/0`);
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Failed to fetch practice data: ${response.status}`);
+        }
+
+        const response2 = await fetch(`https://www.ocumail.com/api/settings?setting_object_id=${practiceId}&setting_object_type=Practice`);
+
+        console.log('Response2 Status:', response2.status);
+        console.log('Response2 Headers:', response2.headers);
+
+        if (!response2.ok) {
+          const errorData2 = await response2.json();
+          throw new Error(errorData2.error || `Failed to fetch practice data: ${response2.status}`);
+        }
+
+        const data = await response.json();
+        const data2 = await response2.json();
+
+        console.log('Data from new API:', data2);
+
+        const primaryColorSetting = data2.find(setting => setting.setting_name === "PrimaryColor");
+        const primaryColor = primaryColorSetting ? primaryColorSetting.setting_value : 'orange';
+
+        document.documentElement.style.setProperty('--primary-color', primaryColor);
+
+        const settings = {
+          practiceId,
+          primaryColor,
+          counterSettings: {
+            brands: Number(data.statstems?.find(s => s.label === "Number of Brands")?.value) || 0,
+            frames: (data.featured_services?.length || 0) * 500,
+            customers: (data.reviews?.length || 0) * 500,
+            experience: Math.floor(Math.random() * 20) + 5
+          },
+          show_counters_panel: data.practice_website?.show_counters_panel,
+          show_custom_panel: data.practice_website?.show_custom_panel,
+          show_socials_panel: data.practice_website?.show_socials_panel,
+          show_teams_panel: data.practice_website?.show_teams_panel,
+          show_youtube_panel: data.practice_website?.show_youtube_panel,
+          aboutText: data.about?.body || "",
+          about: data.about,
+          teamTitle: Array.isArray(data.team) && data.team.length > 0 ? "Meet Our Expert Team" : "Our Team",
+          teamMembers: Array.isArray(data.team) ? data.team.map(member => ({
+            id: member.id,
+            name: member.name || "Team Member",
+            qualification: member.qualification || "Eye Care Professional",
+            img: member.img || "/images/default-avatar.jpg"
+          })) : [],
+          services: data.services?.map(service => ({
+            id: service.id,
+            title: service.service_title,
+            description: service.long_description,
+          })) || [],
+          brands: data.brands?.map(brand => ({
+            id: brand.id,
+            name: brand.name,
+            img: brand.img,
+            brand_url: brand.brand_url,
+            order_number: brand.order_number,
+            show: brand.show
+          })) || [],
+          reviews: {
+            review: data.reviews || []
+          },
+          member: {
+            member: data.member || []
+          },
+          statitems: data.statitems || [],
+          name: data.name || []
+        };
+
+        console.log('Transformed settings:', settings);
+        setSiteSettings(settings);
+        setError(null);
+      } catch (error) {
+        console.error('Error fetching practice data:', error);
+        if (isMounted) {
+          setError(error.message);
+          setSiteSettings(prev => ({
+            ...prev,
+            practiceId,
+            primaryColor: practiceId === '8' ? 'green' : 'orange'
+          }));
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    fetchPracticeData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [practiceId]);
+
+  useEffect(() => {
+    console.log('Site Settings:', siteSettings); 
+  }, [siteSettings]);
+
+  const value = {
+    siteSettings,
+    error,
+    isLoading,
+    updateSettings: (newSettings) => setSiteSettings(newSettings),
+    setPracticeId
   };
 
   return (
-    <SiteSettingsContext.Provider value={{ siteSettings, updateSettings }}>
+    <SiteSettingsContext.Provider value={value}>
       {children}
     </SiteSettingsContext.Provider>
   );

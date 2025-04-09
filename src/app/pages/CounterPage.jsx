@@ -17,34 +17,69 @@ const Counter = ({ image, count, label }) => (
 );
 
 const CounterPage = () => {
-  const { siteSettings } = useSiteSettings();
-  const { counterSettings } = siteSettings;
-  const { brands, frames, customers, experience } = counterSettings;
+  const { siteSettings, isLoading, error } = useSiteSettings();
+  console.log('siteSettings:', siteSettings);
+  console.log('siteSettings:', siteSettings);
+
+  if (isLoading) {
+    return (
+      <section className="w-full bg-gray-100 py-16">
+        <div className="container mx-auto px-4 flex justify-center items-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="w-full bg-gray-100 py-16">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-red-600">Error loading counter data</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!siteSettings?.statitems || siteSettings.statitems.length === 0) {
+    return (
+      <section className="w-full bg-gray-100 py-16">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-gray-600">No counter data available</p>
+        </div>
+      </section>
+    );
+  }
+
+  const statitems = siteSettings.statitems;
+  const filteredStatitems = statitems.filter(item => item.visible);
+
+  if (filteredStatitems.length === 0) {
+    return (
+      <section className="w-full bg-gray-100 py-16">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-gray-600">No visible counter data available</p>
+        </div>
+      </section>
+    );
+  }
+
+  const handleLogSiteSettings = () => {
+    console.log('siteSettings:', siteSettings);
+  };
 
   return (
     <section className="w-full bg-gray-100 py-16">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          <Counter
-            image="/images/BrandsIcon.svg"
-            count={brands}
-            label="Brands"
-          />
-          <Counter
-            image="/images/FramesIcon.svg"
-            count={frames}
-            label="Frame Stock"
-          />
-          <Counter
-            image="/images/HappyCustomers.svg"
-            count={customers}
-            label="Happy Customers"
-          />
-          <Counter
-            image="/images/Experience.svg"
-            count={experience}
-            label="Years Experience"
-          />
+          {filteredStatitems.map((item) => (
+            <Counter
+              key={item.id}
+              image={`/images/${item.icon}Icon.svg`}
+              count={item.value}
+              label={item.label}
+            />
+          ))}
         </div>
       </div>
     </section>

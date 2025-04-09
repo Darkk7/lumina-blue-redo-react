@@ -2,8 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSiteSettings } from '../context/SiteSettingsContext';
 
 const InfoCentreHomePage = () => {
+  const { siteSettings } = useSiteSettings();
+  
   const categories = [
     { id: 29, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Refractive-conditions-thumb.jpg", path: "refractive_conditions", title: "Refractive conditions" },
     { id: 30, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Info-centre-thumbnails-cat-rxlenses.jpg", path: "rx_lens_options", title: "Rx lens options" },
@@ -31,7 +34,7 @@ const InfoCentreHomePage = () => {
           {categories.map((category) => (
             <Link
               key={category.id}
-              href={`/info_centre/${category.path}`}
+              href={`/website/${siteSettings?.practiceId}/info_centre/${category.path}`}
               className="block"
             >
               <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition hover:scale-105 h-full">
@@ -44,7 +47,7 @@ const InfoCentreHomePage = () => {
                   />
                 </div>
                 <div className="p-6">
-                  <h3 className="text-2xl font-semibold mb-3 text-primary">{category.title}</h3>
+                  <h3 className="text-center text-2xl font-semibold mb-3 text-primary">{category.title}</h3>
                   <p className="text-gray-600">Read more {'>'} {'>'}</p>
                 </div>
               </div>
