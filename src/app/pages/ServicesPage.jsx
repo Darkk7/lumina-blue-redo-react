@@ -3,8 +3,9 @@
 import React from "react";
 import { useSiteSettings } from '../context/SiteSettingsContext';
 
-const ServiceCard = ({ title, description }) => (
+const ServiceCard = ({ title, description, iconDescription }) => (
   <div className="bg-white p-6 rounded-lg shadow-lg">
+    <h3 className="text-2xl font-semibold text-primary mb-4">{iconDescription}</h3>
     <h3 className="text-2xl font-semibold text-primary mb-4">{title}</h3>
     <p className="text-gray-600">{description}</p>
   </div>
@@ -46,13 +47,17 @@ const ServicesPage = () => {
   return (
     <section className="w-full bg-gray-100 py-16">
       <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center mb-12 text-primary">
-          Our Services
+        <h2 className="text-4xl font-bold text-center mb-12 text-black">
+          {siteSettings.service_description?.welcome_title}
         </h2>
+        <h3 className="text-1xl font-bold text-center mb-12 text-black">
+          {siteSettings.service_description?.welcome_text}
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {siteSettings.services.map((service, index) => (
             <ServiceCard
               key={service.id || index}
+              iconDescription={service.iconDescription}
               title={service.title}
               description={service.description}
             />

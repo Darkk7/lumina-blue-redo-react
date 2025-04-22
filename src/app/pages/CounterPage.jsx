@@ -75,7 +75,7 @@ const CounterPage = () => {
           {filteredStatitems.map((item) => (
             <Counter
               key={item.id}
-              image={`/images/${item.icon}Icon.svg`}
+              image={`/images/${item.icon}.svg`}
               count={item.value}
               label={item.label}
             />

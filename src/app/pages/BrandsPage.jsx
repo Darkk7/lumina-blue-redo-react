@@ -8,7 +8,7 @@ const BrandsPage = () => {
   const { siteSettings } = useSiteSettings();
 
   return (
-    <section id="brands" className="w-full bg-white py-16 px-4 sm:px-8 lg:px-16 text-center">
+    <section id="brands" className="w-full bg-gray-100 py-16 px-4 sm:px-8 lg:px-16 text-center">
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
         {siteSettings && siteSettings.brands && siteSettings.brands.filter(brand => brand.show).map(brand => (
             <BrandCard

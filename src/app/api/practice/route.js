@@ -32,7 +32,6 @@ export async function GET(request) {
         success: true,
         data: {
           address_1: data.address_1,
-          // Add other fields you need from the response
         }
       });
     } else {

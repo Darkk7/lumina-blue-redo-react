@@ -99,9 +99,9 @@ const TeamPage = () => {
                     <div className="mt-4">
                       <button
                         onClick={() => setIsBioVisible(!isBioVisible)}
-                        className="text-primary font-medium text-sm mb-2"
+                        className="px-6 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all"
                       >
-                        {isBioVisible ? 'Hide Bio' : 'Click to View Bio'}
+                        {isBioVisible ? 'Hide Bio' : 'View Bio'}
                       </button>
                       {isBioVisible && (
                         <div className="mt-2 p-4 bg-gray-50 rounded-lg">

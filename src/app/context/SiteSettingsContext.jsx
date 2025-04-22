@@ -24,13 +24,15 @@ const getDefaultSettings = (practiceId) => ({
     member: []
   },
   services: [],
+  service_description: {},
   brands: [],
   banners: [],
   reviews: {
     review: []
   },
   statitems: [],
-  name: ""
+  name: "",
+  address_1: ""
 });
 
 export function SiteSettingsProvider({ children, initialPracticeId }) {
@@ -107,7 +109,21 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
             id: service.id,
             title: service.service_title,
             description: service.long_description,
+            iconDescription: service.icon_description
           })) || [],
+          banners: data.banners?.map(banner => ({
+            id: banner.id,
+            title: banner.banner_title,
+            titleFontSize: banner.banner_title_font_size,
+            text: banner.banner_text,
+            textFontSize: banner.banner_text_font_size,
+            titleGoogleFont: banner.banner_title_google_font,
+            textGoogleFont: banner.banner_text_google_font,
+            bannerImg: banner.img,
+            buttonText: banner.button_text,
+            buttonLink: banner.button_link
+          })) || [],
+          service_description: data.service_description || {},
           brands: data.brands?.map(brand => ({
             id: brand.id,
             name: brand.name,
@@ -123,7 +139,8 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
             member: data.member || []
           },
           statitems: data.statitems || [],
-          name: data.name || []
+          name: data.name || [],
+          address_1: data2.address_1 || []
         };
 
         console.log('Transformed settings:', settings);

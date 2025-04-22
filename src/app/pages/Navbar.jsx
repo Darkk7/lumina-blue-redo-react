@@ -65,7 +65,7 @@ const Navbar = () => {
       </Link>
 
       <nav className="hidden md:flex gap-8 text-xl font-medium">
-        <ul className="flex gap-4">
+        <ul className="flex gap-4 items-center">
           <li>
             <Link href={getLink("/")} className="hover:text-primary">
               Home
@@ -101,6 +101,16 @@ const Navbar = () => {
               News Feed
             </Link>
           </li>
+          {isSticky && (
+            <li className="ml-4">
+              <Link
+                href={siteSettings?.booking_url || '#'}
+                className="px-6 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all"
+              >
+                Make A Booking
+              </Link>
+            </li>
+          )}
         </ul>
       </nav>
 
@@ -183,6 +193,17 @@ const Navbar = () => {
               News Feed
             </Link>
           </li>
+          {isSticky && (
+            <li className="mt-4">
+              <Link
+                href={siteSettings?.booking_url || '#'}
+                className="px-6 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all"
+                onClick={handleMenuToggle}
+              >
+                Make A Booking
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
     </header>
