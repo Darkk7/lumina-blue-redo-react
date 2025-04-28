@@ -2,64 +2,44 @@
 
 import React from "react";
 import { useSiteSettings } from '../context/SiteSettingsContext';
+import { FaEye, FaGlasses, FaUserMd, FaHeartbeat, FaRegSmile, FaTools } from "react-icons/fa";
 
-const ServiceCard = ({ title, description, iconDescription }) => (
-  <div className="bg-white p-6 rounded-lg shadow-lg">
-    <h3 className="text-2xl font-semibold text-primary mb-4">{iconDescription}</h3>
-    <h3 className="text-2xl font-semibold text-primary mb-4">{title}</h3>
+const ServiceCard = ({ title, description, Icon }) => (
+  <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center">
+    <Icon className="text-primary text-5xl mb-4" />
+    <h3 className="text-2xl font-semibold text-primary mb-2">{title}</h3>
     <p className="text-gray-600">{description}</p>
   </div>
 );
 
+// Helper function to choose an icon based on service title
+const getServiceIcon = (title) => {
+  const lowerTitle = title.toLowerCase();
+  if (lowerTitle.includes("eye") || lowerTitle.includes("exam")) return FaEye;
+  if (lowerTitle.includes("glasses") || lowerTitle.includes("spectacle")) return FaGlasses;
+  if (lowerTitle.includes("consultation") || lowerTitle.includes("doctor")) return FaUserMd;
+  if (lowerTitle.includes("health") || lowerTitle.includes("vision")) return FaHeartbeat;
+  if (lowerTitle.includes("care") || lowerTitle.includes("wellness")) return FaRegSmile;
+  return FaTools; // default/fallback icon
+};
+
 const ServicesPage = () => {
-  const { siteSettings, isLoading, error } = useSiteSettings();
-
-  if (isLoading) {
-    return (
-      <section className="w-full bg-gray-100 py-16">
-        <div className="max-w-6xl mx-auto px-4 flex justify-center items-center min-h-[300px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section className="w-full bg-gray-100 py-16">
-        <div className="max-w-6xl mx-auto px-4 text-center min-h-[300px]">
-          <p className="text-red-600">Error loading services information</p>
-        </div>
-      </section>
-    );
-  }
-
-  if (!siteSettings?.services || siteSettings.services.length === 0) {
-    return (
-      <section className="w-full bg-gray-100 py-16">
-        <div className="max-w-6xl mx-auto px-4 text-center min-h-[300px]">
-          <p className="text-gray-600">No services information available</p>
-        </div>
-      </section>
-    );
-  }
+  const { siteSettings } = useSiteSettings();
+  const { services } = siteSettings;
 
   return (
     <section className="w-full bg-gray-100 py-16">
       <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center mb-12 text-black">
-          {siteSettings.service_description?.welcome_title}
+        <h2 className="text-4xl font-bold text-center mb-12 text-primary">
+          Our Services
         </h2>
-        <h3 className="text-1xl font-bold text-center mb-12 text-black">
-          {siteSettings.service_description?.welcome_text}
-        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {siteSettings.services.map((service, index) => (
+          {services.map((service, index) => (
             <ServiceCard
               key={service.id || index}
-              iconDescription={service.iconDescription}
               title={service.title}
               description={service.description}
+              Icon={getServiceIcon(service.title)}
             />
           ))}
         </div>
