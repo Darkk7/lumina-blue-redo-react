@@ -3,11 +3,15 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSiteSettings } from "../context/SiteSettingsContext";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const [isSticky, setIsSticky] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { siteSettings } = useSiteSettings();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,62 +33,84 @@ const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const getLink = (path) => {
+    console.log('Navbar - Practice ID:', siteSettings?.practiceId);
+    console.log('Navbar - Current Path:', pathname);
+
+    if (!siteSettings?.practiceId) {
+      return path;
+    }
+
+    return `/website/${siteSettings.practiceId}${path}`;
+  };
+
   return (
     <header
       className={`w-full fixed top-0 left-0 z-10 flex justify-between items-center py-4 px-6 md:px-40 transition-all ${
         isSticky ? "bg-white shadow-lg text-black" : "bg-transparent text-white"
       }`}
     >
-      <Image
-        src={
-          isScrolled
-            ? "/images/IMAGEEYECAREWHITEBACKGROUND.png"
-            : "/images/IMAGEEYECARELOGOTOPLEFT.png"
-        }
-        alt="PracticeLogo"
-        width={200}
-        height={200}
-        className="text-2xl font-bold"
-      />
+      <Link href={getLink("/")}>
+        <Image
+          src={
+            isSticky
+              ? (siteSettings.about.logo_dark || "https://s3.eu-west-2.amazonaws.com/ocumailuserdata/1689179837_67_logo_dark_wide.png")
+              : (siteSettings.about.logo_light || "https://s3.eu-west-2.amazonaws.com/ocumailuserdata/1689179856_67_logo_light_wide.png")
+          }
+          alt="PracticeLogo"
+          width={200}
+          height={200}
+          className="text-2xl font-bold"
+        />
+      </Link>
 
-      {/* Desktop Navbar */}
       <nav className="hidden md:flex gap-8 text-xl font-medium">
-        <ul className="flex gap-4">
+        <ul className="flex gap-4 items-center">
           <li>
-            <Link href="/" className="hover:text-primary">
+            <Link href={getLink("/")} className="hover:text-primary">
               Home
             </Link>
           </li>
           <li>
-            <Link href="/#about" className="hover:text-primary">
+            <Link href={getLink("/#about")} className="hover:text-primary">
               About
             </Link>
           </li>
           <li>
-            <Link href="/services" className="hover:text-primary">
+            <Link href={getLink("/#services")} className="hover:text-primary">
               Services
             </Link>
           </li>
           <li>
-            <Link href="/team" className="hover:text-primary">
+            <Link href={getLink("/#team")} className="hover:text-primary">
               Team
             </Link>
           </li>
           <li>
-            <Link href="/testimonials" className="hover:text-primary">
+            <Link href={getLink("/#testimonials")} className="hover:text-primary">
               Feedback
             </Link>
           </li>
           <li>
-            <Link href="/pages/info_centre" className="hover:text-primary">
+            <Link href={getLink("/info_centre")} className="hover:text-primary">
               Info Centre
             </Link>
           </li>
           <li>
-            <Link href="/pages/blog" className="hover:text-primary">
+            <Link href={getLink("/blog")} className="hover:text-primary">
               News Feed
             </Link>
           </li>
+          {isSticky && (
+            <li className="ml-4">
+              <Link
+                href={siteSettings?.booking_url || '#'}
+                className="px-6 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all"
+              >
+                Make A Booking
+              </Link>
+            </li>
+          )}
         </ul>
       </nav>
 
@@ -106,7 +132,7 @@ const Navbar = () => {
         <ul className="flex flex-col items-center gap-4 py-4 text-xl font-medium">
           <li>
             <Link
-              href="/"
+              href={getLink("/")}
               className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
               onClick={handleMenuToggle}
             >
@@ -115,7 +141,7 @@ const Navbar = () => {
           </li>
           <li>
             <Link
-              href="/#about"
+              href={getLink("/#about")}
               className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
               onClick={handleMenuToggle}
             >
@@ -124,7 +150,7 @@ const Navbar = () => {
           </li>
           <li>
             <Link
-              href="/services"
+              href={getLink("/services")}
               className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
               onClick={handleMenuToggle}
             >
@@ -133,7 +159,7 @@ const Navbar = () => {
           </li>
           <li>
             <Link
-              href="/team"
+              href={getLink("/team")}
               className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
               onClick={handleMenuToggle}
             >
@@ -142,7 +168,7 @@ const Navbar = () => {
           </li>
           <li>
             <Link
-              href="/testimonials"
+              href={getLink("/testimonials")}
               className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
               onClick={handleMenuToggle}
             >
@@ -151,7 +177,7 @@ const Navbar = () => {
           </li>
           <li>
             <Link
-              href="/pages/info-centre"
+              href={getLink("/info_centre")}
               className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
               onClick={handleMenuToggle}
             >
@@ -160,13 +186,24 @@ const Navbar = () => {
           </li>
           <li>
             <Link
-              href="/pages/blog"
+              href={getLink("/blog")}
               className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
               onClick={handleMenuToggle}
             >
               News Feed
             </Link>
           </li>
+          {isSticky && (
+            <li className="mt-4">
+              <Link
+                href={siteSettings?.booking_url || '#'}
+                className="px-6 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all"
+                onClick={handleMenuToggle}
+              >
+                Make A Booking
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
     </header>
