@@ -2,7 +2,35 @@
 
 import React from "react";
 import { useSiteSettings } from '../context/SiteSettingsContext';
-import { FaEye, FaGlasses, FaUserMd, FaHeartbeat, FaRegSmile, FaTools } from "react-icons/fa";
+import { 
+  FaEye, 
+  FaGlasses, 
+  FaUserMd, 
+  FaHeartbeat, 
+  FaRegSmile, 
+  FaTools, 
+  FaChild, 
+  FaExclamationTriangle, 
+  FaCarAlt, 
+  FaPlusCircle,
+  FaSearch,
+  FaHandHoldingHeart
+} from "react-icons/fa";
+
+// Helper function to choose an icon based on service title
+const getServiceIcon = (title) => {
+  const lowerTitle = title.toLowerCase();
+  if (lowerTitle.includes("eye exam") || lowerTitle.includes("examinations")) return FaEye; // Comprehensive Eye Examinations
+  if (lowerTitle.includes("myopia")) return FaSearch; // Myopia Control
+  if (lowerTitle.includes("frame") && (lowerTitle.includes("selection") || lowerTitle.includes("assistance"))) return FaGlasses; // Frame Sales, Selection and Assistance
+  if (lowerTitle.includes("contact lens")) return FaRegSmile; // Contact Lens Consultation
+  if (lowerTitle.includes("adjustments") || lowerTitle.includes("repairs")) return FaTools; // Frame and Spectacle Adjustments and Repairs
+  if (lowerTitle.includes("paediatric") || lowerTitle.includes("children")) return FaChild; // Paediatric Optometry
+  if (lowerTitle.includes("glaucoma")) return FaExclamationTriangle; // Glaucoma Testing
+  if (lowerTitle.includes("drivers licence") || lowerTitle.includes("traffic")) return FaCarAlt; // Drivers Licence Screening
+  if (lowerTitle.includes("diabetic") || lowerTitle.includes("retinopathy")) return FaHandHoldingHeart; // Diabetic Retinopathy Screening
+  return FaTools; // default/fallback icon
+};
 
 const ServiceCard = ({ title, description, Icon }) => (
   <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center">
@@ -11,17 +39,6 @@ const ServiceCard = ({ title, description, Icon }) => (
     <p className="text-gray-600">{description}</p>
   </div>
 );
-
-// Helper function to choose an icon based on service title
-const getServiceIcon = (title) => {
-  const lowerTitle = title.toLowerCase();
-  if (lowerTitle.includes("eye") || lowerTitle.includes("exam")) return FaEye;
-  if (lowerTitle.includes("glasses") || lowerTitle.includes("spectacle")) return FaGlasses;
-  if (lowerTitle.includes("consultation") || lowerTitle.includes("doctor")) return FaUserMd;
-  if (lowerTitle.includes("health") || lowerTitle.includes("vision")) return FaHeartbeat;
-  if (lowerTitle.includes("care") || lowerTitle.includes("wellness")) return FaRegSmile;
-  return FaTools; // default/fallback icon
-};
 
 const ServicesPage = () => {
   const { siteSettings } = useSiteSettings();
