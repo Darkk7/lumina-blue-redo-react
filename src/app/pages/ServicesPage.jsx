@@ -2,14 +2,30 @@
 
 import React from "react";
 import { useSiteSettings } from '../context/SiteSettingsContext';
+import { FaTooth, FaSpa, FaHeartbeat, FaQuestionCircle } from 'react-icons/fa'; // Example icons
 
-const ServiceCard = ({ title, description, iconDescription }) => (
-  <div className="bg-white p-6 rounded-lg shadow-lg">
-    <h3 className="text-2xl font-semibold text-primary mb-4">{iconDescription}</h3>
-    <h3 className="text-2xl font-semibold text-primary mb-4">{title}</h3>
-    <p className="text-gray-600">{description}</p>
-  </div>
-);
+// Map service titles to icons
+const iconMap = {
+  'Dental': FaTooth,
+  'Spa': FaSpa,
+  'Health': FaHeartbeat,
+  // Add more mappings as needed
+};
+
+function getIconComponent(title) {
+  return iconMap[title] || FaQuestionCircle;
+}
+
+const ServiceCard = ({ title, description }) => {
+  const Icon = getIconComponent(title);
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+      <Icon className="text-4xl text-primary mb-2" />
+      <h3 className="text-2xl font-semibold text-primary mb-4 text-center">{title}</h3>
+      <p className="text-gray-600 text-center">{description}</p>
+    </div>
+  );
+};
 
 const ServicesPage = () => {
   const { siteSettings, isLoading, error } = useSiteSettings();
@@ -57,7 +73,6 @@ const ServicesPage = () => {
           {siteSettings.services.map((service, index) => (
             <ServiceCard
               key={service.id || index}
-              iconDescription={service.iconDescription}
               title={service.title}
               description={service.description}
             />
