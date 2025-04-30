@@ -47,7 +47,7 @@ const Navbar = () => {
   return (
     <header
       className={`w-full fixed top-0 left-0 z-10 flex justify-between items-center py-4 px-6 md:px-40 transition-all ${
-        isSticky ? "bg-white shadow-lg text-black" : "bg-transparent"
+        isSticky ? "bg-white shadow-lg text-black" : "bg-transparent text-white"
       }`}
     >
       <Link href={getLink("/")}>
