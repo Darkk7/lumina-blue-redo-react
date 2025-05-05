@@ -64,14 +64,13 @@ export default function HomePage({ customerCode }) {
           </div>
         </div>
       )}
-      <CounterPage />
-      <CustomPanelPage />
+      {siteSettings.show_counters_panel && <CounterPage />}
+      {siteSettings.show_custom_panel && <CustomPanelPage />}
       <AboutPage />
-      <YouTubePanelPage />
+      {siteSettings.show_youtube_panel && <YouTubePanelPage />}
       <ServicesPage />
-      <ConnectWithUsPage />
-      <TeamPage />
-      <GoogleSectionPage />
+      {siteSettings.show_socials_panel && <ConnectWithUsPage />}
+      {siteSettings.show_teams_panel && <TeamPage />}      
       <BrandsPage />
       <TestimonialsPage />
       <BookingPage />

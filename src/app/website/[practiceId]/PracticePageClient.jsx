@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react';
-import Home from "@/app/pages/Home";
-import { useSiteSettings } from "@/app/context/SiteSettingsContext";
+import Home from "../../pages/Home";
+import { useSiteSettings } from "../../context/SiteSettingsContext";
 
 export default function PracticePageClient({ initialData }) {
   const { siteSettings, error, isLoading } = useSiteSettings();

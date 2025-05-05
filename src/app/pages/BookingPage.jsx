@@ -1,335 +1,137 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useSiteSettings } from '../context/SiteSettingsContext';
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";
+import { useSiteSettings } from "../context/SiteSettingsContext";
 
 const BookingPage = () => {
-  const router = useRouter();
   const { siteSettings } = useSiteSettings();
   const [formData, setFormData] = useState({
-    appointmentType: '',
-    name: '',
-    email: '',
-    contactNumber: '',
-    comments: '',
-    date: '',
-    time: ''
+    appointmentType: "",
+    name: "",
+    email: "",
+    mobile: "",
+    comments: "",
+    date: "",
   });
-  const [availableSlots, setAvailableSlots] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [practiceAddress, setPracticeAddress] = useState('');
-
-  useEffect(() => {
-    // Get practice ID from site settings
-    const practiceId = siteSettings.practiceId;
-    console.log('Practice ID:', practiceId);
-    
-    if (practiceId) {
-
-      fetch(`/api/practice?id=${practiceId}`)
-        .then(response => {
-          console.log('API Response Status:', response.status);
-          return response.json();
-        })
-        .then(data => {
-          console.log('Practice Data:', data);
-          
-          if (data.success && data.data) {
-            const practiceData = data.data[0];
-            console.log('Practice Name:', practiceData.name);
-            setPracticeAddress(practiceData.address_1 || '190 Circular Drive, Lorraine, Port Elizabeth');
-            setFormData(prevFormData => ({
-              ...prevFormData,
-              name: practiceData.name || ''
-            }));
-          } else {
-            console.log('No valid address found in response:', data);
-            setPracticeAddress('190 Circular Drive, Lorraine, Port Elizabeth');
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching practice data:', error);
-          setPracticeAddress('190 Circular Drive, Lorraine, Port Elizabeth');
-        });
-    } else {
-      console.log('No practice ID available');
-      setPracticeAddress('190 Circular Drive, Lorraine, Port Elizabeth');
-    }
-  }, [siteSettings.practiceId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const fetchAvailableSlots = async (date) => {
-    try {
-      setIsLoading(true);
-      setError('');
-      
-      const response = await fetch('/api/appointments/available-slots', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          date,
-          appointment_type: formData.appointmentType
-        })
-      });
-
-      const data = await response.json();
-      
-      if (response.status === 400) {
-        setError(data.error);
-        setAvailableSlots([]);
-        return;
-      }
-
-      if (!response.ok) {
-        setError('Failed to fetch available slots. Please try again later.');
-        setAvailableSlots([]);
-        return;
-      }
-
-      if (data.error) {
-        setError(data.error);
-        setAvailableSlots([]);
-        return;
-      }
-
-      if (data.success) {
-        setAvailableSlots(data.data || []);
-      } else {
-        setError('No available slots found for this date');
-        setAvailableSlots([]);
-      }
-    } catch (err) {
-      console.error('Network Error:', err);
-      setError('Failed to connect to server. Please check your internet connection and try again.');
-      setAvailableSlots([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDateChange = (e) => {
-    const date = e.target.value;
-    setFormData(prev => ({ ...prev, date }));
-    if (date) {
-      fetchAvailableSlots(date);
-    }
-  };
-
-  const handleBooking = async (e) => {
-    e.preventDefault();
-    
-    if (!formData.date || !formData.time) {
-      setError('Please select both date and time');
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      setError('');
-      
-      const appointmentDate = new Date(`${formData.date}T${formData.time}:00`).toISOString();
-      
-      const response = await fetch(`${API_PROXY}/book_appointment`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          appointment_type: formData.appointmentType,
-          patient_name: formData.name,
-          email: formData.email,
-          phone: formData.contactNumber,
-          comments: formData.comments,
-          appointment_date: appointmentDate,
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to book appointment');
-      }
-
-      const data = await response.json();
-      
-      if (data.success) {
-        alert('Appointment booked successfully!');
-        setFormData({
-          appointmentType: '',
-          name: '',
-          email: '',
-          contactNumber: '',
-          comments: '',
-          date: '',
-          time: ''
-        });
-        setAvailableSlots([]);
-      } else {
-        setError(data.message || 'Failed to book appointment');
-      }
-    } catch (err) {
-      console.error('Error booking appointment:', err);
-      setError('Failed to book appointment. Please try again later.');
-    } finally {
-      setIsLoading(false);
-    }
+    setFormData({ ...formData, [name]: value });
   };
 
   return (
-    <section id="booking" className="w-full py-16 bg-gray-100">
-      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 px-4">
-        <div className="w-full lg:w-1/2 relative">
+    <section id="booking" className="section cta pt-0 pb-0">
+      <div className="book flex flex-col lg:flex-row" style={{ minHeight: "681px" }}>
+        <div className="map lg:w-1/2">
           <iframe
-            src={`https://maps.google.com/maps?q=${practiceAddress || '190 Circular Drive, Lorraine, Port Elizabeth'}&output=embed`}
+            src="https://maps.google.com/maps?q=190+Circular+Drive,+Lorraine,+Port+Elizabeth&output=embed"
             width="100%"
             height="100%"
-            style={{ border: 0, position: 'absolute', top: 0, left: 0, zIndex: 0 }}
+            style={{ border: 0 }}
             allowFullScreen
           ></iframe>
-          <div className="relative z-10 flex justify-center items-center h-full">
-            <div className="bg-white p-4 shadow-lg rounded-lg">
-              <h3 className="text-lg font-semibold text-black">Physical Address</h3>
-              <p className="text-sm text-gray-600">
-                {siteSettings.data && siteSettings.data.length > 0 ? siteSettings.data[0].name : 'No Name Available'}
-              </p>
-              <h4 className="mt-4 text-md font-semibold text-black">Trading Hours</h4>
-              <p className="text-sm text-gray-600">Week Days: 09:00 - 17:00</p>
-              <p className="text-sm text-gray-600">Saturday: 09:00 - 13:00</p>
-              <p className="text-sm text-gray-600">Sunday, Public Holidays: Closed</p>
-              <h4 className="mt-4 text-md font-semibold text-black">Contact Details</h4>
-              <p className="text-sm text-gray-600">info@visionmart.co.za</p>
-              <p className="text-sm text-gray-600">+27 413 686 112</p>
-            </div>
-          </div>
         </div>
-
-        <div className="w-full lg:w-1/2 flex flex-col items-center text-black">
-          <h2 className="text-2xl font-semibold mb-6 text-center">Book Your Appointment</h2>
-          <form className="w-full max-w-md">
+        <div className="container lg:w-1/2 p-8">
+          <h3 id="book_appointment" className="text-2xl mb-4">
+            <span className="secondary-color">Book</span> Your Appointment
+          </h3>
+          <form className="form" id="booking_form" name="booking_form">
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="appointmentType">
-                Select appointment type
-              </label>
               <select
+                id="appt_type"
                 name="appointmentType"
                 value={formData.appointmentType}
                 onChange={handleInputChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="form-control new_theme_select w-full p-2 border rounded"
               >
-                <option value="">Select appointment type</option>
-                <option value="Consultation">Consultation</option>
-                <option value="Follow-up">Follow-up</option>
+                <option disabled selected value="">
+                  Select appointment type
+                </option>
+                <option value="consult">Full examination</option>
+                <option value="drivers">Driver's screening</option>
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-                Name
-              </label>
               <input
                 type="text"
                 name="name"
+                placeholder="Name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="form-control w-full p-2 border rounded"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                Email
-              </label>
               <input
                 type="email"
                 name="email"
+                placeholder="Email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="form-control w-full p-2 border rounded"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="contactNumber">
-                Contact Number
-              </label>
               <input
-                type="tel"
-                name="contactNumber"
-                value={formData.contactNumber}
+                type="text"
+                name="mobile"
+                placeholder="Contact Number"
+                value={formData.mobile}
                 onChange={handleInputChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="form-control w-full p-2 border rounded"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="comments">
-                Additional Comments
-              </label>
               <textarea
                 name="comments"
+                placeholder="Additional Comments"
                 value={formData.comments}
                 onChange={handleInputChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
+                className="form-control w-full p-2 border rounded"
+                rows="4"
+              ></textarea>
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="date">
-                Select appointment date
-              </label>
               <input
                 type="date"
                 name="date"
                 value={formData.date}
-                onChange={handleDateChange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                onChange={handleInputChange}
+                className="form-control w-full p-2 border rounded"
               />
             </div>
-            {formData.date && (
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="time">
-                  Select appointment time
-                </label>
-                <select
-                  id="time"
-                  name="time"
-                  value={formData.time}
-                  onChange={handleInputChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  disabled={isLoading}
-                >
-                  <option value="">--Select Time--</option>
-                  {isLoading ? (
-                    <option value="">Loading available times...</option>
-                  ) : error ? (
-                    <option value="">{error}</option>
-                  ) : availableSlots.length === 0 ? (
-                    <option value="">No available times for this date</option>
-                  ) : (
-                    availableSlots.map((slot, index) => (
-                      <option key={index} value={slot.time}>{slot.time}</option>
-                    ))
-                  )}
-                </select>
-              </div>
-            )}
-            <div className="flex items-center justify-between">
-              <button
+            <div className="text-right">
+              <input
+                id="booking_button"
                 type="submit"
-                onClick={handleBooking}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
-                {isLoading ? 'Booking...' : 'Book Appointment'}
-              </button>
-              <button
+                className="btn btn--primary mr-2 p-2 bg-blue-500 text-white rounded"
+                value="Book Appointment"
+              />
+              <input
+                id="booking_call_me"
                 type="button"
-                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
-                Request Call
-              </button>
+                className="btn btn--secondary p-2 bg-gray-500 text-white rounded"
+                value="Request call"
+              />
             </div>
           </form>
+          <div className="box mt-8">
+            <h5 className="secondary-color">Physical Address</h5>
+            <ul className="list-unstyled">
+              <li>{siteSettings.practice?.address_1}</li>
+            </ul>
+            <h5 className="secondary-color">Trading Hours</h5>
+            <ul className="list-unstyled">
+              <li>Week Days: 09:00 - 17:00</li>
+              <li>Saturday: 09:00 - 13:00</li>
+              <li>Sunday, Public Holidays: Closed</li>
+            </ul>
+            <h5 className="secondary-color">Contact Details</h5>
+            <ul className="list-unstyled">
+              <li>{siteSettings.practice?.email}</li>
+              <li>{siteSettings.practice?.tel}</li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>

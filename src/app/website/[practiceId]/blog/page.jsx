@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useParams } from 'next/navigation';
 import Navbar from "../../../pages/Navbar";
 import FooterPage from "../../../pages/FooterPage";
-import { useSiteSettings } from "@/app/context/SiteSettingsContext";
+import { useSiteSettings } from "../../../context/SiteSettingsContext";
 
 const BlogHomePage = () => {
   const params = useParams();

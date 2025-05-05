@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import crypto from 'crypto';
 
 const SiteSettingsContext = createContext();
 
@@ -35,6 +36,11 @@ const getDefaultSettings = (practiceId) => ({
   address_1: ""
 });
 
+function getDailyKey() {
+  const today = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
+  return crypto.createHash('md5').update(today).digest('hex');
+}
+
 export function SiteSettingsProvider({ children, initialPracticeId }) {
   const [siteSettings, setSiteSettings] = useState(getDefaultSettings(initialPracticeId));
   const [practiceId, setPracticeId] = useState(initialPracticeId);
@@ -46,6 +52,11 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
     let isMounted = true;
 
     async function fetchPracticeData() {
+      const apiKey = getDailyKey();
+      const headers = {
+        'Authorization': `Bearer ${apiKey}`
+      };
+
       if (!practiceId) {
         setIsLoading(false);
         return;
@@ -55,17 +66,18 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
         setIsLoading(true);
         setError(null);
 
-        const response = await fetch(`https://www.eyecareportal.com/api/website/${practiceId}/0`);
+        const practiceResponse = await fetch(`https://passport.nevadacloud.com/api/v1/practices/${practiceId}`, { headers });
+        const response = await fetch(`https://www.eyecareportal.com/api/website/${practiceId}/0`, { headers });
         
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || `Failed to fetch practice data: ${response.status}`);
         }
 
-        const response2 = await fetch(`https://www.ocumail.com/api/settings?setting_object_id=${practiceId}&setting_object_type=Practice`);
+        const response2 = await fetch(`https://www.ocumail.com/api/settings?setting_object_id=${practiceId}&setting_object_type=Practice`, { headers });
 
-        console.log('Response2 Status:', response2.status);
-        console.log('Response2 Headers:', response2.headers);
+        console.log('Response2 Status:', practiceResponse.status);
+        console.log('Response2 Headers:', practiceResponse.headers);
 
         if (!response2.ok) {
           const errorData2 = await response2.json();
@@ -75,10 +87,16 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
         const data = await response.json();
         const data2 = await response2.json();
 
+        console.log('Data from API:', data);
         console.log('Data from new API:', data2);
+
+        console.log('First object in data2:', data2[0]);
 
         const primaryColorSetting = data2.find(setting => setting.setting_name === "PrimaryColor");
         const primaryColor = primaryColorSetting ? primaryColorSetting.setting_value : 'orange';
+
+        const addressObject = data2.find(obj => obj.setting_name === "Address1");
+        const address_1 = addressObject ? addressObject.setting_value : 'No Address Available';
 
         document.documentElement.style.setProperty('--primary-color', primaryColor);
 
@@ -140,7 +158,7 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
           },
           statitems: data.statitems || [],
           name: data.name || [],
-          address_1: data2.address_1 || []
+          address_1
         };
 
         console.log('Transformed settings:', settings);

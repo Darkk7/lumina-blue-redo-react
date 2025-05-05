@@ -8,7 +8,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 const ReviewCard = ({ image, title, comments }) => (
-  <div className="bg-white shadow-lg p-6 rounded-lg flex flex-col items-center mx-2 h-[300px]">
+  <div className="bg-white p-6 rounded-lg flex flex-col items-center mx-2 h-[300px]">
     <div className="relative w-16 h-12 mb-4">
       <Image
         src={image}
@@ -26,45 +26,22 @@ const ReviewCard = ({ image, title, comments }) => (
 const TestimonialsPage = () => {
   const { siteSettings, isLoading, error } = useSiteSettings();
 
-  const settings = {
+  const sliderSettings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1
-        }
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1
-        }
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1
-        }
-      }
-    ]
+    autoplaySpeed: 8000,
   };
 
   return (
-    <section id="testimonials" className="w-full bg-white py-16 text-center px-4">
+    <section id="testimonials" className="w-full py-16 text-center px-4">
       <h2 className="text-4xl font-bold mb-8 text-black">Clients' Reviews</h2>
       <p className="text-xl mb-8 text-black">
         Some of the recent feedback from our customers. Please rate your
-        experience with our practice online.
+        experience if you have visited us recently.
       </p>
       <div className="max-w-6xl mx-auto">
         {isLoading ? (
@@ -72,14 +49,15 @@ const TestimonialsPage = () => {
         ) : error ? (
           <p>Error loading reviews: {error}</p>
         ) : siteSettings?.reviews?.review?.length > 0 ? (
-          <Slider {...settings}>
+          <Slider {...sliderSettings}>
             {siteSettings.reviews.review.map((review, index) => (
-              <ReviewCard
-                key={index}
-                image={review.img}
-                title={review.patient_name}
-                comments={review.review_comments}
-              />
+              <div key={index} className="flex flex-col items-center mx-2">
+                <ReviewCard
+                  image={review.img}
+                  title={review.patient_name}
+                  comments={review.review_comments}
+                />
+              </div>
             ))}
           </Slider>
         ) : (

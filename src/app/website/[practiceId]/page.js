@@ -3,9 +3,9 @@
 import React from "react";
 import { use } from "react";
 import dynamic from 'next/dynamic';
-import Navbar from "@/app/pages/Navbar";
-import FooterPage from "@/app/pages/FooterPage";
-import { SiteSettingsProvider } from "@/app/context/SiteSettingsContext";
+import Navbar from "../../pages/Navbar";
+import FooterPage from "../../pages/FooterPage";
+import { SiteSettingsProvider } from "../../context/SiteSettingsContext";
 
 // Dynamically import PracticePageClient with no SSR to ensure client-side only rendering
 const PracticePageClient = dynamic(
