@@ -100,7 +100,7 @@ export default function HomePage({ customerCode }) {
               backgroundColor: customerData.secondaryColor,
             }}
           >
-            <Link href="/#booking">{customerData.buttonText} </Link>
+            <Link href="/#booking"> {customerData.buttonText} </Link>
           </button>
         </div>
       </div>
