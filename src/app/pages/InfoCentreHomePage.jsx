@@ -1,57 +1,171 @@
-"use client";
-
+import React, { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
+import { useSiteSettings } from "../context/SiteSettingsContext";
 
 const InfoCentreHomePage = () => {
-  const categories = [
-    { id: 29, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Refractive-conditions-thumb.jpg", path: "refractive_conditions", title: "Refractive conditions" },
-    { id: 30, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Info-centre-thumbnails-cat-rxlenses.jpg", path: "rx_lens_options", title: "Rx lens options" },
-    { id: 37, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Info_thumb_cat_contactlenses.jpg", path: "contact_lenses", title: "Contact lenses" },
-    { id: 34, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Cooper-Vision-thumb.jpg", path: "cooper_vision", title: "Cooper Vision" },
-    { id: 36, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Info-centre-cat-pharma.jpg", path: "pharmaceuticals", title: "Pharmaceuticals" },
-    { id: 31, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/External-%26-lid-pathology-thumb.jpg", path: "external_and_lid_pathology", title: "External & lid pathology" },
-    { id: 32, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Anterior-%26-corneal-pathology-thumb.jpg", path: "anterior_and_corneal_pathology", title: "Anterior & corneal pathology" },
-    { id: 33, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/Posterior-%26-retinal-pathology-thumb.jpg", path: "posterior_and_retinal_pathology", title: "Posterior & retinal pathology" },
-    { id: 35, imgSrc: "https://ocumail-content.s3.eu-west-2.amazonaws.com/General-Eyecare-thumb.jpg", path: "general_eyecare", title: "General Eyecare" }
-  ];
+  const { siteSettings } = useSiteSettings();
+  const [categories, setCategories] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [subcategories, setSubcategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        // Fetch all categories to get their IDs
+        const response = await fetch('https://www.ocumail.com/api/section_categories');
+        if (!response.ok) {
+          console.error('Network response was not ok:', response.statusText);
+          return;
+        }
+        const allCategories = await response.json();
+        const ids = allCategories.map(category => category.id);
+
+        const fetchedCategories = await Promise.all(
+          ids.map(async (id) => {
+            const response = await fetch(`https://www.ocumail.com/api/section_categories/${id}`);
+            if (!response.ok) {
+              if (response.status === 404) {
+                alert('The requested item could not be found. Please check the ID or try another item.');
+                window.location.href = '/info-centre';
+              } else {
+                console.error(`Network response was not ok for ID: ${id}`, response.statusText);
+              }
+              return null;
+            }
+            const data = await response.json();
+            return {
+              id: data.id,
+              name: data.name,
+              thumbnailImgUrl: data.thumbnail_img_url,
+            };
+          })
+        );
+        setCategories(fetchedCategories.filter(category => category !== null));
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const handleCategoryClick = async (id) => {
+    setSelectedCategoryId(id);
+    try {
+      const response = await fetch(`https://www.ocumail.com/api/section_items/${id}`);
+      if (!response.ok) {
+        if (response.status === 404) {
+          alert('The requested item could not be found. Please check the ID or try another item.');
+          window.location.href = '/info-centre';
+        } else {
+          console.error(`Network response was not ok for ID: ${id}`, response.statusText);
+        }
+        return;
+      }
+      const data = await response.json();
+      setSubcategories(data.items);
+    } catch (error) {
+      console.error(`Error fetching subcategories for ID: ${id}`, error);
+    }
+  };
 
   return (
     <div>
-      {/* Background Image Section */}
-      <div className="w-full h-[600px] bg-[url('https://www.imageeyecareoptometrists.com/assets/info_centre_banner-4940284541b3ff321b2a3d735fc5ef1caa0f4c66de9804905118656edf31c88d.jpg')] bg-cover bg-center text-center text-white">
-        <div className="bg-black bg-opacity-50 h-full flex flex-col items-center justify-center p-4">
-          <h1 className="text-6xl font-bold mb-4">Welcome To Our Info Centre</h1>
+      {/* Hero Section */}
+      <div className="w-full h-[500px] bg-[url('https://www.imageeyecareoptometrists.com/assets/info_centre_banner-4940284541b3ff321b2a3d735fc5ef1caa0f4c66de9804905118656edf31c88d.jpg')] bg-cover bg-center text-white">
+        <div className="h-full bg-black bg-opacity-50 flex items-center justify-center">
+          <h1 className="text-5xl font-bold text-center px-4">Welcome To Our Info Centre</h1>
         </div>
       </div>
 
-      {/* Categories Cards Section */}
-      <div className="container mx-auto py-12 px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {categories.map((category) => (
-            <Link
+      {/* Stacked Category Blocks */}
+      <div className="py-16 px-4 bg-gray-50">
+        <div className="max-w-7xl mx-auto space-y-20">
+          {categories.map((category, index) => (
+            <div
+              id={`category-${category.id}`}
               key={category.id}
-              href={`/info_centre/${category.path}`}
-              className="block"
+              className={`flex flex-col md:flex-row ${
+                index % 2 !== 0 ? "md:flex-row-reverse" : ""
+              } items-center gap-8`}
+              onClick={() => handleCategoryClick(category.id)}
             >
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition hover:scale-105 h-full">
-                <div className="relative h-56">
-                  <Image
-                    src={category.imgSrc}
-                    alt={category.title}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-2xl font-semibold mb-3 text-primary">{category.title}</h3>
-                  <p className="text-gray-600">Read more {'>'} {'>'}</p>
+              {/* Image Section */}
+              <div className="w-full md:w-1/2">
+                <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-md">
+                  {category.thumbnailImgUrl && (
+                    <Image
+                      src={category.thumbnailImgUrl}
+                      alt={category.name}
+                      layout="fill"
+                      className="object-cover transition-transform duration-300"
+                    />
+                  )}
                 </div>
               </div>
-            </Link>
+
+              {/* Text Section */}
+              <div className="w-full md:w-1/2 text-center md:text-left">
+                <h2 className="text-3xl font-bold text-gray-800 mb-4">{category.name}</h2>
+                <p className="text-gray-600 mb-6 text-lg leading-relaxed">
+                  Learn more about {category.name}.
+                </p>
+                <Link
+                  href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}`}
+                  className="inline-block bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform"
+                >
+                  <span>Explore {category.name}</span>
+                  <span className="ml-2 inline-block">→</span>
+                </Link>
+              </div>
+            </div>
           ))}
         </div>
       </div>
+
+      {/* Mobile Carousel (Optional - Just add for smaller screen users) */}
+      <div className="md:hidden py-12 px-4">
+        <div className="overflow-x-scroll flex space-x-6">
+          {categories.map((category) => (
+            <div key={category.id} className="flex-shrink-0 w-60">
+              <Link
+                href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}`}
+                className="block bg-white rounded-xl shadow-md overflow-hidden"
+              >
+                <div className="relative h-48 w-full">
+                  {category.thumbnailImgUrl && (
+                    <Image
+                      src={category.thumbnailImgUrl}
+                      alt={category.name}
+                      layout="fill"
+                      className="object-cover"
+                    />
+                  )}
+                </div>
+                <div className="p-4">
+                  <h3 className="text-xl font-semibold text-gray-800">{category.name}</h3>
+                  <p className="text-gray-500 text-sm">Learn more about {category.name.toLowerCase()}.</p>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Subcategories Section */}
+      {selectedCategoryId && (
+        <div className="py-8 px-4 bg-white">
+          <h3 className="text-2xl font-bold text-gray-800 mb-4">Subcategories</h3>
+          <ul>
+            {subcategories.map((subcategory) => (
+              <li key={subcategory.id} className="mb-2">
+                {subcategory.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

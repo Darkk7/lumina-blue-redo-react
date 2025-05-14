@@ -6,8 +6,8 @@ import 'swiper/css';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
 import Link from "next/link";
+import { useSiteSettings } from '../context/SiteSettingsContext';
 
-//My testing purposes
 const mockData = {
   A018: {
     bannerImage: "https://example.com/banner-a018.png",
@@ -40,9 +40,12 @@ const mockData = {
 };
 
 export default function HomePage({ customerCode }) {
+  const { siteSettings } = useSiteSettings();
+  console.log('Current site settings:', siteSettings);
+  
   const [customerData, setCustomerData] = useState({
     bannerImage: "https://s3.eu-west-2.amazonaws.com/luminablue-blogs/1721909136_67_banner.png",
-    secondaryColor: "#e58825",
+    secondaryColor: "var(--primary-color)",
     welcomeText: "Serving the community for over 80 years delivering the highest quality care and products for our customers",
     buttonText: "Make A Booking",
   });
@@ -120,65 +123,61 @@ export default function HomePage({ customerCode }) {
           </button>
         </div>
       </div>
-
-      {/* Counter Section */}
-      <section className="w-full bg-gray-100 py-16">
-        <div className="max-w-6xl mx-auto text-center px-4 md:px-0">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Counter Content */}
-            <Counter
-              image="/images/GlassesInCase.svg"
-              count="821"
-              label="Number of brands"
-            />
-            <Counter
-              image="/images/Specs.svg"
-              count="1550"
-              label="Frame stock"
-            />
-            <Counter
-              image="/images/Suns.svg"
-              count="780"
-              label="Sunglasses stock"
-            />
-            <Counter
-              image="/images/Established.svg"
-              count="1957"
-              label="Year (trading since)"
-            />
-          </div>
-        </div>
-      </section>
       
+      {/* About Section */}
       <AboutSection />
 
+      {/* Connect With Us Section */}
+      {siteSettings?.show_socials_panel && (
+        <ConnectWithUs />
+      )}
+
+      {/* Team Section */}
+      {siteSettings?.show_teams_panel && (
+        <Team
+          teamTitle={teamTitle}
+          teamDescription={teamDescription}
+          teamMembers={teamMembers}
+        />
+      )}
+
+      {/* Services Section */}
       <Services />
-      
-      <ConnectWithUs />
 
-      <Team teamTitle={teamTitle} teamDescription={teamDescription} teamMembers={teamMembers} />
-      
-      <Testimonials />
+      {/* Testimonials Section */}
+      {siteSettings?.show_custom_panel && (
+        <Testimonials />
+      )}
 
+      {/* Brands Section */}
       <Brands />
 
-      <Bookings />
+      {/* Counters Section */}
+      {siteSettings?.show_counters_panel && (
+        <Bookings />
+      )}
 
+      {/* YouTube Section */}
+      {siteSettings?.show_youtube_panel && (
+        <div className="container mx-auto py-16">
+          <h2 className="text-3xl font-bold text-center mb-8">Our Latest Videos</h2>
+          <div className="aspect-w-16 aspect-h-9">
+            <iframe
+              src="https://www.youtube.com/embed/your-video-id"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+            ></iframe>
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <FooterPage />
     </div>
   );
 }
-
-const Counter = ({ image, count, label }) => (
-  <div className="flex flex-col items-center">
-    <div className="flex items-center justify-center h-20">
-      <Image src={image} alt={label} width={50} height={50} className="mb-4" />
-    </div>
-    <p className="text-4xl font-bold text-primary">{count}</p>
-    <p className="text-md text-black">
-      <i>{label}</i>
-    </p>
-  </div>
-);
 
 const AboutSection = () => (
   <section
@@ -240,7 +239,6 @@ const ConnectWithUs = () => (
 );
 
 const Team = ({ teamTitle, teamDescription, teamMembers }) => (
-
   
   <div className="w-full bg-gray-50 py-12">
   <div className="container mx-auto px-6">
@@ -281,41 +279,28 @@ const SocialLink = ({ href, icon, label }) => (
   </a>
 );
 
-const Services = () => (
-  <section id="services" className="w-full bg-white py-12">
-    <div className="container mx-auto px-6">
-      <h2 className="text-4xl font-bold text-center text-gray-800 mb-8">
-        Our Services
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <ServiceCard
-          title="Comprehensive Eye Exams"
-          description="We provide a range of eye examinations. Having your eyes tested regularly can also result in early detection of a serious health risk. Our aim is to make clear and comfortable vision a reality for all our patients based on each patient’s needs"
-        />
-        <ServiceCard
-          title="Visual Acuity Tests"
-          description="This test is used to measure the sharpness and clarity of your vision. Testing both your near and distance vision using eye charts and different lenses we can determine how to improve your vision."
-        />
-        <ServiceCard
-          title="Frame Selection And Assistance"
-          description="Frames are more than just corrective eyewear; they become part of your daily appurtenance. Our team are here to help choose the perfect frame to meet your needs and preferences"
-        />
-        <ServiceCard
-          title="Contact Lens Consultation"
-          description="Starting with an eye health assessment we can determine if you are able to wear Contact Lenses. Once you are cleared you are fitted and the particular types of lenses are discussed to determine the best option for your lifestyle."
-        />
-        <ServiceCard
-          title="Frame and Spectacle Adjustments and Repairs"
-          description="From time to time you may want your Frames adjusted or repaired. Our skilled opticians can adjust the bridge, nose pads and temples to ensure the proper fit to your face."
-        />
-        <ServiceCard
-          title="Frame Sales"
-          description="We have a wide range or frames from a variety of brands to choose from. These frames can be fitted with lenses to meet all your needs such as, indoor use, outdoor use, ready, driving and more."
-        />
+const Services = () => {
+  const { siteSettings } = useSiteSettings();
+
+  return (
+    <section id="services" className="w-full bg-white py-12">
+      <div className="container mx-auto px-6">
+        <h2 className="text-4xl font-bold text-center text-gray-800 mb-8">
+          Our Services
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {siteSettings?.services.map(service => (
+            <ServiceCard
+              key={service.id}
+              title={service.title}
+              description={service.description}
+            />
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 const ServiceCard = ({ title, description }) => (
   <div className="bg-white shadow-lg p-6 rounded-lg">
@@ -323,6 +308,8 @@ const ServiceCard = ({ title, description }) => (
     <p className="text-gray-600">{description}</p>
   </div>
 );
+
+
 
 const Testimonials = () => (
   <section id="testimonials" className="w-full bg-gray-100 py-16 text-center">
@@ -459,10 +446,6 @@ const Bookings = () => (
             style={{ border: 0 }}
             allowFullScreen
           ></iframe>
-          <div className="absolute bottom-4 left-4 bg-white p-4 shadow-lg rounded-lg">
-            <h3 className="text-lg font-semibold text-black">Our Location</h3>
-            <p className="text-sm text-gray-600">190 Circular Drive, Lorraine</p>
-          </div>
         </div>
       </div>
 
@@ -586,7 +569,7 @@ const FooterPage = () => (
       </div>
 
       <div className="text-blue-500 text-md">
-        © {new Date().getFullYear()}. All Rights Reserved.
+        &copy; {new Date().getFullYear()}. All Rights Reserved.
       </div>
 
       <div className="flex gap-4">
