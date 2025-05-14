@@ -39,16 +39,6 @@ const YouTubePanelPage = () => {
 
   return (
     <section id="about" className="w-full overflow-hidden bg-white py-12 flex items-center justify-center min-h-[600px] relative">
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-black opacity-50 z-[1]"></div>
-        <Image 
-          src="/images/FramesBG.png"
-          alt="Placeholder Panel Background"
-          fill
-          className="object-cover opacity-90"
-          priority
-        />
-      </div>
       <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Left-side content */}
@@ -64,10 +54,10 @@ const YouTubePanelPage = () => {
           
           {/* Right-side content */}
           <div className="flex flex-col space-y-6">
-            <h2 className="text-4xl font-bold text-white">
+            <h2 className="text-4xl font-bold text-black">
               {siteSettings.service_description?.youtube_header_text}
             </h2>
-            <p className="text-lg text-white">
+            <p className="text-lg text-black">
               {siteSettings.service_description?.youtube_body_text}
             </p>
             <div>

@@ -25,7 +25,6 @@ const BrandsPage = () => {
 const BrandCard = ({ image, title }) => (
   <div className="bg-white shadow-lg p-6 rounded-lg">
     <Image src={image} alt={title} layout="responsive" width={16} height={9} className="w-full h-auto mb-4" />
-    <h3 className="text-2xl font-semibold text-primary mb-4">{title}</h3>
   </div>
 );
 

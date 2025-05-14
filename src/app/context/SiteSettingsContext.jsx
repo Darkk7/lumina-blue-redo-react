@@ -33,12 +33,14 @@ const getDefaultSettings = (practiceId) => ({
   },
   statitems: [],
   name: "",
-  address_1: ""
+  address_1: "",
+  working_hours: []
 });
 
 function getDailyKey() {
-  const today = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
-  return crypto.createHash('md5').update(today).digest('hex');
+  const today = new Date().toISOString().split('T')[0];
+  const dailyKey = crypto.createHash('md5').update(today).digest('hex');
+  return dailyKey;
 }
 
 export function SiteSettingsProvider({ children, initialPracticeId }) {
@@ -66,9 +68,11 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
         setIsLoading(true);
         setError(null);
 
-        const practiceResponse = await fetch(`https://passport.nevadacloud.com/api/v1/practices/${practiceId}`, { headers });
+        const practiceResponse = await fetch(`https://passport.nevadacloud.com/api/v1/public/practices/${practiceId}`);
         const response = await fetch(`https://www.eyecareportal.com/api/website/${practiceId}/0`, { headers });
-        
+
+        console.log(practiceResponse);
+
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || `Failed to fetch practice data: ${response.status}`);
@@ -86,19 +90,22 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
 
         const data = await response.json();
         const data2 = await response2.json();
+        const data3 = await practiceResponse.json();
 
         console.log('Data from API:', data);
         console.log('Data from new API:', data2);
 
         console.log('First object in data2:', data2[0]);
-
         const primaryColorSetting = data2.find(setting => setting.setting_name === "PrimaryColor");
         const primaryColor = primaryColorSetting ? primaryColorSetting.setting_value : 'orange';
 
-        const addressObject = data2.find(obj => obj.setting_name === "Address1");
-        const address_1 = addressObject ? addressObject.setting_value : 'No Address Available';
+        const addressObject = data2.find(obj => obj.setting_name === "Address1");        
 
         document.documentElement.style.setProperty('--primary-color', primaryColor);
+
+        console.log('Working Hours:', data3.working_hours);
+
+        console.log('Practice Response:', practiceResponse);
 
         const settings = {
           practiceId,
@@ -116,7 +123,7 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
           show_youtube_panel: data.practice_website?.show_youtube_panel,
           aboutText: data.about?.body || "",
           about: data.about,
-          teamTitle: Array.isArray(data.team) && data.team.length > 0 ? "Meet Our Expert Team" : "Our Team",
+          team: data.team || [],
           teamMembers: Array.isArray(data.team) ? data.team.map(member => ({
             id: member.id,
             name: member.name || "Team Member",
@@ -157,8 +164,17 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
             member: data.member || []
           },
           statitems: data.statitems || [],
-          name: data.name || [],
-          address_1
+          name: data3.name || [],
+          short_name: data3.short_name || [],
+          address_1: data3.address_1 || [],
+          tel: data3.tel || [],
+          email: data3.email || [],
+          facebook_url: data3.facebook_url || [],
+          instagram_url: data3.instagram_url || [],
+          linkedin_url: data3.linkedin_url || [],
+          pinterest_url: data3.pinterest_url || [],
+          whatsapp_tel: data3.whatsapp_tel || [],
+          working_hours: data3.working_hours || []
         };
 
         console.log('Transformed settings:', settings);

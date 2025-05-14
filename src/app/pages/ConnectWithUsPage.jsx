@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { FaFacebook, FaInstagram, FaLinkedin, FaWhatsapp, FaPinterest } from 'react-icons/fa';
+import { useSiteSettings } from "../context/SiteSettingsContext";
 
 const ConnectWithUsPage = ({ practiceId }) => {
+  const { siteSettings } = useSiteSettings();
   const [socialLinks, setSocialLinks] = useState({
     facebook: "",
     instagram: "",
@@ -13,37 +15,6 @@ const ConnectWithUsPage = ({ practiceId }) => {
   });
 
   useEffect(() => {
-    const fetchPracticeDetails = async () => {
-      try {
-        const response = await fetch('https://passport.nevadacloud.com/api/v1/practice', {
-          method: 'GET',
-          headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjo3NSwic3ViIjo3NSwiZXhwIjoxNzQ1ODM0NTg2fQ.0dzAy88E2zP-Cxgy5t5uwbtm3hhLAFOTuPkdNSvN11U',
-            'Content-Type': 'application/json',
-          },
-          cache: 'no-store',
-        });
-
-        const data = await response.json();
-
-        if (Array.isArray(data)) {
-          const practice = data.find(p => p.id === practiceId);
-          
-          if (practice) {
-            setSocialLinks({
-              facebook: practice.facebook_url || "",
-              instagram: practice.instagram_url || "",
-              linkedin: practice.linkedin_url || "",
-              whatsapp: practice.whatsapp_tel || "",
-              pinterest: practice.pinterest_url || ""
-            });
-          }
-        }
-      } catch (error) {
-        console.error("Failed to fetch practice details:", error);
-      }
-    };
-
     if (practiceId) {
       fetchPracticeDetails();
     }
@@ -63,56 +34,61 @@ const ConnectWithUsPage = ({ practiceId }) => {
         Immerse yourself in our vibrant online community by following us on platforms such as Facebook, Instagram, LinkedIn, WhatsApp, Pinterest, and more.
       </p>
       <div className="flex justify-center gap-8 relative z-10">
-        {socialLinks.facebook && (
-          <a
-            href={socialLinks.facebook}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-4xl text-primary hover:text-primary transition"
-          >
-            <FaFacebook />
-          </a>
-        )}
-        {socialLinks.instagram && (
-          <a
-            href={socialLinks.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-4xl text-primary hover:text-primary transition"
-          >
-            <FaInstagram />
-          </a>
-        )}
-        {socialLinks.linkedin && (
-          <a
-            href={socialLinks.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-4xl text-primary hover:text-primary transition"
-          >
-            <FaLinkedin />
-          </a>
-        )}
-        {socialLinks.whatsapp && (
-          <a
-            href={`https://wa.me/${socialLinks.whatsapp}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-4xl text-primary hover:text-primary transition"
-          >
-            <FaWhatsapp />
-          </a>
-        )}
-        {socialLinks.pinterest && (
-          <a
-            href={socialLinks.pinterest}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-4xl text-primary hover:text-primary transition"
-          >
-            <FaPinterest />
-          </a>
-        )}
+      {siteSettings.facebook_url && siteSettings.facebook_url.trim() !== "" && (
+        <a
+          href={siteSettings.facebook_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-4xl text-primary hover:text-primary transition"
+        >
+          <FaFacebook />
+        </a>
+      )}
+
+      {typeof siteSettings.instagram_url === 'string' && siteSettings.instagram_url.trim() !== "" && (
+        <a
+          href={siteSettings.instagram_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-4xl text-primary hover:text-primary transition"
+        >
+          <FaInstagram />
+        </a>
+      )}
+
+      {typeof siteSettings.linkedin_url === 'string' && siteSettings.linkedin_url.trim() !== "" && (
+        <a
+          href={siteSettings.linkedin_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-4xl text-primary hover:text-primary transition"
+        >
+          <FaLinkedin />
+        </a>
+      )}
+
+      {typeof siteSettings.whatsapp_tel === 'string' && siteSettings.whatsapp_tel.trim() !== "" && (
+        <a
+          href={siteSettings.whatsapp_tel}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-4xl text-primary hover:text-primary transition"
+        >
+          <FaWhatsapp />
+        </a>
+      )}
+
+      {typeof siteSettings.pinterest_url === 'string' && siteSettings.pinterest_url.trim() !== "" && (
+        <a
+          href={siteSettings.pinterest_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-4xl text-primary hover:text-primary transition"
+        >
+          <FaPinterest />
+        </a>
+      )}
+
       </div>
     </section>
   );

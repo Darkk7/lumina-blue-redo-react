@@ -15,7 +15,6 @@ export default function InfoCentreLayout({ children, params }) {
         <main className="flex-grow">
           {children}
         </main>
-        <FooterPage />
       </div>
     </SiteSettingsProvider>
   );

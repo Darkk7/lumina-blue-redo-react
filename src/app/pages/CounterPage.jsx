@@ -63,10 +63,6 @@ const CounterPage = () => {
     );
   }
 
-  const handleLogSiteSettings = () => {
-    console.log('siteSettings:', siteSettings);
-  };
-
   return (
     <section className="w-full bg-gray-100 py-16">
       <div className="container mx-auto px-4">

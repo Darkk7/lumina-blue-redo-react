@@ -38,10 +38,10 @@ const TestimonialsPage = () => {
 
   return (
     <section id="testimonials" className="w-full py-16 text-center px-4">
-      <h2 className="text-4xl font-bold mb-8 text-black">Clients' Reviews</h2>
-      <p className="text-xl mb-8 text-black">
+      <h2 className="text-3xl font-bold mb-8 text-black">Clients' Reviews</h2>
+      <p className="text-1xl mb-8 text-black">
         Some of the recent feedback from our customers. Please rate your
-        experience if you have visited us recently.
+        experience with us via Google.
       </p>
       <div className="max-w-6xl mx-auto">
         {isLoading ? (

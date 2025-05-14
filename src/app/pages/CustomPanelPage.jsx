@@ -38,7 +38,7 @@ const CustomPanelPage = () => {
   }
 
   return (
-    <section id="about" className="w-full overflow-hidden bg-white py-12 flex items-center justify-center min-h-[600px] relative">
+    <section id="about" className="w-full overflow-hidden bg-gray-100 py-12 flex items-center justify-center min-h-[600px] relative">
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-black opacity-50 z-[1]"></div>
         <Image 

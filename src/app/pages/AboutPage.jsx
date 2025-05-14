@@ -9,7 +9,7 @@ const AboutPage = () => {
 
   if (isLoading) {
     return (
-      <section id="about" className="w-full bg-white py-16">
+      <section id="about" className="w-full bg-gray-100 py-16">
         <div className="max-w-6xl mx-auto px-4 flex justify-center items-center min-h-[300px]">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
@@ -19,7 +19,7 @@ const AboutPage = () => {
 
   if (error) {
     return (
-      <section id="about" className="w-full bg-white py-16">
+      <section id="about" className="w-full bg-gray-100 py-16">
         <div className="max-w-6xl mx-auto px-4 text-center min-h-[300px]">
           <p className="text-red-600">Error loading practice information</p>
         </div>
@@ -29,7 +29,7 @@ const AboutPage = () => {
 
   if (!siteSettings?.aboutText) {
     return (
-      <section id="about" className="w-full bg-white py-16">
+      <section id="about" className="w-full bg-gray-100 py-16">
         <div className="max-w-6xl mx-auto px-4 text-center min-h-[300px]">
           <p className="text-gray-600">Practice information not available</p>
         </div>
@@ -38,7 +38,7 @@ const AboutPage = () => {
   }
 
   return (
-    <section id="about" className="w-full bg-white py-16">
+    <section id="about" className="w-full bg-gray-100 py-16">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center gap-8">
           <div className="w-full md:w-1/2 space-y-6">

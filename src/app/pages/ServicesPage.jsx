@@ -14,22 +14,35 @@ import {
   FaCarAlt, 
   FaPlusCircle,
   FaSearch,
-  FaHandHoldingHeart
+  FaHandHoldingHeart,
+  FaWrench,
+  FaBinoculars,
+  FaScrewdriver,
+  FaEyeDropper
 } from "react-icons/fa";
+
+// Refined mapping of service titles to icons for better relevance
+const serviceIconMap = {
+  "comprehensive eye examinations": FaEye, // Eye icon for examinations
+  "visual acuity test": FaEyeDropper, // Eye dropper for visual tests
+  "frame sales": FaGlasses, // Glasses icon for frame sales
+  "frame repairs": FaTools, // Tools icon for repairs
+  "frame adjustments": FaWrench, // Wrench icon for adjustments
+  "contact lens consultation": FaRegSmile, // Smile icon for contact lens
+  "paediatric optometry": FaChild, // Child icon for paediatric services
+  "glaucoma testing": FaExclamationTriangle, // Warning icon for glaucoma
+  "drivers licence testing": FaCarAlt, // Car icon for drivers testing
+  "diabetic retinopathy screening": FaHeartbeat, // Heartbeat for diabetic screening
+  "myopia control": FaSearch, // Search icon for myopia control
+};
 
 // Helper function to choose an icon based on service title
 const getServiceIcon = (title) => {
   const lowerTitle = title.toLowerCase();
-  if (lowerTitle.includes("eye exam") || lowerTitle.includes("examinations")) return FaEye; // Comprehensive Eye Examinations
-  if (lowerTitle.includes("myopia")) return FaSearch; // Myopia Control
-  if (lowerTitle.includes("frame") && (lowerTitle.includes("selection") || lowerTitle.includes("assistance"))) return FaGlasses; // Frame Sales, Selection and Assistance
-  if (lowerTitle.includes("contact lens")) return FaRegSmile; // Contact Lens Consultation
-  if (lowerTitle.includes("adjustments") || lowerTitle.includes("repairs")) return FaTools; // Frame and Spectacle Adjustments and Repairs
-  if (lowerTitle.includes("paediatric") || lowerTitle.includes("children")) return FaChild; // Paediatric Optometry
-  if (lowerTitle.includes("glaucoma")) return FaExclamationTriangle; // Glaucoma Testing
-  if (lowerTitle.includes("drivers licence") || lowerTitle.includes("traffic")) return FaCarAlt; // Drivers Licence Screening
-  if (lowerTitle.includes("diabetic") || lowerTitle.includes("retinopathy")) return FaHandHoldingHeart; // Diabetic Retinopathy Screening
-  return FaTools; // default/fallback icon
+  for (const key in serviceIconMap) {
+    if (lowerTitle.includes(key)) return serviceIconMap[key];
+  }
+  return FaTools;
 };
 
 const ServiceCard = ({ title, description, Icon }) => (
@@ -47,8 +60,11 @@ const ServicesPage = () => {
   return (
     <section className="w-full bg-gray-100 py-16">
       <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center mb-12 text-primary">
-          Our Services
+      <h2 className="text-3xl font-bold text-center mb-5 text-black">
+      {siteSettings.service_description?.welcome_title}
+        </h2>
+      <h2 className="text-1xl font-bold text-center mb-12 text-gray-500">
+      {siteSettings.service_description?.welcome_text}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
