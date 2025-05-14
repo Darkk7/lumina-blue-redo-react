@@ -21,28 +21,12 @@ import {
   FaEyeDropper
 } from "react-icons/fa";
 
-// Refined mapping of service titles to icons for better relevance
-const serviceIconMap = {
-  "comprehensive eye examinations": FaEye, // Eye icon for examinations
-  "visual acuity test": FaEyeDropper, // Eye dropper for visual tests
-  "frame sales": FaGlasses, // Glasses icon for frame sales
-  "frame repairs": FaTools, // Tools icon for repairs
-  "frame adjustments": FaWrench, // Wrench icon for adjustments
-  "contact lens consultation": FaRegSmile, // Smile icon for contact lens
-  "paediatric optometry": FaChild, // Child icon for paediatric services
-  "glaucoma testing": FaExclamationTriangle, // Warning icon for glaucoma
-  "drivers licence testing": FaCarAlt, // Car icon for drivers testing
-  "diabetic retinopathy screening": FaHeartbeat, // Heartbeat for diabetic screening
-  "myopia control": FaSearch, // Search icon for myopia control
-};
-
 // Helper function to choose an icon based on service title
-const getServiceIcon = (title) => {
-  const lowerTitle = title.toLowerCase();
-  for (const key in serviceIconMap) {
-    if (lowerTitle.includes(key)) return serviceIconMap[key];
-  }
-  return FaTools;
+const getServiceIcon = (title, icons) => {
+  if (!icons) return FaTools; // Return default icon if icons is undefined
+  const lowerTitle = title.toLowerCase().replace(/\s+/g, ''); // Remove spaces for matching
+  const iconEntry = icons.find(iconObj => iconObj.icon.includes(lowerTitle));
+  return iconEntry ? iconEntry.icon : FaTools;
 };
 
 const ServiceCard = ({ title, description, Icon }) => (
@@ -55,7 +39,7 @@ const ServiceCard = ({ title, description, Icon }) => (
 
 const ServicesPage = () => {
   const { siteSettings } = useSiteSettings();
-  const { services } = siteSettings;
+  const { services, icons } = siteSettings; // Assuming icons are part of siteSettings
 
   return (
     <section className="w-full bg-gray-100 py-16">
@@ -72,7 +56,7 @@ const ServicesPage = () => {
               key={service.id || index}
               title={service.title}
               description={service.description}
-              Icon={getServiceIcon(service.title)}
+              Icon={getServiceIcon(service.title, icons)}
             />
           ))}
         </div>

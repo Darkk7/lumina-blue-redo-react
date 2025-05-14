@@ -76,7 +76,7 @@ const TeamPage = () => {
   return (
     <section className="w-full bg-white py-16">
       <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-3xl text-black font-bold text-center mb-8">{siteSettings.team?.team_title}</h1>
+        <h1 className="text-3xl text-black font-bold text-center mb-8">{siteSettings.team?.team_title || "Our Team"} </h1>
         <h2 className="text-1xl text-gray-500 font-bold text-center mb-8">{siteSettings.team?.description}</h2>
         <Slider {...settings}>
           {(siteSettings.member?.member || []).map((member, index) => {

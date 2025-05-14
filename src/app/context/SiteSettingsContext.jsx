@@ -103,13 +103,43 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
 
         document.documentElement.style.setProperty('--primary-color', primaryColor);
 
-        console.log('Working Hours:', data3.working_hours);
+        console.log('Data3:', data3.working_hours); // Debugging log to check contents of data3
+        console.log('Working Hours from Data3:', data3.working_hours); // Debugging log to check working_hours
 
         console.log('Practice Response:', practiceResponse);
+
+        // Function to parse hours string into structured working_hours
+        function parseWorkingHours(hoursString) {
+          const daysMap = {
+            '0': '0',
+            '1': '1',
+            '2': '2',
+            '3': '3',
+            '4': '4',
+            '5': '5',
+            '6': '6',
+            '7': '7'
+          };
+
+          return hoursString.split(';').map(entry => {
+            const [days, start, end] = entry.split('-');
+            const dayNames = days.split('|').map(day => daysMap[day] || day).join(', ');
+            return {
+              days: dayNames,
+              start: start || '',
+              end: end || '',
+              open: start !== 'Closed'
+            };
+          });
+        }
+
+        // Parse working hours from data3.hours
+        const workingHours = parseWorkingHours(data3.hours);
 
         const settings = {
           practiceId,
           primaryColor,
+          working_hours: workingHours,
           counterSettings: {
             brands: Number(data.statstems?.find(s => s.label === "Number of Brands")?.value) || 0,
             frames: (data.featured_services?.length || 0) * 500,
@@ -174,7 +204,6 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
           linkedin_url: data3.linkedin_url || [],
           pinterest_url: data3.pinterest_url || [],
           whatsapp_tel: data3.whatsapp_tel || [],
-          working_hours: data3.working_hours || []
         };
 
         console.log('Transformed settings:', settings);

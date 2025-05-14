@@ -37,12 +37,26 @@ const BookingPage = () => {
                 <li className="text-gray-500">{siteSettings.address_1}</li>
               </ul>
               <h5 className="secondary-color text-gray-800">Trading Hours</h5>
+              {console.log('Working Hours:', siteSettings.working_hours)}
               <ul className="list-unstyled">
                 {siteSettings.working_hours.map((schedule, index) => {
-                  const days = schedule.days.map(day => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][day]).join(', ');
+                  const days = schedule.days;
+                  let displayDays = '';
+
+                  if (days.includes(0) && days.includes(1) && days.includes(2) && days.includes(3) && days.includes(4)) {
+                    displayDays = 'Monday - Friday';
+                  } else if (days.includes(5)) {
+                    displayDays = 'Saturday';
+                  } else if (days.includes(6)) {
+                    displayDays = 'Sunday';
+                  }
+                  else if (days.includes(7)) {
+                    displayDays = 'Public Holidays';
+                  }
+
                   return (
                     <li key={index} className="text-gray-500">
-                      {schedule.open ? `${days}: ${schedule.start} - ${schedule.end}` : `${days}: Closed`}
+                      {schedule.open ? `${displayDays}: ${schedule.start} - ${schedule.end}` : `${displayDays}: Closed`}
                     </li>
                   );
                 })}
