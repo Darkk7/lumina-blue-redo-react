@@ -5,6 +5,7 @@ module.exports = {
       's3.eu-west-2.amazonaws.com',
       'ocumail-content.s3.eu-west-2.amazonaws.com',
       'www.eyecareportal.com',
+      'www.ocumail.com',
     ],
   },
   async rewrites() {

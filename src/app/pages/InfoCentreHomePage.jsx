@@ -56,8 +56,8 @@ const InfoCentreHomePage = () => {
       const response = await fetch(`https://www.ocumail.com/api/section_items/${id}`);
       if (!response.ok) {
         if (response.status === 404) {
-          alert('The requested item could not be found. Please check the ID or try another item.');
-          window.location.href = '/info-centre';
+          console.warn('The requested item could not be found. Retrying...');
+          setTimeout(() => handleCategoryClick(id), 3000); // Retry after 3 seconds
         } else {
           console.error(`Network response was not ok for ID: ${id}`, response.statusText);
         }
@@ -67,6 +67,7 @@ const InfoCentreHomePage = () => {
       setSubcategories(data.items);
     } catch (error) {
       console.error(`Error fetching subcategories for ID: ${id}`, error);
+      setTimeout(() => handleCategoryClick(id), 3000);
     }
   };
 
@@ -112,7 +113,7 @@ const InfoCentreHomePage = () => {
                   Learn more about {category.name}.
                 </p>
                 <Link
-                  href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}`}
+                  href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}?name=${encodeURIComponent(category.name)}`}
                   className="inline-block bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform"
                 >
                   <span>Explore {category.name}</span>
@@ -130,7 +131,7 @@ const InfoCentreHomePage = () => {
           {categories.map((category) => (
             <div key={category.id} className="flex-shrink-0 w-60">
               <Link
-                href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}`}
+                href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}?name=${encodeURIComponent(category.name)}`}
                 className="block bg-white rounded-xl shadow-md overflow-hidden"
               >
                 <div className="relative h-48 w-full">

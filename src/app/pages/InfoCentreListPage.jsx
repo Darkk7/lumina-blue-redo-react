@@ -17,8 +17,7 @@ const InfoCentreListPage = () => {
     const categoryNameFromUrl = new URLSearchParams(window.location.search).get('name');
     if (categoryNameFromUrl) {
       setCategoryName(categoryNameFromUrl);
-    }
-    if (category) {
+    } else if (category) {
       const fetchSectionItems = async () => {
         try {
           const response = await fetch('https://www.ocumail.com/api/section_items');
@@ -32,6 +31,11 @@ const InfoCentreListPage = () => {
           const filteredItems = data.filter(item => item.section_category_id === parseInt(category));
           console.log('Filtered Items:', filteredItems);
           setSectionItems(filteredItems);
+          // Set category name from fetched items if not in URL
+          if (filteredItems.length > 0) {
+            const firstItem = filteredItems[0];
+            setCategoryName(firstItem.category_name || firstItem.name || 'Default Category');
+          }
         } catch (error) {
           console.error('Error fetching section items:', error);
         }
@@ -45,7 +49,6 @@ const InfoCentreListPage = () => {
   }, [sectionItems]);
 
   const handleItemClick = (itemId) => {
-    // Navigate to the detail page for the clicked item
     window.location.href = `/info-centre/item/${itemId}`;
   };
 
@@ -64,7 +67,7 @@ const InfoCentreListPage = () => {
           {/* Banner Section */}
           <div className="w-full h-[400px] bg-[url('https://www.imageeyecareoptometrists.com/assets/info_centre_banner-4940284541b3ff321b2a3d735fc5ef1caa0f4c66de9804905118656edf31c88d.jpg')] bg-cover bg-center text-center text-white">
             <div className="bg-black bg-opacity-50 h-full flex flex-col items-center justify-center p-4">
-              <h1 className="text-5xl font-bold mb-4">{categoryName}</h1>
+              <h1 className="text-5xl font-bold mb-4">{category.title}</h1>
             </div>
           </div>
 
@@ -73,10 +76,10 @@ const InfoCentreListPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {sectionItems.map((item) => (
                 <div key={item.id} onClick={() => handleItemClick(item.id)} className="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer">
-                  <div className="relative w-full h-64">
-                    {item.imgurl ? (
+                  <div className="relative w-full h-48">
+                    {item.thumbnail_img_url ? (
                       <Image
-                        src={item.imgurl}
+                        src={item.thumbnail_img_url}
                         alt={item.name}
                         layout="fill"
                         objectFit="cover"
@@ -99,6 +102,7 @@ const InfoCentreListPage = () => {
                       <span>Explore {item.name}</span>
                       <span className="ml-2 inline-block">→</span>
                     </Link>
+                    <div className="mb-5"></div>
                     {item.linkurl && (
                       <a
                         href={item.linkurl}

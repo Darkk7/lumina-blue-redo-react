@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSiteSettings } from "../context/SiteSettingsContext";
 
 const BookingPage = () => {
@@ -13,6 +13,24 @@ const BookingPage = () => {
     comments: "",
     date: "",
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (siteSettings) {
+      setLoading(false);
+    } else {
+      setError('Error loading site settings');
+    }
+  }, [siteSettings]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
