@@ -34,9 +34,6 @@ const Navbar = () => {
   };
 
   const getLink = (path) => {
-    console.log('Navbar - Practice ID:', siteSettings?.practiceId);
-    console.log('Navbar - Current Path:', pathname);
-
     if (!siteSettings?.practiceId) {
       return path;
     }

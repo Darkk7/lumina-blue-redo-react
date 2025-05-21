@@ -34,7 +34,8 @@ const getDefaultSettings = (practiceId) => ({
   statitems: [],
   name: "",
   address_1: "",
-  working_hours: []
+  working_hours: [],
+  featured_services: [],
 });
 
 function getDailyKey() {
@@ -103,12 +104,11 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
 
         document.documentElement.style.setProperty('--primary-color', primaryColor);
 
-        console.log('Data3:', data3.working_hours); // Debugging log to check contents of data3
-        console.log('Working Hours from Data3:', data3.working_hours); // Debugging log to check working_hours
+        console.log('Data3:', data3.working_hours);
+        console.log('Working Hours from Data3:', data3.working_hours);
 
         console.log('Practice Response:', practiceResponse);
 
-        // Function to parse hours string into structured working_hours
         function parseWorkingHours(hoursString) {
           const daysMap = {
             '0': '0',
@@ -133,7 +133,6 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
           });
         }
 
-        // Parse working hours from data3.hours
         const workingHours = parseWorkingHours(data3.hours);
 
         const settings = {
@@ -164,7 +163,7 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
             id: service.id,
             title: service.service_title,
             description: service.long_description,
-            iconDescription: service.icon_description
+            iconDescription: service.icon_desc
           })) || [],
           banners: data.banners?.map(banner => ({
             id: banner.id,
@@ -204,6 +203,7 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
           linkedin_url: data3.linkedin_url || [],
           pinterest_url: data3.pinterest_url || [],
           whatsapp_tel: data3.whatsapp_tel || [],
+          featured_services: data.featured_services || [],
         };
 
         console.log('Transformed settings:', settings);

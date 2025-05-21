@@ -21,11 +21,10 @@ import {
   FaEyeDropper
 } from "react-icons/fa";
 
-// Helper function to choose an icon based on service title
 const getServiceIcon = (title, icons) => {
-  if (!icons) return FaTools; // Return default icon if icons is undefined
-  const lowerTitle = title.toLowerCase().replace(/\s+/g, ''); // Remove spaces for matching
-  const iconEntry = icons.find(iconObj => iconObj.icon.includes(lowerTitle));
+  if (!icons) return FaTools;
+  const lowerTitle = title.toLowerCase().replace(/\s+/g, '');
+  const iconEntry = icons.find(iconObj => iconObj.icon.name.toLowerCase().includes(lowerTitle));
   return iconEntry ? iconEntry.icon : FaTools;
 };
 
@@ -39,7 +38,7 @@ const ServiceCard = ({ title, description, Icon }) => (
 
 const ServicesPage = () => {
   const { siteSettings } = useSiteSettings();
-  const { services, icons } = siteSettings; // Assuming icons are part of siteSettings
+  const services = siteSettings.services;
 
   return (
     <section className="w-full bg-gray-100 py-16">
@@ -56,7 +55,25 @@ const ServicesPage = () => {
               key={service.id || index}
               title={service.title}
               description={service.description}
-              Icon={getServiceIcon(service.title, icons)}
+              Icon={getServiceIcon(service.title, [
+                { icon: FaEye },
+                { icon: FaGlasses },
+                { icon: FaUserMd },
+                { icon: FaHeartbeat },
+                { icon: FaRegSmile },
+                { icon: FaTools },
+                { icon: FaChild },
+                { icon: FaExclamationTriangle },
+                { icon: FaCarAlt },
+                { icon: FaPlusCircle },
+                { icon: FaSearch },
+                { icon: FaHandHoldingHeart },
+                { icon: FaWrench },
+                { icon: FaBinoculars },
+                { icon: FaScrewdriver },
+                { icon: FaEyeDropper }
+              ])}
+              image={`/images/${services.icon_desc}.svg`}
             />
           ))}
         </div>

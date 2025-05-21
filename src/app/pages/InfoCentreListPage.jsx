@@ -13,11 +13,11 @@ const InfoCentreListPage = () => {
   const [categoryName, setCategoryName] = useState('');
 
   useEffect(() => {
-    console.log('Category:', category);
     const categoryNameFromUrl = new URLSearchParams(window.location.search).get('name');
     if (categoryNameFromUrl) {
       setCategoryName(categoryNameFromUrl);
-    } else if (category) {
+    }
+    if (category) {
       const fetchSectionItems = async () => {
         try {
           const response = await fetch('https://www.ocumail.com/api/section_items');
@@ -31,11 +31,6 @@ const InfoCentreListPage = () => {
           const filteredItems = data.filter(item => item.section_category_id === parseInt(category));
           console.log('Filtered Items:', filteredItems);
           setSectionItems(filteredItems);
-          // Set category name from fetched items if not in URL
-          if (filteredItems.length > 0) {
-            const firstItem = filteredItems[0];
-            setCategoryName(firstItem.category_name || firstItem.name || 'Default Category');
-          }
         } catch (error) {
           console.error('Error fetching section items:', error);
         }
@@ -67,7 +62,7 @@ const InfoCentreListPage = () => {
           {/* Banner Section */}
           <div className="w-full h-[400px] bg-[url('https://www.imageeyecareoptometrists.com/assets/info_centre_banner-4940284541b3ff321b2a3d735fc5ef1caa0f4c66de9804905118656edf31c88d.jpg')] bg-cover bg-center text-center text-white">
             <div className="bg-black bg-opacity-50 h-full flex flex-col items-center justify-center p-4">
-              <h1 className="text-5xl font-bold mb-4">{category.title}</h1>
+              <h1 className="text-5xl font-bold mb-4">{categoryName}</h1>
             </div>
           </div>
 
@@ -77,9 +72,18 @@ const InfoCentreListPage = () => {
               {sectionItems.map((item) => (
                 <div key={item.id} onClick={() => handleItemClick(item.id)} className="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer">
                   <div className="relative w-full h-48">
-                    {item.thumbnail_img_url ? (
+                    {item.thumbnail_img_url && item.thumbnail_img_url !== '' ? (
                       <Image
                         src={item.thumbnail_img_url}
+                        alt={item.name}
+                        layout="fill"
+                        objectFit="cover"
+                        quality={80}
+                        className="object-cover"
+                      />
+                    ) : item.imgurl && item.imgurl !== '' ? (
+                      <Image
+                        src={item.imgurl}
                         alt={item.name}
                         layout="fill"
                         objectFit="cover"
@@ -94,15 +98,15 @@ const InfoCentreListPage = () => {
                   </div>
                   <div className="p-6 text-center">
                     <h2 className="text-2xl font-bold text-gray-800 mb-2">{item.name}</h2>
-                    <p className="text-gray-600 mb-4"> Learn More about .... </p>
+                    <p className="text-gray-600 mb-4" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal' }}> {item.body} </p>
+                    <p className="text-gray-600 p-5"></p>
                     <Link
                       href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}`}
-                      className="inline-block bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform"
+                      className="inline-block bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform mb-4"
                     >
                       <span>Explore {item.name}</span>
                       <span className="ml-2 inline-block">→</span>
                     </Link>
-                    <div className="mb-5"></div>
                     {item.linkurl && (
                       <a
                         href={item.linkurl}

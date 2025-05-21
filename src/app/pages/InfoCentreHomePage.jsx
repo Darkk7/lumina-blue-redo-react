@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { useSiteSettings } from "../context/SiteSettingsContext";
+import FooterPage from "./FooterPage";
 
 const InfoCentreHomePage = () => {
   const { siteSettings } = useSiteSettings();
@@ -12,7 +13,6 @@ const InfoCentreHomePage = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        // Fetch all categories to get their IDs
         const response = await fetch('https://www.ocumail.com/api/section_categories');
         if (!response.ok) {
           console.error('Network response was not ok:', response.statusText);
@@ -89,7 +89,7 @@ const InfoCentreHomePage = () => {
               key={category.id}
               className={`flex flex-col md:flex-row ${
                 index % 2 !== 0 ? "md:flex-row-reverse" : ""
-              } items-center gap-8`}
+              } items-center gap-8 p-6 rounded-lg shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl ${index % 2 === 1 ? "bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400" : "bg-gradient-to-r from-white via-white to-white"}`}
               onClick={() => handleCategoryClick(category.id)}
             >
               {/* Image Section */}
@@ -100,7 +100,7 @@ const InfoCentreHomePage = () => {
                       src={category.thumbnailImgUrl}
                       alt={category.name}
                       layout="fill"
-                      className="object-cover transition-transform duration-300"
+                      className="object-cover transition-transform duration-300 transform hover:scale-110"
                     />
                   )}
                 </div>
@@ -114,7 +114,7 @@ const InfoCentreHomePage = () => {
                 </p>
                 <Link
                   href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}?name=${encodeURIComponent(category.name)}`}
-                  className="inline-block bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform"
+                  className="inline-block bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform transform hover:scale-105"
                 >
                   <span>Explore {category.name}</span>
                   <span className="ml-2 inline-block">→</span>
@@ -153,20 +153,7 @@ const InfoCentreHomePage = () => {
           ))}
         </div>
       </div>
-
-      {/* Subcategories Section */}
-      {selectedCategoryId && (
-        <div className="py-8 px-4 bg-white">
-          <h3 className="text-2xl font-bold text-gray-800 mb-4">Subcategories</h3>
-          <ul>
-            {subcategories.map((subcategory) => (
-              <li key={subcategory.id} className="mb-2">
-                {subcategory.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <FooterPage />
     </div>
   );
 };
