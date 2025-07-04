@@ -70,7 +70,7 @@ export default function HomePage({ customerCode }) {
       {siteSettings.show_youtube_panel && <YouTubePanelPage />}
       <ServicesPage />
       {siteSettings.show_socials_panel && <ConnectWithUsPage />}
-      {siteSettings.show_teams_panel && <TeamPage />}      
+      {siteSettings.show_teams_panel && <TeamPage />}
       <BrandsPage />
       <TestimonialsPage />
       <BookingPage />

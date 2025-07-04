@@ -21,16 +21,10 @@ import {
   FaEyeDropper
 } from "react-icons/fa";
 
-const getServiceIcon = (title, icons) => {
-  if (!icons) return FaTools;
-  const lowerTitle = title.toLowerCase().replace(/\s+/g, '');
-  const iconEntry = icons.find(iconObj => iconObj.icon.name.toLowerCase().includes(lowerTitle));
-  return iconEntry ? iconEntry.icon : FaTools;
-};
+
 
 const ServiceCard = ({ title, description, Icon }) => (
   <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center">
-    <Icon className="text-primary text-5xl mb-4" />
     <h3 className="text-2xl font-semibold text-primary mb-2">{title}</h3>
     <p className="text-gray-600">{description}</p>
   </div>
@@ -54,25 +48,7 @@ const ServicesPage = () => {
             <ServiceCard
               key={service.id || index}
               title={service.title}
-              description={service.description}
-              Icon={getServiceIcon(service.title, [
-                { icon: FaEye },
-                { icon: FaGlasses },
-                { icon: FaUserMd },
-                { icon: FaHeartbeat },
-                { icon: FaRegSmile },
-                { icon: FaTools },
-                { icon: FaChild },
-                { icon: FaExclamationTriangle },
-                { icon: FaCarAlt },
-                { icon: FaPlusCircle },
-                { icon: FaSearch },
-                { icon: FaHandHoldingHeart },
-                { icon: FaWrench },
-                { icon: FaBinoculars },
-                { icon: FaScrewdriver },
-                { icon: FaEyeDropper }
-              ])}
+              description={service.description}              
               image={`/images/${services.icon_desc}.svg`}
             />
           ))}

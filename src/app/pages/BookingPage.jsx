@@ -12,9 +12,13 @@ const BookingPage = () => {
     mobile: "",
     comments: "",
     date: "",
+    timeSlot: "",
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
+  const [slotError, setSlotError] = useState(null);
 
   useEffect(() => {
     if (siteSettings) {
@@ -35,19 +39,90 @@ const BookingPage = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    
+    // If date changes, fetch available slots
+    if (name === 'date' && value) {
+      fetchAvailableSlots(value);
+    }
+  };
+
+  const fetchAvailableSlots = async (date) => {
+    if (!date) return;
+    
+    setIsLoadingSlots(true);
+    setSlotError(null);
+    
+    try {
+      // Format date to YYYY-MM-DD if needed
+      const formattedDate = new Date(date).toISOString().split('T')[0];
+      const response = await fetch(
+        `https://passport.nevadacloud.com/api/v1/public/appointments/available_slots?date=${formattedDate}`
+      );
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch available slots');
+      }
+      
+      const data = await response.json();
+      setAvailableSlots(data.available_slots || []);
+    } catch (error) {
+      console.error('Error fetching available slots:', error);
+      setSlotError('Failed to load available time slots. Please try again.');
+      setAvailableSlots([]);
+    } finally {
+      setIsLoadingSlots(false);
+    }
+  };
+
+  const handleTimeSlotSelect = (timeSlot) => {
+    setFormData({ ...formData, timeSlot });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.timeSlot) {
+      alert('Please select an available time slot');
+      return;
+    }
+    
+    try {
+      const response = await fetch('https://www.eyecareportal.com/api/book_appointment/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          appointment_date: formData.date,
+          appointment_time: formData.timeSlot,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to book appointment');
+      }
+      
+      const result = await response.json();
+      alert('Appointment booked successfully!');
+      // Reset form or redirect as needed
+    } catch (error) {
+      console.error('Error booking appointment:', error);
+      alert('Failed to book appointment. Please try again.');
+    }
   };
 
   return (
     <section id="booking" className="section cta pt-0 pb-0">
       <div className="book flex flex-col lg:flex-row" style={{ minHeight: "681px" }}>
         <div className="map lg:w-1/2 relative">
-        <iframe
-  src={`https://maps.google.com/maps?q=${siteSettings.address_1}&output=embed`}
-  width="100%"
-  height="100%"
-  style={{ border: 0 }}
-  allowFullScreen
-></iframe>
+          <iframe
+            src={`https://maps.google.com/maps?q=${siteSettings.address_1}&output=embed`}
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen
+          ></iframe>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="p-6 bg-white shadow-md rounded">
               <h5 className="secondary-color text-gray-800">Physical Address</h5>
@@ -91,7 +166,12 @@ const BookingPage = () => {
           <h3 id="book_appointment" className="text-2xl mb-4 font-bold text-center text-gray-800">
             <span className="text-primary">Book</span> Your Appointment
           </h3>
-          <form className="form bg-white rounded px-8 pt-6 pb-8 mb-4" id="booking_form" name="booking_form">
+          <form 
+            onSubmit={handleSubmit}
+            className="form bg-white rounded px-8 pt-6 pb-8 mb-4" 
+            id="booking_form" 
+            name="booking_form"
+          >
             <div className="mb-4">
               <select
                 id="appt_type"
@@ -152,8 +232,41 @@ const BookingPage = () => {
                 placeholder="Select a date"
                 value={formData.date}
                 onChange={handleInputChange}
+                min={new Date().toISOString().split('T')[0]} // Prevent past dates
                 className="form-control w-full p-3 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
+                required
               />
+              
+              {/* Time Slots */}
+              {formData.date && (
+                <div className="mt-4">
+                  <h4 className="text-md font-medium mb-2">Available Time Slots</h4>
+                  {isLoadingSlots ? (
+                    <p>Loading available slots...</p>
+                  ) : slotError ? (
+                    <p className="text-red-500">{slotError}</p>
+                  ) : availableSlots.length > 0 ? (
+                    <div className="grid grid-cols-3 gap-2">
+                      {availableSlots.map((slot) => (
+                        <button
+                          key={slot}
+                          type="button"
+                          onClick={() => handleTimeSlotSelect(slot)}
+                          className={`p-3 border rounded text-center ${
+                            formData.timeSlot === slot
+                              ? 'bg-blue-500 text-white border-blue-500'
+                              : 'border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          {slot}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p>No available slots for this date. Please select another date.</p>
+                  )}
+                </div>
+              )}
             </div>
             <div className="text-right">
               <input
