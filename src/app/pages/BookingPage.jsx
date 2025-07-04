@@ -168,94 +168,113 @@ const BookingPage = () => {
           </h3>
           <form 
             onSubmit={handleSubmit}
-            className="form bg-white rounded px-8 pt-6 pb-8 mb-4" 
+            className="form bg-white rounded-lg shadow-md px-8 pt-8 pb-6 mb-4 w-full max-w-2xl mx-auto"
             id="booking_form" 
             name="booking_form"
           >
-            <div className="mb-4">
+            <div className="mb-6">
               <select
                 id="appt_type"
                 name="appointmentType"
                 value={formData.appointmentType}
                 onChange={handleInputChange}
-                className="form-control w-full p-3 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
+                className="w-full p-3.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 bg-white transition duration-200"
               >
-                <option disabled value="" className="placeholder-gray-500">Select appointment type</option>
+                <option disabled value="" className="text-gray-400">Select appointment type</option>
                 <option value="consult" className="text-gray-800">Full examination</option>
                 <option value="drivers" className="text-gray-800">Driver's screening</option>
               </select>
             </div>
-            <div className="mb-4">
+            
+            <div className="mb-5">
               <input
                 type="text"
                 name="name"
                 placeholder="Name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className="form-control w-full p-3 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
+                className="w-full p-3.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 placeholder-gray-400 transition duration-200"
               />
             </div>
-            <div className="mb-4">
+            
+            <div className="mb-5">
               <input
                 type="email"
                 name="email"
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="form-control w-full p-3 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
+                className="w-full p-3.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 placeholder-gray-400 transition duration-200"
               />
             </div>
-            <div className="mb-4">
+            
+            <div className="mb-5">
               <input
                 type="text"
                 name="mobile"
                 placeholder="Contact Number"
                 value={formData.mobile}
                 onChange={handleInputChange}
-                className="form-control w-full p-3 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
+                className="w-full p-3.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 placeholder-gray-400 transition duration-200"
               />
             </div>
-            <div className="mb-4">
+            
+            <div className="mb-5">
               <textarea
                 name="comments"
                 placeholder="Additional Comments"
                 value={formData.comments}
                 onChange={handleInputChange}
-                className="form-control w-full p-3 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
+                className="w-full p-3.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 placeholder-gray-400 transition duration-200"
                 rows="4"
               ></textarea>
             </div>
-            <div className="mb-4">
+
+            <div className="mb-6">
+              <select
+                id="appt_type"
+                name="appointmentType"
+                value={formData.appointmentType}
+                onChange={handleInputChange}
+                className="w-full p-3.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 bg-white transition duration-200"
+              >
+                <option disabled value="" className="text-gray-400">Select practitioner</option>
+                <option value="consult" className="text-gray-800">Dr. Matthew</option>
+                <option value="drivers" className="text-gray-800">Dr. Paul Ketz</option>
+              </select>
+            </div>
+            
+            <div className="mb-6">
               <input
                 type="date"
                 name="date"
                 placeholder="Select a date"
                 value={formData.date}
                 onChange={handleInputChange}
-                min={new Date().toISOString().split('T')[0]} // Prevent past dates
-                className="form-control w-full p-3 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
+                min={new Date().toISOString().split('T')[0]}
+                className="w-full p-3.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 placeholder-gray-400 transition duration-200"
                 required
               />
               
               {/* Time Slots */}
               {formData.date && (
-                <div className="mt-4">
-                  <h4 className="text-md font-medium mb-2">Available Time Slots</h4>
+                <div className="mt-5">
+                  <h4 className="text-gray-700 font-medium mb-3 text-lg">Available Time Slots</h4>
                   {isLoadingSlots ? (
-                    <p>Loading available slots...</p>
+                    <p className="text-gray-600">Loading available slots...</p>
                   ) : slotError ? (
                     <p className="text-red-500">{slotError}</p>
                   ) : availableSlots.length > 0 ? (
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                       {availableSlots.map((slot) => (
                         <button
                           key={slot}
                           type="button"
                           onClick={() => handleTimeSlotSelect(slot)}
-                          className={`p-3 border rounded text-center ${
+                          className={`p-3.5 border rounded-md text-center transition-colors duration-200 ${
                             formData.timeSlot === slot
-                              ? 'bg-blue-500 text-white border-blue-500'
-                              : 'border-gray-300 hover:bg-gray-50'
+                              ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700'
+                              : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50 hover:border-blue-300'
                           }`}
                         >
                           {slot}
@@ -263,24 +282,27 @@ const BookingPage = () => {
                       ))}
                     </div>
                   ) : (
-                    <p>No available slots for this date. Please select another date.</p>
+                    <p className="text-gray-600">No available slots for this date. Please select another date.</p>
                   )}
                 </div>
               )}
             </div>
-            <div className="text-right">
-              <input
-                id="booking_button"
-                type="submit"
-                className="btn btn--primary mr-2 p-2 bg-blue-500 text-white rounded"
-                value="Book Appointment"
-              />
-              <input
+            
+            <div className="flex flex-col sm:flex-row justify-end gap-3 mt-8">
+              <button
                 id="booking_call_me"
                 type="button"
-                className="btn btn--secondary p-2 bg-gray-500 text-white rounded"
-                value="Request call"
-              />
+                className="px-6 py-3 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors duration-200 font-medium"
+              >
+                Request call
+              </button>
+              <button
+                id="booking_button"
+                type="submit"
+                className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 font-medium"
+              >
+                Book Appointment
+              </button>
             </div>
           </form>
           <div className="box mt-8">
