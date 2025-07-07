@@ -1,37 +1,61 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import RecentBlogs from './RecentBlogs'; // Import the RecentBlogs component
 
 const BlogHomePage = () => {
-  const blogs = [
-    {
-      id: 1,
-      imgSrc: "https://s3.eu-west-2.amazonaws.com/luminablue-blogs/uploads/OcuMarketing-campaign-header-BLAKC-FRIDAY700.jpg",
-      title: "BLACK FRIDAY DEALS",
-    },
-    {
-      id: 2,
-      imgSrc: "https://s3.eu-west-2.amazonaws.com/luminablue-blogs/uploads/glasses-v-contact-lenses-thumb.png",
-      title: "Pros and Cons of Spectacle Lenses and Contact Lenses",
-    },
-    {
-      id: 3,
-      imgSrc: "https://s3.eu-west-2.amazonaws.com/luminablue-blogs/uploads/over-the-counter-readers-thumb.png",
-      title: "Dangers of over-the-counter readers",
-    },
-    {
-      id: 4,
-      imgSrc: "https://s3.eu-west-2.amazonaws.com/luminablue-blogs/uploads/summer-eye-care.jpg",
-      title: "Summer Eye Care Tips",
-    },
-    {
-      id: 5,
-      imgSrc: "https://s3.eu-west-2.amazonaws.com/luminablue-blogs/uploads/healthy-eyes-campaign.jpg",
-      title: "Maintaining Healthy Eyes",
-    },
-  ];
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        // Get the practice_id from the URL or use a default
+        const practiceId = new URLSearchParams(window.location.search).get('practice_id') || '1';
+        const response = await fetch(`/api/blogs?practice_id=${practiceId}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch blogs');
+        }
+        
+        const data = await response.json();
+        setBlogs(data);
+      } catch (err) {
+        console.error('Error fetching blogs:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[300px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-red-500">Error loading blogs: {error}</p>
+      </div>
+    );
+  }
+
+  if (blogs.length === 0) {
+    return (
+      <div className="text-center py-10">
+        <p>No blog posts found.</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -42,7 +66,7 @@ const BlogHomePage = () => {
         </div>
       </div>
 
-      {/* Blog Cards Section (Show all blogs) */}
+      {/* Blog Cards Section */}
       <div className="container mx-auto py-10 px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogs.map((blog) => (
@@ -50,15 +74,23 @@ const BlogHomePage = () => {
               <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition hover:scale-105 h-full max-w-[360px] mx-auto">
                 <div className="relative w-full aspect-[1/1]">
                   <Image
-                    src={blog.imgSrc}
+                    src={blog.header_image || blog.thumbnail_image || '/default-blog-image.jpg'}
                     alt={blog.title}
                     fill
                     className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 </div>
                 <div className="p-4">
                   <h3 className="text-xl font-semibold text-primary mb-2">{blog.title}</h3>
-                  <p className="text-gray-600 text-sm">Read more {'>'} {'>'} </p>
+                  <p className="text-gray-600 text-sm">
+                    {new Date(blog.created_at).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </p>
+                  <p className="text-gray-600 text-sm mt-2">Read more »</p>
                 </div>
               </div>
             </Link>
