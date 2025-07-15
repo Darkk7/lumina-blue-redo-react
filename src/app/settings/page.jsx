@@ -79,7 +79,6 @@ const SettingsPage = () => {
 
   // Save all changes
   const saveChanges = () => {
-    console.log('Saving changes:', localSettings);
     updateSettings(localSettings);
     alert('Settings saved successfully!');
   };

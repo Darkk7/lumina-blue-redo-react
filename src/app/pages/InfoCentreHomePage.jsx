@@ -113,11 +113,11 @@ const InfoCentreHomePage = () => {
                   Learn more about {category.name}.
                 </p>
                 <Link
-                  href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}?name=${encodeURIComponent(category.name)}`}
+                  href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}`}
                   className="inline-block bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform transform hover:scale-105"
                 >
                   <span>Explore {category.name}</span>
-                  <span className="ml-2 inline-block">→</span>
+                  <span className="ml-2 inline-block"></span>
                 </Link>
               </div>
             </div>
@@ -131,7 +131,7 @@ const InfoCentreHomePage = () => {
           {categories.map((category) => (
             <div key={category.id} className="flex-shrink-0 w-60">
               <Link
-                href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}?name=${encodeURIComponent(category.name)}`}
+                href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}`}
                 className="block bg-white rounded-xl shadow-md overflow-hidden"
               >
                 <div className="relative h-48 w-full">

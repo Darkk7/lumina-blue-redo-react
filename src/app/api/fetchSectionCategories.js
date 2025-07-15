@@ -14,8 +14,6 @@ const fetchSectionCategories = async () => {
         api_key: apiKey
       }
     });
-    console.log(response.data);
-    // You can now use response.data in your React component
   } catch (error) {
     console.error('Error fetching section categories:', error);
   }

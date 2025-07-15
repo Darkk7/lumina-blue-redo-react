@@ -51,7 +51,6 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log('Site Settings:', siteSettings); 
     let isMounted = true;
 
     async function fetchPracticeData() {
@@ -72,17 +71,12 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
         const practiceResponse = await fetch(`https://passport.nevadacloud.com/api/v1/public/practices/${practiceId}`);
         const response = await fetch(`https://www.eyecareportal.com/api/website/${practiceId}/0`, { headers });
 
-        console.log(practiceResponse);
-
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || `Failed to fetch practice data: ${response.status}`);
         }
 
         const response2 = await fetch(`https://www.ocumail.com/api/settings?setting_object_id=${practiceId}&setting_object_type=Practice`, { headers });
-
-        console.log('Response2 Status:', practiceResponse.status);
-        console.log('Response2 Headers:', practiceResponse.headers);
 
         if (!response2.ok) {
           const errorData2 = await response2.json();
@@ -93,21 +87,12 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
         const data2 = await response2.json();
         const data3 = await practiceResponse.json();
 
-        console.log('Data from API:', data);
-        console.log('Data from new API:', data2);
-
-        console.log('First object in data2:', data2[0]);
         const primaryColorSetting = data2.find(setting => setting.setting_name === "PrimaryColor");
         const primaryColor = primaryColorSetting ? primaryColorSetting.setting_value : 'orange';
 
         const addressObject = data2.find(obj => obj.setting_name === "Address1");        
 
         document.documentElement.style.setProperty('--primary-color', primaryColor);
-
-        console.log('Data3:', data3.working_hours);
-        console.log('Working Hours from Data3:', data3.working_hours);
-
-        console.log('Practice Response:', practiceResponse);
 
         function parseWorkingHours(hoursString) {
           const daysMap = {
@@ -163,7 +148,8 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
             id: service.id,
             title: service.service_title,
             description: service.long_description,
-            iconDescription: service.icon_desc
+            iconDescription: service.icon_desc,
+            image_name: service.image_name
           })) || [],
           banners: data.banners?.map(banner => ({
             id: banner.id,
@@ -206,7 +192,6 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
           featured_services: data.featured_services || [],
         };
 
-        console.log('Transformed settings:', settings);
         setSiteSettings(settings);
         setError(null);
       } catch (error) {
@@ -234,7 +219,6 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
   }, [practiceId]);
 
   useEffect(() => {
-    console.log('Site Settings:', siteSettings); 
   }, [siteSettings]);
 
   const value = {

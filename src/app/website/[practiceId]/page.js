@@ -3,7 +3,7 @@
 import React from "react";
 import { use } from "react";
 import dynamic from 'next/dynamic';
-import Navbar from "../../pages/Navbar";
+import Navbar from "../../pages/Navbar"
 import FooterPage from "../../pages/FooterPage";
 import { SiteSettingsProvider } from "../../context/SiteSettingsContext";
 

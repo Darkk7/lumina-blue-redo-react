@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSiteSettings } from "../context/SiteSettingsContext";
 import { usePathname } from "next/navigation";
+import { Bold } from "lucide-react";
 
 const Navbar = () => {
   const [isSticky, setIsSticky] = useState(false);
@@ -61,41 +62,41 @@ const Navbar = () => {
         />
       </Link>
 
-      <nav className="hidden md:flex gap-8 text-xl font-medium">
-        <ul className="flex gap-4 items-center">
+      <nav className="hidden md:flex gap-9 font-medium">
+        <ul className="flex gap-8 items-center">
           <li>
             <Link href={getLink("/")} className="hover:text-primary">
-              Home
+              <b> HOME </b>
             </Link>
           </li>
           <li>
             <Link href={getLink("/#about")} className="hover:text-primary">
-              About
+              <b>ABOUT</b>
             </Link>
           </li>
           <li>
             <Link href={getLink("/#services")} className="hover:text-primary">
-              Services
+              <b>SERVICES</b>
             </Link>
           </li>
           <li>
             <Link href={getLink("/#team")} className="hover:text-primary">
-              Team
+              <b>TEAM</b>
             </Link>
           </li>
           <li>
             <Link href={getLink("/#testimonials")} className="hover:text-primary">
-              Feedback
+              <b>FEEDBACK</b>
             </Link>
           </li>
           <li>
             <Link href={getLink("/info_centre")} className="hover:text-primary">
-              Info Centre
+              <b>INFO CENTRE</b>
             </Link>
           </li>
           <li>
             <Link href={getLink("/blog")} className="hover:text-primary">
-              News Feed
+              <b>NEWS FEED</b>
             </Link>
           </li>
           {isSticky && (
@@ -104,7 +105,7 @@ const Navbar = () => {
                 href={siteSettings?.booking_url || '#'}
                 className="px-6 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all"
               >
-                Make A Booking
+                <b>MAKE A BOOKING</b>
               </Link>
             </li>
           )}
@@ -133,7 +134,7 @@ const Navbar = () => {
               className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
               onClick={handleMenuToggle}
             >
-              Home
+              <b>HOME</b>
             </Link>
           </li>
           <li>
@@ -142,7 +143,7 @@ const Navbar = () => {
               className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
               onClick={handleMenuToggle}
             >
-              About
+              <b>ABOUT</b>
             </Link>
           </li>
           <li>
@@ -151,7 +152,7 @@ const Navbar = () => {
               className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
               onClick={handleMenuToggle}
             >
-              Services
+              <b>SERVICES</b>
             </Link>
           </li>
           <li>
@@ -160,7 +161,7 @@ const Navbar = () => {
               className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
               onClick={handleMenuToggle}
             >
-              Team
+              <b>TEAM</b>
             </Link>
           </li>
           <li>
@@ -169,7 +170,7 @@ const Navbar = () => {
               className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
               onClick={handleMenuToggle}
             >
-              Feedback
+              <b>FEEDBACK</b>
             </Link>
           </li>
           <li>
@@ -178,7 +179,7 @@ const Navbar = () => {
               className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
               onClick={handleMenuToggle}
             >
-              Info Centre
+              <b>INFO CENTRE</b>
             </Link>
           </li>
           <li>
@@ -187,7 +188,7 @@ const Navbar = () => {
               className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
               onClick={handleMenuToggle}
             >
-              News Feed
+              <b>NEWS FEED</b>
             </Link>
           </li>
           {isSticky && (
@@ -197,7 +198,7 @@ const Navbar = () => {
                 className="px-6 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all"
                 onClick={handleMenuToggle}
               >
-                Make A Booking
+                <b>MAKE A BOOKING</b>
               </Link>
             </li>
           )}

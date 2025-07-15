@@ -18,7 +18,6 @@ const Counter = ({ image, count, label }) => (
 
 const CounterPage = () => {
   const { siteSettings, isLoading, error } = useSiteSettings();
-  console.log('siteSettings:', siteSettings);
 
   if (isLoading) {
     return (

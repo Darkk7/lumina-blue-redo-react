@@ -41,7 +41,6 @@ const mockData = {
 
 export default function HomePage({ customerCode }) {
   const { siteSettings } = useSiteSettings();
-  console.log('Current site settings:', siteSettings);
   
   const [customerData, setCustomerData] = useState({
     bannerImage: "https://s3.eu-west-2.amazonaws.com/luminablue-blogs/1721909136_67_banner.png",

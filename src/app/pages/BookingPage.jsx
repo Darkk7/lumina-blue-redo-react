@@ -16,16 +16,13 @@ const BookingPage = () => {
 
   useEffect(() => {
     if (!practiceId) {
-      console.log('No practiceId available');
       return;
     }
 
     const fetchPractitioners = async () => {
       try {
         setLoading(true);
-        console.log('Fetching practitioners for practice:', practiceId);
         const response = await axios.get(`https://passport.nevadacloud.com/api/v1/public/practices/${practiceId}`);
-        console.log('API Response:', response.data);
         
         if (!response.data || !Array.isArray(response.data.optometrists)) {
           console.error('Invalid or missing optometrists array in response:', response.data);
@@ -34,7 +31,6 @@ const BookingPage = () => {
         }
         
         const optometrists = response.data.optometrists || [];
-        console.log('Optometrists:', optometrists);
         
         const mappedPractitioners = optometrists.map(opt => ({
           value: opt.id,
@@ -43,7 +39,6 @@ const BookingPage = () => {
           availability: opt.calendar_time_slots_unavailable
         }));
         
-        console.log('Mapped practitioners:', mappedPractitioners);
         setPractitioners(mappedPractitioners);
         setError(null);
       } catch (error) {
@@ -230,20 +225,9 @@ const BookingPage = () => {
     }
     
     try {
-      // Format phone number to ensure it has country code
-      let phoneNumber = formData.mobile;
-      // If the number doesn't start with '+', assume it's a South African number
-      if (phoneNumber && !phoneNumber.startsWith('+')) {
-        // Remove any non-digit characters
-        const digits = phoneNumber.replace(/\D/g, '');
-        // If it starts with 0, replace with +27 (South Africa code)
-        if (digits.startsWith('0')) {
-          phoneNumber = `+27${digits.substring(1)}`;
-        } else if (digits.length > 0) {
-          // If it doesn't start with 0 but has digits, assume it's missing the country code
-          phoneNumber = `+27${digits}`;
-        }
-      }
+      // Use the phone number as provided by PhoneInput component
+      // It already handles the country code and formatting
+      const phoneNumber = formData.mobile;
 
       // Format dates for the API
       const appointmentDate = new Date(formData.date);
@@ -285,9 +269,6 @@ const BookingPage = () => {
       formDataToSend.append('practice[id]', practiceId);
       formDataToSend.append('practice[name]', siteSettings?.practiceName || 'Image Eye Care');
       formDataToSend.append('practice[email]', siteSettings?.contactEmail || 'support@nevadacloud.com');
-      
-      // Log the data being sent (for debugging)
-      console.log('Sending form data:', Object.fromEntries(formDataToSend.entries()));
       
       // Make the API call
       const response = await axios.post(
@@ -342,7 +323,6 @@ const BookingPage = () => {
                 <li className="text-gray-500">{siteSettings.address_1}</li>
               </ul>
               <h5 className="secondary-color text-gray-800">Trading Hours</h5>
-              {console.log('Working Hours:', siteSettings.working_hours)}
               <ul className="list-unstyled">
                 {siteSettings.working_hours.map((schedule, index) => {
                   const days = schedule.days;
@@ -374,8 +354,8 @@ const BookingPage = () => {
             </div>
           </div>
         </div>
-        <div className="container lg:w-1/2 p-8">
-          <h3 id="book_appointment" className="text-2xl mb-4 font-bold text-center text-gray-800">
+        <div className="container lg:w-1/2 p-8 bg-gray-100">
+          <h3 id="book_appointment" className="text-4xl mb-4 font-bold text-center text-gray-800">
             <span className="text-primary">Book</span> Your Appointment
           </h3>
           <form 

@@ -57,7 +57,7 @@ const YouTubePanelPage = () => {
             <h2 className="text-4xl font-bold text-black">
               {siteSettings.service_description?.youtube_header_text}
             </h2>
-            <p className="text-lg text-black">
+            <p className="text-gray-500">
               {siteSettings.service_description?.youtube_body_text}
             </p>
             <div>

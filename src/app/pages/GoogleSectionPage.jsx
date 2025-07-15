@@ -23,10 +23,8 @@ const GoogleSectionPage = () => {
         const obj = Array.isArray(data) ? data[0] : data;
         setPracticeData(obj);
         setLoading(false);
-        console.log('Fetched practiceData:', obj);
       } catch (err) {
         setLoading(false);
-        console.error('Error fetching practiceData:', err);
       }
     };
 

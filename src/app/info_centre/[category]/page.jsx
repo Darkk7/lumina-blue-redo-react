@@ -40,7 +40,6 @@ const getCategories = (categoryName) => {
 };
 
 export default function CategoryPage({ params }) {
-  console.log("Params:", params);
   const category = params.category || 'default_category';
 
   const categories = getCategories(category);

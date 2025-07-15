@@ -9,9 +9,7 @@ const InfoCentre = () => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        console.log('Fetching categories for practiceId:', practiceId);
         const data = await fetchSectionCategories(practiceId);
-        console.log('Fetched categories:', data);
         setCategories(data);
       } catch (error) {
         console.error('Failed to load section categories:', error);
