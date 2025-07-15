@@ -438,7 +438,7 @@ const BookingPage = () => {
                   {practitioners.length > 0 ? (
                     practitioners.map(practitioner => (
                       <option key={practitioner.value} value={practitioner.value}>
-                        {practitioner.label} - {practitioner.qualification}
+                        {practitioner.label}
                       </option>
                     ))
                   ) : (

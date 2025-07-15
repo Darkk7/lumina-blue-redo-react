@@ -22,6 +22,7 @@ const InfoCentreListPage = () => {
           throw new Error('Failed to fetch section items');
         }
         const allItems = await response.json();
+        console.log('Raw API Response:', allItems);
         const filteredItems = allItems.filter(
           (item) => item.section_category_id === parseInt(category)
         );
@@ -83,17 +84,6 @@ const InfoCentreListPage = () => {
 
     return (
       <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-        {sortedAttributes.find(attr => attr.name === 'bannerImg')?.data && (
-          <div className="relative h-[300px] mb-8 rounded-lg overflow-hidden">
-            <img
-              src={sortedAttributes.find(attr => attr.name === 'bannerImg').data}
-              alt="Banner"
-              className="w-full h-full object-cover"
-              onError={(e) => { e.currentTarget.src = '/images/default-banner.jpg'; }}
-            />
-          </div>
-        )}
-
         {sortedAttributes.find(attr => attr.name === 'Overview')?.data && (
           <div
             className="mb-8"
@@ -118,7 +108,6 @@ const InfoCentreListPage = () => {
                       src={attr.data}
                       alt="Section Image"
                       className="w-full h-full object-cover"
-                      onError={(e) => { e.currentTarget.src = '/images/default-section.jpg'; }}
                     />
                   </div>
                 )}

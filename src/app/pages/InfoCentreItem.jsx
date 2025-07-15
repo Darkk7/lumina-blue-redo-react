@@ -6,24 +6,23 @@ const InfoCentreItem = () => {
   const [mainRelativeUrlPath, setMainRelativeUrlPath] = useState('');
   const [practiceId, setPracticeId] = useState('');
   const [loadWebsiteConfig, setLoadWebsiteConfig] = useState(false);
-  const [selectedItemContent, setSelectedItemContent] = useState(null); // State for JSON content
+  const [selectedItemContent, setSelectedItemContent] = useState(null);
 
   useEffect(() => {
-    axios.get('/api/section_categories') // Use the section_items endpoint
+    axios.get('/api/section_categories')
       .then(response => {
-        // Assuming the response has the structure you need
-        setCategories(response.data.section_categories_data); // Adjust based on actual data structure
-        setMainRelativeUrlPath(response.data.main_relative_url_path); // Adjust based on actual data structure
-        setPracticeId(response.data.practice_id); // Adjust based on actual data structure
-        setLoadWebsiteConfig(response.data.load_website_config); // Adjust based on actual data structure
+        setCategories(response.data.section_categories_data);
+        setMainRelativeUrlPath(response.data.main_relative_url_path);
+        setPracticeId(response.data.practice_id);
+        setLoadWebsiteConfig(response.data.load_website_config);
       })
       .catch(error => console.error('Error fetching data:', error));
   }, []);
 
   const handleItemClick = (itemId) => {
-    axios.get(`/api/section_items/${itemId}`) // Fetch JSON content for the clicked item
+    axios.get(`/api/section_items/${itemId}`)
       .then(response => {
-        setSelectedItemContent(response.data); // Update state with the fetched content
+        setSelectedItemContent(response.data);
       })
       .catch(error => console.error('Error fetching item content:', error));
   };
