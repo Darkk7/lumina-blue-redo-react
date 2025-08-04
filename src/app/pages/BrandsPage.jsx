@@ -52,7 +52,7 @@ const BrandsPage = () => {
     <section id="brands" className="w-full bg-gray-100 py-16 px-4 sm:px-8 lg:px-16 text-center">
       <h2 className="text-3xl font-bold text-black mb-12">Our Brands</h2>
       <div className="max-w-7xl mx-auto px-4">
-        <Slider {...settings}>
+        <Slider {...settings} className="gap-y-4"> {/* Add gap between rows */}
           {siteSettings && siteSettings.brands && siteSettings.brands
             .filter(brand => brand.show)
             .map(brand => (

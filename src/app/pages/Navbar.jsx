@@ -105,7 +105,7 @@ const Navbar = () => {
                 href={siteSettings?.booking_url || '#'}
                 className="px-6 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all"
               >
-                <b>MAKE A BOOKING</b>
+                MAKE A BOOKING
               </Link>
             </li>
           )}

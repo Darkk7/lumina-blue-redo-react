@@ -215,6 +215,43 @@ const BookingPage = () => {
     setFormData({ ...formData, timeSlot });
   };
 
+  const handleRequestCall = async () => {
+    // Validate that name and mobile are filled out
+    if (!formData.name || !formData.mobile) {
+      alert('Please fill out name and contact number');
+      return;
+    }
+
+    try {
+      // Prepare the data using FormData
+      const requestCallData = new FormData();
+      requestCallData.append('appointment[name]', formData.name);
+      requestCallData.append('appointment[cell]', formData.mobile);
+
+      console.log('Request Payload:', Object.fromEntries(requestCallData.entries())); // logging payload for request appt
+
+      const response = await axios.post(
+        'https://www.eyecareportal.com/api/request_call_appointment/',
+        requestCallData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        alert('Your call request has been submitted successfully!');
+      } else {
+        throw new Error('Failed to submit call request');
+      }
+    } catch (error) {
+      console.error('Error requesting call:', error);
+      console.error('Error response:', error.response?.data); // Log server response
+      alert('There was an error submitting your call request. Please try again.');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -270,7 +307,23 @@ const BookingPage = () => {
       formDataToSend.append('practice[name]', siteSettings?.practiceName || 'Image Eye Care');
       formDataToSend.append('practice[email]', siteSettings?.contactEmail || 'support@nevadacloud.com');
       
-      // Make the API call
+      const requestCallData = {
+        name: formData.name,
+        cell: phoneNumber
+      }
+
+      //Api call for request_appointment
+      const requestResponse = await axios.post(
+        'https://www.eyecareportal.com/api/request_call_appointment/',
+        requestCallData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          }
+        }
+      )
+
+      // Api call for book_appointment
       const response = await axios.post(
         'https://www.eyecareportal.com/api/book_appointment/',
         formDataToSend,
@@ -319,11 +372,11 @@ const BookingPage = () => {
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="p-6 bg-white shadow-md rounded">
               <h5 className="secondary-color text-gray-800">Physical Address</h5>
-              <ul className="list-unstyled">
+              <ul className="list-unstyled pb-2">
                 <li className="text-gray-500">{siteSettings.address_1}</li>
               </ul>
               <h5 className="secondary-color text-gray-800">Trading Hours</h5>
-              <ul className="list-unstyled">
+              <ul className="list-unstyled pb-2">
                 {siteSettings.working_hours.map((schedule, index) => {
                   const days = schedule.days;
                   let displayDays = '';
@@ -503,6 +556,7 @@ const BookingPage = () => {
               <button
                 id="booking_call_me"
                 type="button"
+                onClick={handleRequestCall}
                 className="px-6 py-3 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors duration-200 font-medium"
               >
                 Request call

@@ -145,21 +145,22 @@ const TeamPage = () => {
         {selectedMember && (
           <div className="h-full flex flex-col">
             {/* Header with full-width image */}
-            <div className="relative w-full" style={{ minHeight: '16rem' }}>
-              <div className="absolute inset-0">
-                <Image
-                  src={selectedMember.img || '/default-team-member.jpg'}
-                  alt={selectedMember.name || 'Team Member'}
-                  fill
-                  className="object-contain object-center"
-                  sizes="100vw"
-                  priority
-                  style={{ objectFit: 'contain' }}
-                />
+            <div className="relative w-full bg-gray-100" style={{ minHeight: '20rem' }}>
+              <div className="absolute inset-0 flex items-center justify-center px-4">
+                <div className="relative w-full h-full max-w-4xl mx-auto">
+                  <Image
+                    src={selectedMember.img || '/default-team-member.jpg'}
+                    alt={selectedMember.name || 'Team Member'}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 800px) 100vw, 50vw"
+                    priority
+                  />
+                </div>
               </div>
               <button
                 onClick={closeBioPanel}
-                className="absolute top-4 right-4 bg-white rounded-full w-10 h-10 flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-colors shadow-md"
+                className="absolute top-4 right-4 bg-primary rounded-full w-10 h-10 flex items-center justify-center text-white hover:bg-white hover:text-primary transition-colors shadow-md z-10"
                 aria-label="Close"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -184,16 +185,6 @@ const TeamPage = () => {
                     {selectedMember.description || 'No bio available for this team member.'}
                   </p>
                 </div>
-              </div>
-
-              {/* Footer */}
-              <div className="border-t p-4 bg-gray-50">
-                <button
-                  onClick={closeBioPanel}
-                  className="w-full sm:w-auto px-6 py-2 bg-primary text-white font-semibold rounded-md hover:bg-opacity-90 transition-colors"
-                >
-                  Close
-                </button>
               </div>
             </div>
           </div>

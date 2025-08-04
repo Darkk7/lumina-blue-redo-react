@@ -42,7 +42,7 @@ const CustomPanelPage = () => {
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-black opacity-50 z-[1]"></div>
         <Image 
-          src="/images/FramesBG.png"
+          src={siteSettings.service_description?.custom_background_image || 'https://via.placeholder.com/1920x1080'}
           alt="Placeholder Panel Background"
           fill
           className="object-cover opacity-90"

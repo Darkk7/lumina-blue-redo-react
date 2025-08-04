@@ -159,7 +159,7 @@ export default function SubcategoryPage() {
           {/* Breadcrumb */}
           <div className="mb-8">
             <div className="text-sm">
-              <Link href="/pages/info_centre" className="text-primary hover:text-primary-dark underline">
+              <Link href="/info_centre" className="text-primary hover:text-primary-dark underline">
                 Info Centre
               </Link>
               <span className="text-primary mx-2">{'>'}</span>
