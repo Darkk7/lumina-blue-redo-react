@@ -42,11 +42,11 @@ const FooterPage = () => {
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li><Link href="/" className="text-white hover:text-primary">Home</Link></li>
-              <li><Link href="/about" className="text-white hover:text-primary">About</Link></li>
-              <li><Link href="/services" className="text-white hover:text-primary">Services</Link></li>
-              <li><Link href="/team" className="text-white hover:text-primary">Team</Link></li>
-              <li><Link href="/testimonials" className="text-white hover:text-primary">Feedback</Link></li>
+              <li><Link href={`${siteSettings.practiceId}`} className="text-white hover:text-primary">Home</Link></li>
+              <li><Link href="/#about" className="text-white hover:text-primary">About</Link></li>
+              <li><Link href="/#services" className="text-white hover:text-primary">Services</Link></li>
+              <li><Link href="/#team" className="text-white hover:text-primary">Team</Link></li>
+              <li><Link href="/#testimonials" className="text-white hover:text-primary">Feedback</Link></li>
             </ul>
           </div>
 

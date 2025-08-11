@@ -43,29 +43,40 @@ const YouTubePanelPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Left-side content */}
           <div className="w-full aspect-video">
-            <iframe
-              className="w-full h-full rounded-lg shadow-lg"
-              src={siteSettings.service_description?.youtube_video_url || 'https://www.youtube.com/embed/default'}
-              title="YouTube video player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
+            {siteSettings.service_description?.media_type === 'video' ? (
+              <iframe
+                className="w-full h-full rounded-lg shadow-lg"
+                src={siteSettings.service_description?.media_url || 'https://www.youtube.com/embed/default'}
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            ) : (
+              <div className="w-full h-full relative">
+                <Image
+                  src={siteSettings.service_description?.media_url || '/placeholder-image.jpg'}
+                  alt={siteSettings.service_description?.media_header_text || 'Media content'}
+                  fill
+                  className="object-cover rounded-lg shadow-lg"
+                />
+              </div>
+            )}
           </div>
           
           {/* Right-side content */}
           <div className="flex flex-col space-y-6">
             <h2 className="text-4xl font-bold text-black">
-              {siteSettings.service_description?.youtube_header_text}
+              {siteSettings.service_description?.media_header_text}
             </h2>
             <p className="text-gray-500">
-              {siteSettings.service_description?.youtube_body_text}
+              {siteSettings.service_description?.media_body_text}
             </p>
             <div>
               <a
-                href={siteSettings.service_description?.youtube_button_url || '#'}
+                href={siteSettings.service_description?.media_button_url || '#'}
                 className="inline-block px-8 py-3 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all"
               >
-                {siteSettings.service_description?.youtube_button_text || 'Learn More'}
+                {siteSettings.service_description?.media_button_text || 'Learn More'}
               </a>
             </div>
           </div>

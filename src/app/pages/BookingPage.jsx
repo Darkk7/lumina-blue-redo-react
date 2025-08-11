@@ -16,7 +16,7 @@ const BookingPage = () => {
 
   useEffect(() => {
     if (!practiceId) {
-      return;
+      throw new Error('No practiceId available');
     }
 
     const fetchPractitioners = async () => {
@@ -25,19 +25,56 @@ const BookingPage = () => {
         const response = await axios.get(`https://passport.nevadacloud.com/api/v1/public/practices/${practiceId}`);
         
         if (!response.data || !Array.isArray(response.data.optometrists)) {
-          console.error('Invalid or missing optometrists array in response:', response.data);
           setError('No practitioners found for this practice');
           return;
         }
         
         const optometrists = response.data.optometrists || [];
         
-        const mappedPractitioners = optometrists.map(opt => ({
-          value: opt.id,
-          label: `${opt.name} ${opt.surname}`,
-          qualification: opt.qualification,
-          availability: opt.calendar_time_slots_unavailable
-        }));
+        const mappedPractitioners = optometrists.map(opt => {
+          // Process calendar_time_slots_unavailable
+          const availability = {
+            closedDays: [],
+            unavailableSlots: []
+          };
+
+          if (opt.calendar_time_slots_unavailable) {
+            // Split by semicolon to handle multiple rules
+            const rules = opt.calendar_time_slots_unavailable.split(';');
+            
+            rules.forEach(rule => {
+              // Handle closed days (e.g., "2-Closed" means Wednesday is closed)
+              if (rule.endsWith('-Closed')) {
+                const day = parseInt(rule.split('-')[0]);
+                if (!isNaN(day)) {
+                  availability.closedDays.push(day);
+                }
+              }
+              // Handle time slots (e.g., "0|1|2|3|4-13:00-14:00" means Mon-Fri 13:00-14:00 is unavailable)
+              else if (rule.includes('-') && rule.includes('|')) {
+                const [days, times] = rule.split('-');
+                const [startTime, endTime] = times.split('-');
+                const dayList = days.split('|').map(Number);
+                
+                dayList.forEach(day => {
+                  availability.unavailableSlots.push({
+                    day,
+                    startTime,
+                    endTime
+                  });
+                });
+              }
+            });
+          }
+
+          return {
+            value: opt.id,
+            label: `${opt.name} ${opt.surname}`,
+            qualification: opt.qualification,
+            availability,
+            calendar_time_slots_unavailable: opt.calendar_time_slots_unavailable // Keep original for reference
+          };
+        });
         
         setPractitioners(mappedPractitioners);
         setError(null);
@@ -134,7 +171,7 @@ const BookingPage = () => {
         if (dayList.includes(dayOfWeek)) {
           unavailableSlots.push({
             startTime,
-            endTime
+            endTimeW
           });
         }
       }
@@ -154,10 +191,25 @@ const BookingPage = () => {
     
     try {
       // Format date to YYYY-MM-DD
-      const formattedDate = new Date(date).toISOString().split('T')[0];
+      const selectedDate = new Date(date);
+      const dayOfWeek = selectedDate.getDay() - 1; // Convert to 0-6 (Mon-Sun) format
+      const formattedDate = selectedDate.toISOString().split('T')[0];
+      const today = new Date();
+      const isToday = formattedDate === today.toISOString().split('T')[0];
+      
+      // Get current time in HH:MM format for comparison
+      const currentHours = String(today.getHours()).padStart(2, '0');
+      const currentMinutes = String(today.getMinutes()).padStart(2, '0');
+      const currentTime = `${currentHours}:${currentMinutes}`;
       
       // Get the selected practitioner's data
       const selectedPractitioner = practitioners.find(p => p.value === practitionerId);
+      
+      if (selectedPractitioner?.availability?.closedDays?.includes(dayOfWeek)) {
+        setAvailableSlots([]);
+        setSlotError('No availability on this day');
+        return;
+      }
       
       // Get available slots from API
       const response = await axios.post(
@@ -176,19 +228,37 @@ const BookingPage = () => {
       
       if (response.data && Array.isArray(response.data)) {
         // Filter out unavailable slots based on calendar_time_slots_unavailable
-        const unavailableSlots = parseUnavailableSlots(
-          selectedPractitioner?.availability,
-          date
-        );
+        const unavailableSlots = [];
+        
+        // Add unavailable time slots for this day
+        if (selectedPractitioner?.availability?.unavailableSlots) {
+          const todayUnavailable = selectedPractitioner.availability.unavailableSlots
+            .filter(slot => slot.day === dayOfWeek)
+            .map(({ startTime, endTime }) => ({
+              startTime,
+              endTime,
+              allDay: false
+            }));
+          
+          unavailableSlots.push(...todayUnavailable);
+        }
         
         const filteredSlots = response.data.filter(slot => {
-          // If the whole day is marked as unavailable, filter out all slots
-          if (unavailableSlots.some(s => s.allDay)) {
-            return false;
+          // If it's today, filter out past time slots
+          if (isToday) {
+            const [slotHours, slotMinutes] = slot.time.split(':');
+            const slotTime = `${slotHours}:${slotMinutes}`;
+            
+            // Compare times as strings in HH:MM format
+            if (slotTime < currentTime) {
+              return false;
+            }
           }
           
           // Check if the slot falls within any unavailable time range
           return !unavailableSlots.some(unavailable => {
+            if (unavailable.allDay) return true;
+            
             const slotTime = slot.time;
             return (
               slotTime >= unavailable.startTime && 
@@ -215,56 +285,67 @@ const BookingPage = () => {
     setFormData({ ...formData, timeSlot });
   };
 
-  const handleRequestCall = async () => {
-    // Validate that name and mobile are filled out
-    if (!formData.name || !formData.mobile) {
-      alert('Please fill out name and contact number');
-      return;
-    }
+  const handleRequestCall = async (e) => {
+
+    const formDataToRequest = new FormData();
 
     try {
-      // Prepare the data using FormData
-      const requestCallData = new FormData();
-      requestCallData.append('appointment[name]', formData.name);
-      requestCallData.append('appointment[cell]', formData.mobile);
+      e.preventDefault();
 
-      console.log('Request Payload:', Object.fromEntries(requestCallData.entries())); // logging payload for request appt
+      let phoneNumber = formData.mobile;
 
-      const response = await axios.post(
-        'https://www.eyecareportal.com/api/request_call_appointment/',
-        requestCallData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      formDataToRequest.append('appointment[name]', formData.name);
+      formDataToRequest.append('appointment[cell]', phoneNumber);
 
-      if (response.status === 200) {
-        alert('Your call request has been submitted successfully!');
-      } else {
-        throw new Error('Failed to submit call request');
+      if (!formData.name || !phoneNumber) {
+        alert('Please provide a name or valid contact number');
       }
-    } catch (error) {
-      console.error('Error requesting call:', error);
-      console.error('Error response:', error.response?.data); // Log server response
-      alert('There was an error submitting your call request. Please try again.');
+      else {
+        const requestResponse = await axios.post(
+          'https://www.eyecareportal.com/api/request_call_appointment/',
+          formDataToRequest,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+
+        if (requestResponse.data.status === 'created') {
+          document.getElementById('request-success-message').classList.remove('hidden');
+          setFormData({
+            name: "",
+            mobile: "",
+          });
+        } else {
+          throw new Error('Failed to request appointment');
+        }
+      }
     }
-  };
+    catch(error) {
+      console.error('Something went wrong', error);
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate required fields
     if (!formData.timeSlot || !formData.date || !formData.practitioner) {
       alert('Please fill in all required fields and select a time slot');
       return;
     }
     
     try {
-      // Use the phone number as provided by PhoneInput component
-      // It already handles the country code and formatting
-      const phoneNumber = formData.mobile;
+      let phoneNumber = formData.mobile;
+
+      if (phoneNumber && !phoneNumber.startsWith('+')) {
+        const digits = phoneNumber.replace(/\D/g, '');
+        if (digits.startsWith('0')) {
+          phoneNumber = `+27${digits.substring(1)}`;
+        } else if (digits.length > 0) {
+          phoneNumber = `+27${digits}`;
+        }
+      }
 
       // Format dates for the API
       const appointmentDate = new Date(formData.date);
@@ -277,14 +358,11 @@ const BookingPage = () => {
       const endTime = new Date(startTime);
       endTime.setMinutes(endTime.getMinutes() + 30);
       
-      // Get timezone offset in format +02:00
       const timezoneOffset = -startTime.getTimezoneOffset() / 60;
       const timezoneString = `${timezoneOffset >= 0 ? '+' : ''}${timezoneOffset.toString().padStart(2, '0')}:00`;
       
-      // Get practitioner name
       const selectedPractitioner = practitioners.find(p => p.value.toString() === formData.practitioner);
       
-      // Prepare form data
       const formDataToSend = new FormData();
       
       // Appointment details
@@ -301,29 +379,11 @@ const BookingPage = () => {
       formDataToSend.append('appointment[practitioner_id]', formData.practitioner);
       formDataToSend.append('appointment[status]', 'requested');
       formDataToSend.append('appointment[source]', 'lumina');
-      
-      // Practice details
+
       formDataToSend.append('practice[id]', practiceId);
       formDataToSend.append('practice[name]', siteSettings?.practiceName || 'Image Eye Care');
       formDataToSend.append('practice[email]', siteSettings?.contactEmail || 'support@nevadacloud.com');
-      
-      const requestCallData = {
-        name: formData.name,
-        cell: phoneNumber
-      }
 
-      //Api call for request_appointment
-      const requestResponse = await axios.post(
-        'https://www.eyecareportal.com/api/request_call_appointment/',
-        requestCallData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          }
-        }
-      )
-
-      // Api call for book_appointment
       const response = await axios.post(
         'https://www.eyecareportal.com/api/book_appointment/',
         formDataToSend,
@@ -372,11 +432,11 @@ const BookingPage = () => {
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="p-6 bg-white shadow-md rounded">
               <h5 className="secondary-color text-gray-800">Physical Address</h5>
-              <ul className="list-unstyled pb-2">
+              <ul className="list-unstyled">
                 <li className="text-gray-500">{siteSettings.address_1}</li>
               </ul>
               <h5 className="secondary-color text-gray-800">Trading Hours</h5>
-              <ul className="list-unstyled pb-2">
+              <ul className="list-unstyled">
                 {siteSettings.working_hours.map((schedule, index) => {
                   const days = schedule.days;
                   let displayDays = '';
@@ -407,8 +467,8 @@ const BookingPage = () => {
             </div>
           </div>
         </div>
-        <div className="container lg:w-1/2 p-8 bg-gray-100">
-          <h3 id="book_appointment" className="text-4xl mb-4 font-bold text-center text-gray-800">
+        <div className="container lg:w-1/2 p-8">
+          <h3 id="book_appointment" className="text-2xl mb-4 font-bold text-center text-gray-800">
             <span className="text-primary">Book</span> Your Appointment
           </h3>
           <form 
@@ -556,10 +616,10 @@ const BookingPage = () => {
               <button
                 id="booking_call_me"
                 type="button"
-                onClick={handleRequestCall}
                 className="px-6 py-3 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors duration-200 font-medium"
+                onClick={handleRequestCall}
               >
-                Request call
+                Request Call
               </button>
               <button
                 id="booking_button"

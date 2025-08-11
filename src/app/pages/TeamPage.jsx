@@ -89,7 +89,7 @@ const TeamPage = () => {
   }
 
   return (
-    <section className="w-full bg-white py-16 relative">
+    <section className="w-full bg-white py-16 relative" id="team">
       <div className="max-w-6xl mx-auto px-4">
         <h1 className="text-3xl text-black font-bold text-center mb-8 pt-8">
           {siteSettings.team?.team_title || "Our Team"}

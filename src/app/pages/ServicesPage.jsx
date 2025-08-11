@@ -172,7 +172,7 @@ const ServicesPage = () => {
       </Head>
       <IcomoonStyles />
       
-      <section className="w-full bg-gray-50 py-16 px-4">
+      <section className="w-full bg-gray-50 py-16 px-4" id="services">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-5 text-gray-900 pt-8">
             {siteSettings.service_description?.welcome_title || 'Our Services'}

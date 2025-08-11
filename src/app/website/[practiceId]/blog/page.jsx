@@ -27,8 +27,7 @@ const BlogHomePage = () => {
       try {
         setLoading(true);
         setError(null);
-        
-        console.log(`[Blog Page] Fetching blogs for practice ID: ${practiceId}`);
+
         const response = await fetch(`/api/website/${practiceId}/blogs`);
         
         if (!response.ok) {
@@ -38,7 +37,6 @@ const BlogHomePage = () => {
         }
         
         const blogsData = await response.json();
-        console.log(`[Blog Page] Received ${blogsData.length} blogs for practice ${practiceId}`, blogsData);
         
         if (!Array.isArray(blogsData)) {
           throw new Error('Invalid data format received from server');
