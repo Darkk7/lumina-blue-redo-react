@@ -646,8 +646,8 @@ const BookingPage = () => {
                                   onClick={() => handleTimeSlotSelect(slot.time)}
                                   className={`p-3.5 border rounded-md text-center transition-colors duration-200 ${
                                     formData.timeSlot === slot.time
-                                      ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700'
-                                      : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50 hover:border-blue-300'
+                                      ? 'bg-primary text-white border-primary hover:bg-primary'
+                                      : 'border-gray-300 text-gray-700 bg-white hover:bg-primary-50 hover:border-primary'
                                   }`}
                                 >
                                   {slot.time} - {slot.time_end}
@@ -678,8 +678,7 @@ const BookingPage = () => {
                       <button
                         id="booking_button"
                         type="submit"
-                        className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 font-medium"
-                      >
+                        className="px-6 py-3 bg-black text-white rounded-md hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200 font-medium"                     >
                         Book Appointment
                       </button>
                     </div>
