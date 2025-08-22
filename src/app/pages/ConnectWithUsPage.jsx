@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { FaFacebook, FaInstagram, FaLinkedin, FaWhatsapp, FaPinterest } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaLinkedin, FaWhatsapp, FaPinterest, FaTiktok, FaGoogle } from 'react-icons/fa';
 import { useSiteSettings } from "../context/SiteSettingsContext";
 
 const ConnectWithUsPage = ({ practiceId }) => {
@@ -86,6 +86,28 @@ const ConnectWithUsPage = ({ practiceId }) => {
           className="text-4xl text-primary hover:text-primary transition"
         >
           <FaPinterest />
+        </a>
+      )}
+
+      {typeof siteSettings.tiktok_url === 'string' && siteSettings.tiktok_url.trim() !== "" && (
+        <a
+          href={siteSettings.tiktok_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-4xl text-primary hover:text-primary transition"
+        >
+          <FaTiktok />
+        </a>
+      )}
+
+      {typeof siteSettings.google_business_profile_url === 'string' && siteSettings.google_business_profile_url.trim() !== "" && (
+        <a
+          href={siteSettings.google_business_profile_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-4xl text-primary hover:text-primary transition"
+        >
+          <FaGoogle />
         </a>
       )}
 

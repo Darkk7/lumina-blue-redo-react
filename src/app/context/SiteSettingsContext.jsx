@@ -189,6 +189,8 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
           linkedin_url: data3.linkedin_url || [],
           pinterest_url: data3.pinterest_url || [],
           whatsapp_tel: data3.whatsapp_tel || [],
+          tiktok_url: data3.tiktok_url || [],
+          google_business_profile_url: data3.google_business_profile_url || [],
           featured_services: data.featured_services || [],
         };
 

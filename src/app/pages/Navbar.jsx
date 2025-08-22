@@ -102,7 +102,7 @@ const Navbar = () => {
           {isSticky && (
             <li className="ml-4">
               <Link
-                href={siteSettings?.booking_url || '#'}
+                href={siteSettings?.booking_url || '#booking'}
                 className="px-6 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all"
               >
                 MAKE A BOOKING

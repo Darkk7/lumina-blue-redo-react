@@ -23,17 +23,18 @@ const BrandsPage = () => {
     infinite: true,
     speed: 500,
     slidesToShow: 5,
-    slidesToScroll: 1,
+    slidesToScroll: 5,
     autoplay: true,
     autoplaySpeed: 3000,
     pauseOnHover: true,
     rows: 2,
+    slidesPerRow: 1,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
           slidesToShow: 3,
-          slidesToScroll: 1,
+          slidesToScroll: 3,
           rows: 2
         }
       },
@@ -41,7 +42,7 @@ const BrandsPage = () => {
         breakpoint: 640,
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 1,
+          slidesToScroll: 2,
           rows: 2
         }
       }
@@ -52,11 +53,11 @@ const BrandsPage = () => {
     <section id="brands" className="w-full bg-gray-100 py-16 px-4 sm:px-8 lg:px-16 text-center">
       <h2 className="text-3xl font-bold text-black mb-12">Our Brands</h2>
       <div className="max-w-7xl mx-auto px-4">
-        <Slider {...settings} className="gap-y-4"> {/* Add gap between rows */}
+        <Slider {...settings} className="[&_.slick-slide]:px-3">
           {siteSettings && siteSettings.brands && siteSettings.brands
             .filter(brand => brand.show)
             .map(brand => (
-              <div key={brand.id} className="px-2">
+              <div key={brand.id} className="h-full">
                 <BrandCard
                   image={brand.img}
                   title={brand.name}
@@ -70,10 +71,10 @@ const BrandsPage = () => {
 };
 
 const BrandCard = ({ image, title }) => (
-  <div className="bg-white shadow-lg p-4 rounded-lg h-full flex items-center justify-center">
+  <div className="bg-white shadow-lg p-6 rounded-lg h-full flex items-center justify-center my-4">
     <div className="relative w-full h-24">
       <Image 
-        src={image} 
+        src={image}
         alt={title} 
         fill
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"

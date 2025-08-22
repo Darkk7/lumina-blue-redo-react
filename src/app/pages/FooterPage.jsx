@@ -1,6 +1,6 @@
 "use client";
 
-import { FaFacebook, FaInstagram, FaLinkedin, FaPinterest, FaWhatsapp, FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaLinkedin, FaPinterest, FaWhatsapp, FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaTiktok, FaGoogle } from 'react-icons/fa';
 import { useSiteSettings } from "../context/SiteSettingsContext";
 import Link from 'next/link';
 
@@ -20,19 +20,42 @@ const FooterPage = () => {
             Stay connected to our practice via our social platforms.
             </p>
             <div className="flex space-x-4">
-              {siteSettings.facebook_url && (
+              {typeof siteSettings.facebook_url === 'string' && siteSettings.facebook_url.trim() !== "" && (
                 <a href={siteSettings.facebook_url} className="text-white hover:text-primary">
                   <FaFacebook className="h-6 w-6" />
                 </a>
               )}
-              {siteSettings.instagram_url && (
+              {typeof siteSettings.instagram_url === 'string' && siteSettings.instagram_url.trim() !== "" && (
                 <a href={siteSettings.instagram_url} className="text-white hover:text-primary">
                   <FaInstagram className="h-6 w-6" />
                 </a>
               )}
-              {siteSettings.linkedin_url && (
+              {typeof siteSettings.linkedin_url === 'string' && siteSettings.linkedin_url.trim() !== "" && (
                 <a href={siteSettings.linkedin_url} className="text-white hover:text-primary">
                   <FaLinkedin className="h-6 w-6" />
+                </a>
+              )}
+              {typeof siteSettings.tiktok_url === 'string' && siteSettings.tiktok_url.trim() !== "" && (
+                <a href={siteSettings.tiktok_url} className="text-white hover:text-primary">
+                  <FaTiktok className="h-6 w-6" />
+                </a>
+              )}
+              {typeof siteSettings.google_business_profile_url === 'string' && siteSettings.google_business_profile_url.trim() !== "" && (
+                <a href={siteSettings.google_business_profile_url} className="text-white hover:text-primary">
+                  <FaGoogle className="h-6 w-6" />
+                </a>
+              )}
+              {typeof siteSettings.pinterest_url === 'string' && siteSettings.pinterest_url.trim() !== "" && (
+                <a href={siteSettings.pinterest_url} className="text-white hover:text-primary">
+                  <FaPinterest className="h-6 w-6" />
+                </a>
+              )}
+              {typeof siteSettings.whatsapp_tel === 'string' && siteSettings.whatsapp_tel.trim() !== "" && (
+                <a 
+                  href={`https://wa.me/${siteSettings.whatsapp_tel.replace(/[^0-9]/g, '')}`} 
+                  className="text-white hover:text-primary"
+                >
+                  <FaWhatsapp className="h-6 w-6" />
                 </a>
               )}
             </div>
