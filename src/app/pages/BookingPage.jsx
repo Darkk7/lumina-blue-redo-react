@@ -13,6 +13,8 @@ const BookingPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showRequestCallModal, setShowRequestCallModal] = useState(false);
   const practiceId = siteSettings?.practiceId;
 
   // Success Modal Component
@@ -44,7 +46,7 @@ const BookingPage = () => {
 
   useEffect(() => {
     if (!practiceId) {
-      throw new Error('No practiceId available'); 
+      throw new Error('No practiceId available');
     }
 
     const fetchPractitioners = async () => {
@@ -199,7 +201,7 @@ const BookingPage = () => {
         if (dayList.includes(dayOfWeek)) {
           unavailableSlots.push({
             startTime,
-            endTimeW
+            endTime 
           });
         }
       }
@@ -271,20 +273,17 @@ const BookingPage = () => {
           unavailableSlots.push(...todayUnavailable);
         }
         
-        const filteredSlots = response.data.filter(slot => {
-          // If it's today, filter out past time slots
-          if (isToday) {
-            const [slotHours, slotMinutes] = slot.time.split(':');
-            const slotTime = `${slotHours}:${slotMinutes}`;
-            
-            // Compare times as strings in HH:MM format
-            if (slotTime < currentTime) {
-              return false;
-            }
+        const filteredSlots = response.data.map(slot => {
+          // First check if the slot is marked as unavailable in the API response
+          if (!slot.available) {
+            return {
+              ...slot,
+              available: false
+            };
           }
           
-          // Check if the slot falls within any unavailable time range
-          return !unavailableSlots.some(unavailable => {
+          // Then check for unavailable time slots from practitioner's calendar
+          const isAvailable = !unavailableSlots.some(unavailable => {
             if (unavailable.allDay) return true;
             
             const slotTime = slot.time;
@@ -293,6 +292,11 @@ const BookingPage = () => {
               slotTime < unavailable.endTime
             );
           });
+          
+          return {
+            ...slot,
+            available: isAvailable
+          };
         });
         
         setAvailableSlots(filteredSlots);
@@ -313,59 +317,54 @@ const BookingPage = () => {
     setFormData({ ...formData, timeSlot });
   };
 
-  const handleRequestCall = async (e) => {
-    e.preventDefault();
-    
+  const handleRequestCall = async () => {
     if (!formData.name || !formData.mobile) {
-      alert('Please provide both name and contact number');
+      alert('Please provide your name and phone number');
       return;
     }
-
-    const formDataToRequest = new FormData();
-    formDataToRequest.append('appointment[action]', 'call');
-    formDataToRequest.append('appointment[appt_type]', '');
-    formDataToRequest.append('appointment[name]', formData.name);
-    formDataToRequest.append('appointment[email]', '');
-    formDataToRequest.append('appointment[cell]', formData.mobile);
-    formDataToRequest.append('appointment[notes]', '');
-    formDataToRequest.append('appointment[date]', '');
-    formDataToRequest.append('appointment[request_timezone]', '');
-    formDataToRequest.append('appointment[start_time]', '');
-    formDataToRequest.append('appointment[end_time]', '');
-    formDataToRequest.append('appointment[practitioner_id]', '');
-    formDataToRequest.append('appointment[status]', 'requested');
-    formDataToRequest.append('appointment[practice_id]', practiceId);
-    formDataToRequest.append('appointment[source]', 'lumina');
-    formDataToRequest.append('practice[id]', practiceId);
-    formDataToRequest.append('practice[name]', siteSettings?.practiceName || 'Image Eye Care');
-    formDataToRequest.append('practice[email]', siteSettings?.contactEmail || 'support@nevadacloud.com');
-
+    
     try {
-      const requestResponse = await axios.post(
+      const formDataToSend = new FormData();
+      
+      formDataToSend.append('appointment[action]', 'call');
+      formDataToSend.append('appointment[appt_type]', 'appointment');
+      formDataToSend.append('appointment[name]', formData.name);
+      formDataToSend.append('appointment[email]', formData.email || '');
+      formDataToSend.append('appointment[cell]', formData.mobile);
+      formDataToSend.append('appointment[notes]', formData.comments || '');
+      formDataToSend.append('appointment[date]', '');
+      formDataToSend.append('appointment[request_timezone]', Intl.DateTimeFormat().resolvedOptions().timeZone);
+      formDataToSend.append('appointment[start_time]', '');
+      formDataToSend.append('appointment[end_time]', '');
+      formDataToSend.append('appointment[practitioner_id]', formData.practitioner || '');
+      formDataToSend.append('appointment[status]', 'requested');
+      formDataToSend.append('appointment[practice_id]', practiceId);
+      formDataToSend.append('appointment[source]', 'lumina');
+
+      formDataToSend.append('practice[id]', practiceId);
+      formDataToSend.append('practice[name]', siteSettings?.practiceName || 'Image Eye Care');
+      formDataToSend.append('practice[email]', siteSettings?.contactEmail || 'support@nevadacloud.com');
+
+      const response = await axios.post(
         'https://www.eyecareportal.com/api/request_call_appointment/',
-        formDataToRequest,
+        formDataToSend,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         }
       );
-
-      if (requestResponse.data.status === 'created') {
+      
+      if (response.data.status === 'created') {
         setShowSuccessModal(true);
-        setFormData(prev => ({
-          ...prev,
-          name: "",
-          mobile: ""
-        }));
       } else {
-        throw new Error('Failed to create request');
+        throw new Error('Failed to request call');
       }
     } catch (error) {
-      console.error('Error:', error.response?.data || error.message);
-      alert('Failed to submit request. Please try again.');
+      console.error('Error requesting call:', error);
+      alert('There was an error processing your request. Please try again.');
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -405,12 +404,11 @@ const BookingPage = () => {
       
       const formDataToSend = new FormData();
       
-      // Appointment details
       formDataToSend.append('appointment[action]', 'book');
       formDataToSend.append('appointment[appt_type]', 'consult');
       formDataToSend.append('appointment[name]', formData.name);
       formDataToSend.append('appointment[email]', formData.email);
-      formDataToSend.append('appointment[cell]', phoneNumber); // Use the formatted phone number
+      formDataToSend.append('appointment[cell]', phoneNumber);
       formDataToSend.append('appointment[notes]', formData.comments || '');
       formDataToSend.append('appointment[date]', formData.date);
       formDataToSend.append('appointment[request_timezone]', timezoneString);
@@ -435,7 +433,7 @@ const BookingPage = () => {
       );
       
       if (response.data.status === 'created') {
-        setShowSuccessModal(true);
+        setShowSuccessMessage(true);
         // Reset form
         setFormData({
           appointmentType: "",
@@ -533,7 +531,7 @@ const BookingPage = () => {
                   >
                     <option disabled value="" className="text-gray-400">Select appointment type</option>
                     <option value="consult" className="text-gray-800">Full examination</option>
-                    <option value="drivers" className="text-gray-800">Driver's screening</option>
+                    <option value="drivers" className="text-gray-800">Driver's screening</option> 
                   </select>
                 </div>
                 
@@ -643,14 +641,17 @@ const BookingPage = () => {
                                 <button
                                   key={slot.time}
                                   type="button"
-                                  onClick={() => handleTimeSlotSelect(slot.time)}
+                                  onClick={() => slot.available && handleTimeSlotSelect(slot.time)}
+                                  disabled={!slot.available}
                                   className={`p-3.5 border rounded-md text-center transition-colors duration-200 ${
-                                    formData.timeSlot === slot.time
-                                      ? 'bg-primary text-white border-primary hover:bg-primary'
-                                      : 'border-gray-300 text-gray-700 bg-white hover:bg-primary-50 hover:border-primary'
+                                    slot.available
+                                      ? formData.timeSlot === slot.time
+                                        ? 'bg-primary text-white border-primary hover:bg-primary-dark'
+                                        : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-50 hover:border-primary'
+                                      : 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
                                   }`}
                                 >
-                                  {slot.time} - {slot.time_end}
+                                  {slot.time}
                                 </button>
                               ))}
                             </div>
@@ -662,9 +663,11 @@ const BookingPage = () => {
                     </div>
                     
                     {/* Success Message */}
-                    <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded hidden" id="booking-success-message">
-                      Your appointment has been booked successfully!
-                    </div>
+                    {showSuccessMessage && (
+                      <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+                        Your appointment has been booked successfully!
+                      </div>
+                    )}
                     
                     <div className="flex flex-col sm:flex-row justify-end gap-3 mt-8">
                       <button

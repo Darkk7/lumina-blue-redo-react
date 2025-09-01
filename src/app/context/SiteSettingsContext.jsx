@@ -5,7 +5,7 @@ import crypto from 'crypto';
 
 const SiteSettingsContext = createContext();
 
-const getDefaultSettings = (practiceId) => ({
+const getSettings = (practiceId) => ({
   practiceId,
   primaryColor: practiceId === '8' ? 'green' : 'orange',
   counterSettings: {
@@ -45,7 +45,7 @@ function getDailyKey() {
 }
 
 export function SiteSettingsProvider({ children, initialPracticeId }) {
-  const [siteSettings, setSiteSettings] = useState(getDefaultSettings(initialPracticeId));
+  const [siteSettings, setSiteSettings] = useState(getSettings(initialPracticeId));
   const [practiceId, setPracticeId] = useState(initialPracticeId);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);

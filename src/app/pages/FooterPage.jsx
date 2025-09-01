@@ -7,6 +7,14 @@ import Link from 'next/link';
 const FooterPage = () => {
   const { siteSettings } = useSiteSettings();
 
+  const getLink = (path) => {
+    if (!siteSettings?.practiceId) {
+      return path;
+    }
+
+    return `/website/${siteSettings.practiceId}${path}`;
+  };
+
   return (
     <footer className="w-full py-12" style={{ backgroundColor: "#363636" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -65,11 +73,11 @@ const FooterPage = () => {
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li><Link href={`${siteSettings.practiceId}`} className="text-white hover:text-primary">Home</Link></li>
-              <li><Link href="/#about" className="text-white hover:text-primary">About</Link></li>
-              <li><Link href="/#services" className="text-white hover:text-primary">Services</Link></li>
-              <li><Link href="/#team" className="text-white hover:text-primary">Team</Link></li>
-              <li><Link href="/#testimonials" className="text-white hover:text-primary">Feedback</Link></li>
+              <li><Link href={getLink("/")} className="text-white hover:text-primary">Home</Link></li>
+              <li><Link href={getLink("/#about")} className="text-white hover:text-primary">About</Link></li>
+              <li><Link href={getLink("/#services")} className="text-white hover:text-primary">Services</Link></li>
+              <li><Link href={getLink("/#team")} className="text-white hover:text-primary">Team</Link></li>
+              <li><Link href={getLink("/#testimonials")} className="text-white hover:text-primary">Feedback</Link></li>
             </ul>
           </div>
 
