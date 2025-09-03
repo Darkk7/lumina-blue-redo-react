@@ -61,7 +61,6 @@ const InfoCentreItem = () => {
     );
   }
 
-  // Sort the attributes properly
   const sortedAttributes = itemContent.attributes.sort((a, b) => {
     const aSection = parseInt(a.name.split('.')[1]) || 0;
     const bSection = parseInt(b.name.split('.')[1]) || 0;
@@ -85,7 +84,7 @@ const InfoCentreItem = () => {
       {/* Content Section */}
       <div className="container mx-auto px-4 py-12">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto border-t border-2 border-primary">
-          {/* Breadcrumb */}
+          {/* Breadcrumb nav */}
           <div className="mb-8">
             <div className="text-sm">
               <Link href="/pages/info_centre" className="text-primary hover:text-primary-dark underline">

@@ -78,6 +78,7 @@ const FooterPage = () => {
               <li><Link href={getLink("/#services")} className="text-white hover:text-primary">Services</Link></li>
               <li><Link href={getLink("/#team")} className="text-white hover:text-primary">Team</Link></li>
               <li><Link href={getLink("/#testimonials")} className="text-white hover:text-primary">Feedback</Link></li>
+              <li><Link href={getLink("/simon_dev")} className="text-white hover:text-primary">Simon Page</Link></li>
             </ul>
           </div>
 
