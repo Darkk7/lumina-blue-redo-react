@@ -3,6 +3,9 @@
 import React, { useState } from "react";
 import "../pages/simon_dev/style.css";
 import FooterPage from "./FooterPage";
+import Navbar from "./Navbar";
+import InfoCentreHomePage from "./InfoCentreHomePage";
+
 
 export default function SimonPage() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +15,9 @@ export default function SimonPage() {
   };
 
   return (
+    <div className ="main">
+       <Navbar/>
+       
     <div className="content">
       <div className="section">
         <h3>Overview</h3>
@@ -262,9 +268,12 @@ export default function SimonPage() {
         </ol>
       </div>
 
+    </div>
       <FooterPage/>
+
     </div>
 
     
   );
 }
+
