@@ -71,7 +71,7 @@ export default function SimonPage() {
             <li><u>Abnormal eyelash growth or loss of eyelashes in severe cases</u></li>
             <li><u>Both eyes usually affected (one may be worse), symptoms worse in the morning</u></li>
           </ol>
-          <div className="imagePlaceholder">Image Placeholder</div>
+          <div className="imagePlaceholder"><img src="#" alt="not workin" /></div>
         </div>
       </div>
 
