@@ -53,26 +53,13 @@
 
        .highlight {
             font-weight: bolder;
-            background: 
-                linear-gradient(
-                    104deg,
-                    rgba(74, 144, 226, 0) 0.9%, 
-                    rgba(74, 144, 226, 1.25) 2.4%, 
-                    rgba(74, 144, 226, 0.5) 5.8%, 
-                    rgba(74, 144, 226, 0.1) 93%, 
-                    rgba(74, 144, 226, 0.7) 96%, 
-                    rgba(74, 144, 226, 0) 98%
-                ),
-                linear-gradient(
-                    183deg,
-                    rgba(74, 144, 226, 0) 0%, 
-                    rgba(74, 144, 226, 0.3) 7.9%, 
-                    rgba(74, 144, 226, 0) 15%
-                );
+           
+            border-bottom: 1px solid var(--primary-blue); 
+
             box-decoration-break: clone;
             -webkit-box-decoration-break: clone;
             margin: 0;
-            border-radius: 7.5px;
+            
             width: fit-content;
             text-align: center;
             color: var(--text-dark);

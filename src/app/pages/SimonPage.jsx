@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import "../pages/simon_dev/style.css";
+import FooterPage from "./FooterPage";
 
 export default function SimonPage() {
   const [isOpen, setIsOpen] = useState(false);
@@ -260,6 +261,10 @@ export default function SimonPage() {
           </li>
         </ol>
       </div>
+
+      <FooterPage/>
     </div>
+
+    
   );
 }
