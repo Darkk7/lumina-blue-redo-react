@@ -23,38 +23,38 @@ export default function SimonPage() {
         <h3>Overview</h3>
         <p>
           It affects people of all ages. Although uncomfortable, blepharitis is{" "}
-          <span className="highlight">not contagious</span> and generally does not cause any{" "}
-          <span className="highlight">permanent damage to eyesight</span>. Blepharitis can't
+          not contagious and generally does not cause any{" "}
+          permanent damage to eyesight. Blepharitis can't
           usually be cured, but the{" "}
-          <span className="highlight">symptoms can be controlled with good eyelid hygiene</span>.
-          Blepharitis is a <span className="highlight">long-term (chronic) condition</span>.
+          symptoms can be controlled with good eyelid hygiene.
+          Blepharitis is a long-term (chronic) condition.
         </p>
 
         <p>
           Blepharitis can be classified according to anatomic location:{" "}
-          <span className="highlight">anterior blepharitis</span> affects the eyelid skin, base of
+          anterior blepharitis affects the eyelid skin, base of
           the eyelashes and the eyelash follicles, and{" "}
-          <span className="highlight">posterior blepharitis</span> affects the meibomian glands and
+          posterior blepharitis affects the meibomian glands and
           gland orifices. Blepharitis has traditionally been clinically subcategorized as{" "}
-          <span className="highlight">staphylococcal</span>,{" "}
-          <span className="highlight">seborrheic</span>,{" "}
-          <span className="highlight">meibomian gland dysfunction (MGD)</span>, or a combination
+          staphylococcal,{" "}
+          seborrheic,{" "}
+          meibomian gland dysfunction (MGD), or a combination
           thereof.
         </p>
 
         <p>
           There is considerable overlap of symptoms of all types of blepharitis. Blepharitis
-          frequently leads to associated <span className="highlight">ocular surface inflammation</span>, including{" "}
-          <span className="highlight">conjunctivitis</span>, functional tear deficiency, and
+          frequently leads to associated ocular surface inflammation, including{" "}
+          conjunctivitis, functional tear deficiency, and
           keratitis. Blepharitis may also exacerbate symptoms of coexisting ocular surface disease,
           including allergy and aqueous tear deficiency. The chronic nature of blepharitis, the
           uncertain etiology, and the frequent coexistence of ocular surface disease make
           blepharitis difficult to manage. In cases where a{" "}
-          <span className="highlight">bacterial infection</span> is the cause,{" "}
-          <span className="highlight">medications</span> may be prescribed along with eyelid hygiene.{" "}
-          <span className="highlight">Nutritional supplements</span> such as{" "}
-          <span className="highlight">Omega 3</span> and{" "}
-          <span className="highlight">flaxseed oil</span> are also recommended.
+          bacterial infection is the cause,{" "}
+          medications may be prescribed along with eyelid hygiene.{" "}
+          Nutritional supplements such as{" "}
+          Omega 3 and{" "}
+          flaxseed oil are also recommended.
         </p>
       </div>
 
@@ -77,14 +77,14 @@ export default function SimonPage() {
 
       <p>
         Staphylococcal blepharitis is characterized by{" "}
-        <span className="highlight">scaling</span>, <span className="highlight">crusting</span>, and{" "}
-        <span className="highlight">erythema of the eyelid margin</span> with{" "}
-        <span className="highlight">collarette formation</span> at the base of the cilia. Chronic
+        scaling, crusting, and{" "}
+        erythema of the eyelid margin with{" "}
+        collarette formation at the base of the cilia. Chronic
         inflammation may be punctuated by acute exacerbations that lead to the development of{" "}
-        <span className="highlight">ulcerative blepharitis</span>. Loss of eyelashes and corneal
-        involvement, including <span className="highlight">punctate epithelial erosions</span>,{" "}
-        <span className="highlight">marginal infiltrates</span>, and{" "}
-        <span className="highlight">neovascularization</span>, may occur.
+        ulcerative blepharitis. Loss of eyelashes and corneal
+        involvement, including punctate epithelial erosions,{" "}
+        marginal infiltrates, and{" "}
+        neovascularization, may occur.
       </p>
 
       <div className="section">
@@ -106,78 +106,78 @@ export default function SimonPage() {
         </div>
 
         <p>
-          <span className="highlight">Anterior blepharitis</span> can be caused by either a reaction
-          to <span className="highlight">Staphylococcus bacteria</span> – these usually live
+          Anterior blepharitis can be caused by either a reaction
+          to Staphylococcus bacteria – these usually live
           harmlessly on the skin of many people, but for unknown reasons they can cause the eyelids
-          to become inflamed, or <span className="highlight">seborrhoeic dermatitis</span> – a skin
+          to become inflamed, or seborrhoeic dermatitis – a skin
           condition that causes skin to become oily or flaky and sometimes irritate the eyelids,
-          causing the <span className="highlight">Meibomian glands</span> to block.
+          causing the Meibomian glands to block.
         </p>
 
         <p>
-          <span className="highlight">Posterior blepharitis</span> is caused by a problem with the{" "}
-          <span className="highlight">Meibomian glands</span>, where the glands get blocked by
+          Posterior blepharitis is caused by a problem with the{" "}
+          Meibomian glands, where the glands get blocked by
           either debris, skin flakes or inflammation. Sometimes blockages in the Meibomian glands
-          are associated with a skin condition called <span className="highlight">rosacea</span>. If
+          are associated with a skin condition called rosacea. If
           too much oily substance is being produced, this may be caused by{" "}
-          <span className="highlight">seborrhoeic dermatitis</span>.
+          seborrhoeic dermatitis.
         </p>
 
         <p>
-          <span className="highlight">Mixed blepharitis</span>, which is the most common, is caused
+          Mixed blepharitis, which is the most common, is caused
           by a combination of both anterior and posterior blepharitis.
         </p>
 
         <p>
-          <span className="highlight">Blepharitis isn't contagious</span>.
+          Blepharitis isn't contagious.
         </p>
       </div>
 
       <div className="section">
         <h3>Stats and Incidence</h3>
         <div className="textWithImage">
-          <div className="floatingImage">Image Placeholder 2</div>
+          <div className="floatingImage ">Image Placeholder 2</div>
 
           <p>
-            Although <span className="highlight">blepharitis</span> is one of the most common ocular
+            Although blepharitis is one of the most common ocular
             disorders, epidemiological information on its incidence or prevalence within defined
             populations is lacking. One single-center study of 90 patients with chronic blepharitis
-            noted that the mean age of patients was <span className="highlight">50 years</span>.
+            noted that the mean age of patients was 50 years.
             Compared with patients with other forms of blepharitis, patients with{" "}
-            <span className="highlight">staphylococcal blepharitis</span> were found to be relatively
-            younger (<span className="highlight">42 years old</span>) and most were{" "}
-            <span className="highlight">female (80%)</span>. A survey of a representative sample of
+            staphylococcal blepharitis were found to be relatively
+            younger (42 years old) and most were{" "}
+            female (80%). A survey of a representative sample of
             U.S. adults (n = 5000) revealed that typical symptoms associated with blepharitis are
             quite common, and that{" "}
-            <span className="highlight">younger people report more frequent symptoms</span> than
+            younger people report more frequent symptoms than
             older individuals. In another study in the same report,{" "}
-            <span className="highlight">ophthalmologists and optometrists reported blepharitis in
-            37% and 47% of their patients</span>, respectively.
+            ophthalmologists and optometrists reported blepharitis in
+            37% and 47% of their patients, respectively.
           </p>
 
           <p>
             According to statistical data,{" "}
-            <span className="highlight">Chronic Blepharitis has the highest incidence of eye
-            diseases</span>. In a survey conducted in the United States (USA),{" "}
-            <span className="highlight">37% to 47% of patients</span> seen by respondents were
+            Chronic Blepharitis has the highest incidence of eye
+            diseases. In a survey conducted in the United States (USA),{" "}
+            37% to 47% of patients seen by respondents were
             diagnosed with blepharitis. In 2014,{" "}
-            <span className="highlight">blepharitis accounted for 700,000 patient visits</span> in
+            blepharitis accounted for 700,000 patient visits in
             the USA. In the past, there has been considerable confusion over the pathophysiology,
             and thus the definition of blepharitis. Because of these uncertainties, an{" "}
-            <span className="highlight">accurate assessment of prevalence and incidence</span> has
+            accurate assessment of prevalence and incidence has
             been difficult. The objective of this study was to review the literature to present
             information on the incidence and prevalence of chronic blepharitis worldwide, and to
             identify the best medical treatments and interventions. Based on the literature review,
             there are still{" "}
-            <span className="highlight">information gaps regarding the best treatment for chronic
-            blepharitis</span> and dysfunction of Meibomian gland (DMG).
+            information gaps regarding the best treatment for chronic
+            blepharitis and dysfunction of Meibomian gland (DMG).
           </p>
 
           <p>
             In conclusion, it is imperative to create{" "}
-            <span className="highlight">multi-centre randomized studies</span> to better understand{" "}
-            <span className="highlight">the best treatment</span> for these diseases in order to
-            ensure <span className="highlight">improved quality of life</span> throughout the entire
+            multi-centre randomized studies to better understand{" "}
+            the best treatment for these diseases in order to
+            ensure improved quality of life throughout the entire
             treatment.
           </p>
         </div>
@@ -186,12 +186,12 @@ export default function SimonPage() {
       <div className="section">
         <h3>Treatment</h3>
         <p>
-          <span className="highlight">Blepharitis is usually a long-term condition</span>. Most
-          people experience <span className="highlight">repeated episodes</span>, separated by
-          periods without symptoms. It <span className="highlight">can't usually be cured</span>, but
-          a <span className="highlight">daily eyelid-cleaning routine</span> can help{" "}
-          <span className="highlight">control symptoms</span> and{" "}
-          <span className="highlight">prevent permanent scarring</span> of the eyelid margins.
+          Blepharitis is usually a long-term condition. Most
+          people experience repeated episodes, separated by
+          periods without symptoms. It can't usually be cured, but
+          a daily eyelid-cleaning routine can help{" "}
+          control symptoms and{" "}
+          prevent permanent scarring of the eyelid margins.
         </p>
 
         <div className="cardsContainer">
@@ -210,17 +210,17 @@ export default function SimonPage() {
         </div>
 
         <p>
-          More severe cases may require <span className="highlight">antibiotics</span> that are either{" "}
-          <span className="highlight">applied directly to the eye/eyelid</span> or{" "}
-          <span className="highlight">taken as tablets</span>.
+          More severe cases may require antibiotics that are either{" "}
+          applied directly to the eye/eyelid or{" "}
+          taken as tablets.
         </p>
 
         <p>
-          For <span className="highlight">posterior blepharitis</span>, long-term oral{" "}
-          <span className="highlight">tetracycline, minocycline, or doxycycline</span> is more
+          For posterior blepharitis, long-term oral{" "}
+          tetracycline, minocycline, or doxycycline is more
           effective than topical antibiotics, especially for patients with{" "}
-          <span className="highlight">rosacea</span>. As little as{" "}
-          <span className="highlight">one pill twice a week</span> can maintain a relatively good
+          rosacea. As little as{" "}
+          one pill twice a week can maintain a relatively good
           therapeutic dose for long periods.
         </p>
       </div>
@@ -269,7 +269,7 @@ export default function SimonPage() {
       </div>
 
     </div>
-      <FooterPage/>
+     
 
     </div>
 

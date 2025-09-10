@@ -1,5 +1,7 @@
 "use client";
-
+//============================ 
+/* THIS IS THE WORKING PAGE */
+//============================ 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa';
@@ -74,6 +76,9 @@ export default function HomePage({ customerCode }) {
       <BrandsPage />
       <TestimonialsPage />
       <BookingPage />
+
+      
+
     </div>
   );
 }
