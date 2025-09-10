@@ -207,14 +207,14 @@ export default function SubcategoryPage() {
     <div className="mb-8 flex justify-center"> {/* Center the breadcrumb */}
       <div className="text-sm">
         <Link
-          href={`/website/${practiceId}/info_centre`}
+          href={`/info_centre`}
           className="text-primary hover:text-primary-dark underline"
         >
           Info Centre
         </Link>
         <span className="text-primary mx-2">{'>'}</span>
         <Link
-          href={`/website/${practiceId}/info_centre/${category}`}
+          href={`/info_centre/${category}`}
           className="text-primary hover:text-primary-dark underline"
         >
           {category
