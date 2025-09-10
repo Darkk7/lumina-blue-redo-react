@@ -118,7 +118,7 @@ export default function SubcategoryPage() {
               return (
                 <div key={`section-${sectionNumber}`} className="space-y-6">
                   {titleAttr && (
-                    <h3 className="text-2xl font-bold text-gray-900 border-b border-gray-200 pb-2">
+                    <h3 className="text-2xl font-bold text-gray-900 pb-2 border-b-2 border-primary">
                       {titleAttr.data}
                     </h3>
                   )}
@@ -167,7 +167,7 @@ export default function SubcategoryPage() {
                           href={urlAttr.data}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
+                          className="text-primary hover:underline"
                         >
                           {titleAttr.data}
                         </a>
@@ -185,7 +185,7 @@ export default function SubcategoryPage() {
   };
 
   return (
-    <div className="main">
+    <div className="main bg-light">
       <Navbar />
       
       {/* Keep the original banner section */}
@@ -195,43 +195,53 @@ export default function SubcategoryPage() {
           style={{ backgroundImage: `url(${content.banner})` }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <h1 className="text-5xl font-bold">{content.name}</h1>
+            <h1 className="text-5xl font-bold ">{content.name}</h1>
           </div>
         </div>
       )}
 
       {/* Content Section with SimonPage styling */}
-      <div className="content-container">
-        {/* Keep the original breadcrumb */}
-        <div className="container mx-auto px-4 py-12">
-          <div className="mb-8">
-            <div className="text-sm">
-              <Link href={getLink("/info_centre")} className="text-primary hover:text-primary-dark underline">
-                Info Centre
-              </Link>
-              <span className="text-primary mx-2">{'>'}</span>
-              <Link href={getLink(`/info_centre/${category}`)} className="text-primary hover:text-primary-dark underline">
-                {category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-              </Link>
-              <span className="text-primary mx-2">{'>'}</span>
-              <span className="text-gray-600">{content?.name}</span>
-            </div>
-          </div>
-
-          {/* Main Content with SimonPage styling */}
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto border-t border-2 border-primary">
-            {loading ? (
-              <div className="flex justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-              </div>
-            ) : error ? (
-              <div className="text-center text-red-600">{error}</div>
-            ) : (
-              renderContent()
-            )}
-          </div>
-        </div>
+<div className="content-container">
+  {/* Keep the original breadcrumb */}
+  <div className="container mx-auto px-4 py-12">
+    <div className="mb-8 flex justify-center"> {/* Center the breadcrumb */}
+      <div className="text-sm">
+        <Link
+          href={`/website/${practiceId}/info_centre`}
+          className="text-primary hover:text-primary-dark underline"
+        >
+          Info Centre
+        </Link>
+        <span className="text-primary mx-2">{'>'}</span>
+        <Link
+          href={`/website/${practiceId}/info_centre/${category}`}
+          className="text-primary hover:text-primary-dark underline"
+        >
+          {category
+            .split('_')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ')}
+        </Link>
+        <span className="text-primary mx-2">{'>'}</span>
+        <span className="text-gray-600">{content?.name}</span>
       </div>
+    </div>
+
+    {/* Main Content with SimonPage styling */}
+    <div className="bg-white rounded-lg shadow-lg p-8 max-w-6xl mx-auto border-2 border-primary">
+      {loading ? (
+        <div className="flex justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      ) : error ? (
+        <div className="text-center text-red-600">{error}</div>
+      ) : (
+        renderContent()
+      )}
+    </div>
+  </div>
+</div>
+
       
       <FooterPage />
     </div>

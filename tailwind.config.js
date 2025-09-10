@@ -10,7 +10,9 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        primary: "var(--primary-color)"
+         primary: "var(--primary-color)",
+        light: "color-mix(in srgb, var(--primary-color) 10%, white)"
+        
       },
     },
   },
