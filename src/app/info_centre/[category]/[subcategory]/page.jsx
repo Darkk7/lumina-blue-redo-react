@@ -6,12 +6,17 @@ import axios from 'axios';
 import Link from 'next/link';
 import Navbar from '../../../pages/Navbar';
 import FooterPage from '../../../pages/FooterPage';
+import { useSiteSettings } from '../../../context/SiteSettingsContext';
+import '../../../pages/simon_dev/style.css';
 
 export default function SubcategoryPage() {
   const { category, subcategory } = useParams();
+  const { siteSettings } = useSiteSettings();
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const practiceId = siteSettings?.practiceId || '';
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -19,34 +24,28 @@ export default function SubcategoryPage() {
         setLoading(true);
         setError(null);
         
-        // First get the section item details
         const itemsResponse = await axios.get('https://www.ocumail.com/api/section_items');
         const items = itemsResponse.data;
         
-        // Try to find the item by name first
         const itemByName = items.find(i => 
           i.section_category_id === parseInt(category) &&
           i.name.toLowerCase() === subcategory.toLowerCase()
         );
 
-        // If not found by name, try to find by ID
         const itemById = items.find(i => 
           i.section_category_id === parseInt(category) &&
           i.id === parseInt(subcategory)
         );
 
-        // Use the found item
         const item = itemByName || itemById;
 
         if (!item) {
           throw new Error('Item not found');
         }
 
-        // Now fetch the item's attributes
         const attributesResponse = await axios.get(`https://www.ocumail.com/api/item_attributes/${item.id}`);
         const attributes = attributesResponse.data;
 
-        // Create content object
         setContent({
           id: item.id,
           name: item.name,
@@ -67,70 +66,112 @@ export default function SubcategoryPage() {
 
   const renderContent = () => {
     if (!content) return null;
-    if (loading) return <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>;
-    if (error) return <p className="text-red-600">{error}</p>;
+    if (loading) return <div className="flex justify-center p-8"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>;
+    if (error) return <p className="text-red-600 p-4">{error}</p>;
 
     return (
       <div className="space-y-8">
         {/* Overview */}
         {content.overview && (
-          <div dangerouslySetInnerHTML={{ __html: content.overview }} />
+          <div 
+            className="prose max-w-none text-gray-700"
+            dangerouslySetInnerHTML={{ __html: content.overview }} 
+          />
         )}
 
         {/* Sections */}
-        {content.attributes.map(attr => {
-          if (!attr.name.includes('.')) return null;
-          
-          const sectionNumber = parseInt(attr.name.split('.')[1]) || 0;
-          if (sectionNumber === 0) return null;
+        {content.attributes
+          .filter(attr => attr.name.includes('.') && 
+                         !attr.name.startsWith('Reference.') && 
+                         !['bannerImg', 'Overview'].includes(attr.name))
+          .sort((a, b) => {
+            // Sort by section number
+            const getSectionNumber = (name) => {
+              const match = name.match(/\.(\d+)\./);
+              return match ? parseInt(match[1]) : 0;
+            };
+            return getSectionNumber(a.name) - getSectionNumber(b.name);
+          })
+          .map((attr, idx, arr) => {
+            const sectionNumber = parseInt(attr.name.split('.')[1]) || 0;
+            if (sectionNumber === 0) return null;
 
-          return (
-            <div key={attr.id} className="space-y-4">
-              {attr.name.endsWith('.Title') && (
-                <h2 className="text-2xl font-bold text-black mb-4">{attr.data}</h2>
-              )}
-              {attr.name.endsWith('.Body') && (
-                <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: attr.data }} />
-              )}
-              {attr.name.endsWith('.Image') && (
-                <div className="relative h-[300px] mb-8 rounded-lg overflow-hidden">
-                  <img
-                    src={attr.data}
-                    alt="Section Image"
-                    className="w-full h-full object-cover"
-                  />
+            const isNewSection = idx === 0 || 
+              (parseInt(arr[idx-1]?.name.split('.')[1]) || 0) !== sectionNumber;
+
+            if (isNewSection) {
+              // Find all attributes for this section
+              const sectionAttrs = content.attributes.filter(a => 
+                a.name.startsWith(`Section.${sectionNumber}.`)
+              );
+              
+              const titleAttr = sectionAttrs.find(a => a.name.endsWith('.Title'));
+              const bodyAttr = sectionAttrs.find(a => a.name.endsWith('.Body'));
+              const imageAttr = sectionAttrs.find(a => a.name.endsWith('.Image'));
+
+              return (
+                <div key={`section-${sectionNumber}`} className="space-y-6">
+                  {titleAttr && (
+                    <h3 className="text-2xl font-bold text-gray-900 border-b border-gray-200 pb-2">
+                      {titleAttr.data}
+                    </h3>
+                  )}
+                  {bodyAttr && (
+                    <div 
+                      className="prose max-w-none text-gray-700 leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: bodyAttr.data }} 
+                    />
+                  )}
+                  {imageAttr && (
+                    <div className="my-4 flex justify-center">
+                      <img
+                        src={imageAttr.data}
+                        alt=""
+                        className="rounded-lg shadow-md max-w-full h-auto max-h-96 object-contain"
+                      />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          );
-        })}
+              );
+            }
+            return null;
+          })}
 
         {/* References */}
-        {content.attributes.find(attr => attr.name === 'Reference.1.Title') && (
-          <div className="mt-8 border-t pt-8">
-            <h3 className="text-xl font-semibold mb-4">References</h3>
-            <div className="space-y-4">
+        {content.attributes.some(attr => attr.name.startsWith('Reference.')) && (
+          <div className="mt-12 pt-6 border-t border-gray-200">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">References</h3>
+            <ol className="list-decimal list-inside space-y-2 text-gray-700">
               {content.attributes
                 .filter(attr => attr.name.startsWith('Reference.') && attr.name.endsWith('.Title'))
-                .map((titleAttr, index) => {
+                .sort((a, b) => {
+                  const numA = parseInt(a.name.match(/Reference\.(\d+)/)[1]);
+                  const numB = parseInt(b.name.match(/Reference\.(\d+)/)[1]);
+                  return numA - numB;
+                })
+                .map((titleAttr) => {
+                  const refNum = titleAttr.name.match(/Reference\.(\d+)/)[1];
                   const urlAttr = content.attributes.find(
-                    attr => attr.name === titleAttr.name.replace('.Title', '.Url')
+                    attr => attr.name === `Reference.${refNum}.Url`
                   );
                   return (
-                    <div key={titleAttr.id} className="flex items-center">
-                      <span className="text-gray-600">{index + 1}. </span>
-                      <a
-                        href={urlAttr?.data}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 ml-2"
-                      >
-                        {titleAttr.data}
-                      </a>
-                    </div>
+                    <li key={titleAttr.id} className="ml-4 pl-2">
+                      {urlAttr ? (
+                        <a
+                          href={urlAttr.data}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          {titleAttr.data}
+                        </a>
+                      ) : (
+                        <span>{titleAttr.data}</span>
+                      )}
+                    </li>
                   );
                 })}
-            </div>
+            </ol>
           </div>
         )}
       </div>
@@ -138,10 +179,10 @@ export default function SubcategoryPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-100">
+    <div className="main">
       <Navbar />
       
-      {/* Banner Section */}
+      {/* Keep the original banner section */}
       {content?.banner && (
         <div 
           className="w-full h-[400px] bg-cover bg-center text-center text-white relative"
@@ -153,17 +194,17 @@ export default function SubcategoryPage() {
         </div>
       )}
 
-      {/* Content Section */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto border-t border-2 border-primary">
-          {/* Breadcrumb */}
+      {/* Content Section with SimonPage styling */}
+      <div className="content-container">
+        {/* Keep the original breadcrumb */}
+        <div className="container mx-auto px-4 py-12">
           <div className="mb-8">
             <div className="text-sm">
-              <Link href="/info_centre" className="text-primary hover:text-primary-dark underline">
+              <Link href={`/website/${practiceId}/info_centre`} className="text-primary hover:text-primary-dark underline">
                 Info Centre
               </Link>
               <span className="text-primary mx-2">{'>'}</span>
-              <Link href={`/info_centre/${category}`} className="text-primary hover:text-primary-dark underline">
+              <Link href={`/website/${practiceId}/info_centre/${category}`} className="text-primary hover:text-primary-dark underline">
                 {category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
               </Link>
               <span className="text-primary mx-2">{'>'}</span>
@@ -171,19 +212,22 @@ export default function SubcategoryPage() {
             </div>
           </div>
 
-          {/* Content Sections */}
-          {loading ? (
-            <div className="flex justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-          ) : error ? (
-            <div className="text-center text-red-600">{error}</div>
-          ) : (
-            renderContent()
-          )}
+          {/* Main Content with SimonPage styling */}
+          <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto border-t border-2 border-primary">
+            {loading ? (
+              <div className="flex justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : error ? (
+              <div className="text-center text-red-600">{error}</div>
+            ) : (
+              renderContent()
+            )}
+          </div>
         </div>
       </div>
+      
       <FooterPage />
-    </main>
+    </div>
   );
 }

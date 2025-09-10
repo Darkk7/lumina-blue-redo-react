@@ -44,9 +44,10 @@ export default function CategoryPage({ params }) {
 
   const categories = getCategories(category);
 
+  const { practiceId } = useSiteSettings();
+
   return (
     <div>
-      <Navbar />
       
       {/* Background Image Section */}
       <div className="w-full h-[600px] bg-[url('https://www.imageeyecareoptometrists.com/assets/info_centre_banner-4940284541b3ff321b2a3d735fc5ef1caa0f4c66de9804905118656edf31c88d.jpg')] bg-cover bg-center text-center text-white">
@@ -61,8 +62,8 @@ export default function CategoryPage({ params }) {
           {categories.map((item) => (
             <Link
               key={item.id}
-              href={`/info_centre/${category}/${item.title.toLowerCase().replace(/ /g, '_')}`}
-              as={`/info_centre/${category}/${item.title.toLowerCase().replace(/ /g, '_')}`}
+              href={`/website/${practiceId}/info_centre/${category}/${item.title.toLowerCase().replace(/ /g, '_')}`}
+              as={`/website/${practiceId}/info_centre/${category}/${item.title.toLowerCase().replace(/ /g, '_')}`}
               className="block"
             >
               <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition hover:scale-105 h-full">

@@ -1,7 +1,5 @@
 :root {
-            --primary-blue: #4A90E2;
             --light-blue: #E3F2FD;
-            --accent-blue: #2196F3;
             --dark-grey: #424242;
             --medium-grey: #757575;
             --light-grey: #F5F5F5;
@@ -46,16 +44,6 @@
             margin: 50px 0;
             margin-left: auto;
             margin-right: auto;
-        }
-
-        a {
-            text-decoration: none;
-            color: var(--primary-blue);
-            transition: color 0.2s ease;
-        }
-
-        a:hover {
-            color: var(--accent-blue);
         }
 
        .highlight {

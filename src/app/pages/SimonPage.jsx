@@ -6,7 +6,6 @@ import FooterPage from "./FooterPage";
 import Navbar from "./Navbar";
 import InfoCentreHomePage from "./InfoCentreHomePage";
 
-
 export default function SimonPage() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -14,9 +13,10 @@ export default function SimonPage() {
     setIsOpen(!isOpen);
   };
 
+
   return (
     <div className ="main">
-       <Navbar/>
+       <Navbar/>       
        
     <div className="content">
       <div className="section">
