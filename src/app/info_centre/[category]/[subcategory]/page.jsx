@@ -16,7 +16,13 @@ export default function SubcategoryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const practiceId = siteSettings?.practiceId || '';
+  const getLink = (path) => {
+    if (!siteSettings?.practiceId) {
+      return path;
+    }
+
+    return `/website/${siteSettings.practiceId}${path}`;
+  };
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -200,11 +206,11 @@ export default function SubcategoryPage() {
         <div className="container mx-auto px-4 py-12">
           <div className="mb-8">
             <div className="text-sm">
-              <Link href={`/website/${practiceId}/info_centre`} className="text-primary hover:text-primary-dark underline">
+              <Link href={getLink("/info_centre")} className="text-primary hover:text-primary-dark underline">
                 Info Centre
               </Link>
               <span className="text-primary mx-2">{'>'}</span>
-              <Link href={`/website/${practiceId}/info_centre/${category}`} className="text-primary hover:text-primary-dark underline">
+              <Link href={getLink(`/info_centre/${category}`)} className="text-primary hover:text-primary-dark underline">
                 {category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
               </Link>
               <span className="text-primary mx-2">{'>'}</span>

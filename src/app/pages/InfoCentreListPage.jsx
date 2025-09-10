@@ -88,15 +88,17 @@ const InfoCentreListPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {sectionItems.map((item) => (
               <div key={item.id} className="bg-white rounded-lg shadow-md p-6">
-                {item.thumbnail_img_url && (
-                  <div className="relative h-[200px] mb-4 rounded-lg overflow-hidden">
-                    <img
-                      src={item.thumbnail_img_url}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
+                <div className="relative h-[200px] mb-4 rounded-lg overflow-hidden">
+                  <img
+                    src={item.thumbnail_img_url || `https://www.ocumail.com${item.imgurl}`}
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Fallback in case both thumbnail_img_url and imgurl fail to load
+                      e.target.src = '/images/placeholder.jpg';
+                    }}
+                  />
+                </div>
                 <h2 className="text-2xl font-bold text-black mb-4">{item.name}</h2>
                 <p
                   className="text-gray-600 mb-4"
