@@ -92,11 +92,7 @@ const InfoCentreListPage = () => {
                   <img
                     src={item.thumbnail_img_url || `https://www.ocumail.com${item.imgurl}`}
                     alt={item.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      // Fallback in case both thumbnail_img_url and imgurl fail to load
-                      e.target.src = '/images/placeholder.jpg';
-                    }}
+                    className="w-full h-full object-cover"                    
                   />
                 </div>
                 <h2 className="text-2xl font-bold text-black mb-4">{item.name}</h2>
