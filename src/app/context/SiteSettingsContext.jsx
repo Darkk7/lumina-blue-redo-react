@@ -90,7 +90,7 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
         const primaryColorSetting = data2.find(setting => setting.setting_name === "PrimaryColor");
         const primaryColor = primaryColorSetting ? primaryColorSetting.setting_value : 'orange';
 
-        const addressObject = data2.find(obj => obj.setting_name === "Address1");   
+        const addressObject = data2.find(obj => obj.setting_name === "Address1");
 
         document.documentElement.style.setProperty('--primary-color', primaryColor);
 

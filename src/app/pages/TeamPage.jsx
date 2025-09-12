@@ -48,13 +48,12 @@ const TeamPage = () => {
   const openBioPanel = (member) => {
     setSelectedMember(member);
     setIsPanelOpen(true);
-    document.body.style.overflow = 'hidden'; // Prevent scrolling when panel is open
+    document.body.style.overflow = 'hidden';
   };
 
   const closeBioPanel = () => {
     setIsPanelOpen(false);
-    document.body.style.overflow = 'auto'; // Re-enable scrolling
-    // Delay resetting selectedMember to allow animation to complete
+    document.body.style.overflow = 'auto';
     setTimeout(() => setSelectedMember(null), 300);
   };
 

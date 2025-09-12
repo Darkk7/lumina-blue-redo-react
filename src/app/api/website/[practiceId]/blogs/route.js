@@ -5,12 +5,11 @@ export async function GET(request, { params }) {
   
   try {
     
-    const response = await fetch('https://www.eyecareportal.com/rails_admin/blog.json', {
+    const response = await fetch('https://www.eyecareportal.com/api/blogs', {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Basic bmV2YWRhOmFkbWluUHdkITIz',
       },
-      cache: 'no-store'
+      // cache: 'no-store'
     });
 
     if (!response.ok) {
@@ -37,7 +36,6 @@ export async function GET(request, { params }) {
       return NextResponse.json([]);
     }
 
-    // Filter blogs to include both practice-specific and global blogs (practice_id: null)
     const filteredBlogs = data.filter(blog => {
       const isGlobalBlog = blog.practice_id === null && blog.show === true;
       const isPracticeBlog = blog.practice_id === parseInt(practiceId) && blog.show === true;

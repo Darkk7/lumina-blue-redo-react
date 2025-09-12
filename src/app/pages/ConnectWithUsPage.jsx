@@ -1,39 +1,66 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { FaFacebook, FaInstagram, FaLinkedin, FaWhatsapp, FaPinterest, FaTiktok, FaGoogle } from 'react-icons/fa';
 import { useSiteSettings } from "../context/SiteSettingsContext";
 
 const ConnectWithUsPage = ({ practiceId }) => {
   const { siteSettings } = useSiteSettings();
-  const [socialLinks, setSocialLinks] = useState({
-    facebook: "",
-    instagram: "",
-    linkedin: "",
-    whatsapp: "",
-    pinterest: ""
-  });
+  const [offsetY, setOffsetY] = useState(0);
+  const animationFrameId = useRef();
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
-    if (practiceId) {
-      fetchPracticeDetails();
-    }
-  }, [practiceId]);
+    const handleScroll = () => {
+      if (animationFrameId.current) {
+        window.cancelAnimationFrame(animationFrameId.current);
+      }
+      
+      animationFrameId.current = window.requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        if (Math.abs(currentScrollY - lastScrollY.current) > 3) {
+          setOffsetY(currentScrollY * 0.2); // Slower parallax effect (0.2 multiplier)
+          lastScrollY.current = currentScrollY;
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (animationFrameId.current) {
+        window.cancelAnimationFrame(animationFrameId.current);
+      }
+    };
+  }, []);
 
   return (
-    <section
-      className="relative w-full bg-cover bg-center py-16 text-center"
-      style={{ backgroundImage: "url('/images/FramesBG.png')" }}
-    >
-      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>
+    <section className="relative w-full overflow-hidden py-16 text-center">
+      {/* Background with Parallax Effect */}
+      <div className="absolute inset-0 w-full h-full">
+        <div 
+          className="absolute inset-0 w-full h-full"
+          style={{
+            backgroundImage: "url('/images/FramesBG.png')",
+            backgroundSize: 'cover',
+            backgroundPosition: `center ${-offsetY}px`,
+            backgroundRepeat: 'no-repeat',
+            willChange: 'transform',
+            transform: `translate3d(0, 0, 0)` // Force hardware acceleration
+          }}
+        >
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+        </div>
+      </div>
 
       <h2 className="text-4xl font-bold mb-8 text-white relative z-10 pt-8">
         Connect With Us
       </h2>
-      <p className="mb-8 text-white relative z-10">
+      <p className="mb-8 text-white relative z-10 px-4">
         Immerse yourself in our vibrant online community by following us on platforms such as Facebook, Instagram, LinkedIn, WhatsApp, Pinterest, and more.
       </p>
-      <div className="flex justify-center gap-8 relative z-10 pb-8">
+      <div className="flex flex-wrap justify-center gap-8 relative z-10 pb-8 px-4">
       {siteSettings.facebook_url && siteSettings.facebook_url.trim() !== "" && (
         <a
           href={siteSettings.facebook_url}
@@ -110,7 +137,6 @@ const ConnectWithUsPage = ({ practiceId }) => {
           <FaGoogle />
         </a>
       )}
-
       </div>
     </section>
   );

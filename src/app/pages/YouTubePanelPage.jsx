@@ -38,7 +38,7 @@ const YouTubePanelPage = () => {
   }
 
   return (
-    <section id="about" className="w-full overflow-hidden bg-white py-12 flex items-center justify-center min-h-[600px] relative">
+    <section id="about" className="w-full overflow-hidden bg-white py-6 md:py-8 flex items-center justify-center min-h-[400px] relative">
       <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Left-side content */}

@@ -1,11 +1,21 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useSiteSettings } from '../context/SiteSettingsContext';
 
 const CustomPanelPage = () => {
   const { siteSettings, isLoading, error } = useSiteSettings();
+  const [offsetY, setOffsetY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setOffsetY(window.scrollY * 0.3); // Adjust the multiplier to control the speed of parallax
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   if (isLoading) {
     return (
@@ -37,25 +47,38 @@ const CustomPanelPage = () => {
     );
   }
 
+  const backgroundImage = siteSettings.service_description?.custom_background_image || 'https://via.placeholder.com/1920x1080';
+
   return (
-    <section id="about" className="w-full overflow-hidden bg-gray-100 py-12 flex items-center justify-center min-h-[600px] relative">
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-black opacity-50 z-[1]"></div>
-        <Image 
-          src={siteSettings.service_description?.custom_background_image || 'https://via.placeholder.com/1920x1080'}
-          alt="Placeholder Panel Background"
-          fill
-          className="object-cover opacity-90"
-          priority
-        />
+    <section id="about" className="w-full overflow-hidden bg-gray-100 py-6 md:py-8 flex items-center justify-center min-h-[400px] relative">
+      {/* Background Image with Parallax Effect */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div 
+          className="absolute inset-0 w-full h-full"
+          style={{
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: `center ${-offsetY}px`,
+            backgroundRepeat: 'no-repeat',
+            opacity: 0.9,
+            transition: 'background-position 0.1s ease-out'
+          }}
+        >
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+        </div>
       </div>
+      
       <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
         <div className="flex flex-col items-center">
           <div className="w-full space-y-6">
-            <h2 className="text-4xl text-center font-bold text-white"> {siteSettings.service_description?.custom_heading_text} </h2>
+            <h2 className="text-4xl text-center font-bold text-white">
+              {siteSettings.service_description?.custom_heading_text}
+            </h2>
           </div>
           <div className="w-full space-y-6">
-            <h2 className="text-1xl text-center font-bold text-white"> {siteSettings.service_description?.custom_body_text} </h2>
+            <p className="text-lg text-center text-white mt-5">
+              {siteSettings.service_description?.custom_body_text}
+            </p>
           </div>
           <div className="w-full flex justify-center mt-8">
             <a

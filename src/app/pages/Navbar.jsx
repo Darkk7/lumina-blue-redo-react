@@ -44,7 +44,7 @@ const Navbar = () => {
 
   return (
     <header
-      className={`w-full fixed top-0 left-0 z-50 flex justify-between items-center py-4 px-6 md:px-40 transition-all ${
+      className={`w-full fixed top-0 left-0 z-50 flex justify-between items-center py-4 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 2xl:px-40 transition-all ${
         isSticky ? "bg-white shadow-lg text-black" : "bg-transparent text-white"
       }`}
     >
@@ -62,54 +62,54 @@ const Navbar = () => {
         />
       </Link>
 
-      <nav className="hidden md:flex gap-9 font-medium">
-        <ul className="flex gap-8 items-center">
+      <nav className="hidden md:flex items-center gap-8 font-medium">
+        <ul className="flex items-center gap-8">
           <li>
-            <Link href={getLink("/")} className="hover:text-primary">
+            <Link href={getLink("/")} className="hover:text-primary whitespace-nowrap px-2">
               <b> HOME </b>
             </Link>
           </li>
           <li>
-            <Link href={getLink("/#about")} className="hover:text-primary">
+            <Link href={getLink("/#about")} className="hover:text-primary whitespace-nowrap px-2">
               <b>ABOUT</b>
             </Link>
           </li>
           <li>
-            <Link href={getLink("/#services")} className="hover:text-primary">
+            <Link href={getLink("/#services")} className="hover:text-primary whitespace-nowrap px-2">
               <b>SERVICES</b>
             </Link>
           </li>
           <li>
-            <Link href={getLink("/#team")} className="hover:text-primary">
+            <Link href={getLink("/#team")} className="hover:text-primary whitespace-nowrap px-2">
               <b>TEAM</b>
             </Link>
           </li>
           <li>
-            <Link href={getLink("/#testimonials")} className="hover:text-primary">
+            <Link href={getLink("/#testimonials")} className="hover:text-primary whitespace-nowrap px-2">
               <b>FEEDBACK</b>
             </Link>
           </li>
           <li>
-            <Link href={getLink("/info_centre")} className="hover:text-primary">
+            <Link href={getLink("/info_centre")} className="hover:text-primary whitespace-nowrap px-2">
               <b>INFO CENTRE</b>
             </Link>
           </li>
           <li>
-            <Link href={getLink("/blog")} className="hover:text-primary">
+            <Link href={getLink("/blog")} className="hover:text-primary whitespace-nowrap px-2">
               <b>NEWS FEED</b>
             </Link>
           </li>
-          {isSticky && (
-            <li className="ml-4">
-              <Link
-                href={siteSettings?.booking_url || '#booking'}
-                className="px-6 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all"
-              >
-                MAKE A BOOKING
-              </Link>
-            </li>
-          )}
         </ul>
+        {isSticky && (
+          <div className="ml-2">
+            <Link
+              href={siteSettings?.booking_url || '#booking'}
+              className="px-4 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all whitespace-nowrap"
+            >
+              MAKE A BOOKING
+            </Link>
+          </div>
+        )}
       </nav>
 
       {/* Mobile Navbar */}
