@@ -29,39 +29,39 @@ const FooterPage = () => {
             </p>
             <div className="flex space-x-4">
               {typeof siteSettings.facebook_url === 'string' && siteSettings.facebook_url.trim() !== "" && (
-                <a href={siteSettings.facebook_url} className="text-white hover:text-primary">
+                <a href={siteSettings.facebook_url} className="text-primary hover:text-white">
                   <FaFacebook className="h-6 w-6" />
                 </a>
               )}
               {typeof siteSettings.instagram_url === 'string' && siteSettings.instagram_url.trim() !== "" && (
-                <a href={siteSettings.instagram_url} className="text-white hover:text-primary">
+                <a href={siteSettings.instagram_url} className="text-primary hover:text-white">
                   <FaInstagram className="h-6 w-6" />
                 </a>
               )}
               {typeof siteSettings.linkedin_url === 'string' && siteSettings.linkedin_url.trim() !== "" && (
-                <a href={siteSettings.linkedin_url} className="text-white hover:text-primary">
+                <a href={siteSettings.linkedin_url} className="text-primary hover:text-white">
                   <FaLinkedin className="h-6 w-6" />
                 </a>
               )}
               {typeof siteSettings.tiktok_url === 'string' && siteSettings.tiktok_url.trim() !== "" && (
-                <a href={siteSettings.tiktok_url} className="text-white hover:text-primary">
+                <a href={siteSettings.tiktok_url} className="text-primary hover:text-white">
                   <FaTiktok className="h-6 w-6" />
                 </a>
               )}
               {typeof siteSettings.google_business_profile_url === 'string' && siteSettings.google_business_profile_url.trim() !== "" && (
-                <a href={siteSettings.google_business_profile_url} className="text-white hover:text-primary">
+                <a href={siteSettings.google_business_profile_url} className="text-primary hover:text-white">
                   <FaGoogle className="h-6 w-6" />
                 </a>
               )}
               {typeof siteSettings.pinterest_url === 'string' && siteSettings.pinterest_url.trim() !== "" && (
-                <a href={siteSettings.pinterest_url} className="text-white hover:text-primary">
+                <a href={siteSettings.pinterest_url} className="text-primary hover:text-white">
                   <FaPinterest className="h-6 w-6" />
                 </a>
               )}
               {typeof siteSettings.whatsapp_tel === 'string' && siteSettings.whatsapp_tel.trim() !== "" && (
                 <a 
-                  href={`https://wa.me/${siteSettings.whatsapp_tel.replace(/[^0-9]/g, '')}`} 
-                  className="text-white hover:text-primary"
+                  href={`https://wa.me/${siteSettings.whatsapp_tel.replace(/[^0-9]/g, '')}`}
+                  className="text-primary hover:text-white"
                 >
                   <FaWhatsapp className="h-6 w-6" />
                 </a>
@@ -87,13 +87,13 @@ const FooterPage = () => {
             <h3 className="text-lg font-semibold text-white mb-4">Blog Posts</h3>
             <div className="space-y-4">
               <div className="border-b border-gray-200 pb-2">
-                <a href="#" className="text-white hover:text-primary">
+                <a href="#" className="text-primary hover:text-white">
                   <p className="font-medium">Understanding Different Types of Lenses</p>
                   <p className="text-sm text-white">June 15, 2023</p>
                 </a>
               </div>
               <div>
-                <a href="#" className="text-white hover:text-primary">
+                <a href="#" className="text-primary hover:text-white">
                   <p className="font-medium">How Often Should You Get an Eye Exam?</p>
                   <p className="text-sm text-white">May 28, 2023</p>
                 </a>

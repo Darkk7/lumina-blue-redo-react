@@ -119,7 +119,7 @@ const BlogHomePage = () => {
 
         {/* Blog Cards Section */}
         <div className="container mx-auto py-10 px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             {sortedBlogs.map((blog) => (
               <div key={blog.id} className="h-full">
                 <Link href={`/website/${practiceId}/blog/${blog.id}`}>
