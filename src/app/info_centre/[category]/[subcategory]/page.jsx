@@ -243,7 +243,7 @@ export default function SubcategoryPage() {
 </div>
 
       
-      <FooterPage />
+      <FooterPage practiceId={siteSettings?.practiceId} />
     </div>
   );
 }

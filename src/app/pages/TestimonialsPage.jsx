@@ -39,7 +39,7 @@ const TestimonialsPage = () => {
   return (
     <section id="testimonials" className="w-full py-16 text-center px-4">
       <h1 className="text-3xl font-bold mb-8 text-black">Clients' Reviews</h1>
-      <p className="mb-8 text-gray-500">
+      <p className="text-lg text-center mb-12 text-gray-600 max-w-5xl mx-auto">
         Some of the recent feedback from our customers. Please rate your
         experience with us via Google.
       </p>

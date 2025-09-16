@@ -84,12 +84,12 @@ const InfoCentreHomePage = () => {
       <div className="py-16 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto space-y-20">
           {categories.map((category, index) => (
-            <div
-              id={`category-${category.id}`}
-              key={category.id}
+            <Link
+              href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}`}
               className={`flex flex-col md:flex-row ${
                 index % 2 !== 0 ? "md:flex-row-reverse" : ""
               } items-center gap-8 p-6 rounded-lg shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl ${index % 2 === 1 ? "bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400" : "bg-gradient-to-r from-white via-white to-white"}`}
+              key={category.id}
               onClick={() => handleCategoryClick(category.id)}
             >
               {/* Image Section */}
@@ -112,15 +112,11 @@ const InfoCentreHomePage = () => {
                 <p className="text-gray-600 mb-6 text-lg leading-relaxed">
                   Learn more about {category.name}.
                 </p>
-                <Link
-                  href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}`}
-                  className="inline-block bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform transform hover:scale-105"
-                >
-                  <span>Explore {category.name}</span>
-                  <span className="ml-2 inline-block"></span>
-                </Link>
+                <span className="inline-block bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform transform hover:scale-105">
+                  Explore {category.name}
+                </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

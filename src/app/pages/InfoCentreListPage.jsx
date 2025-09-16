@@ -87,7 +87,11 @@ const InfoCentreListPage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {sectionItems.map((item) => (
-              <div key={item.id} className="bg-white rounded-lg shadow-md p-6">
+              <Link
+                key={item.id}
+                href={`/info_centre/${category}/${item.id}`}
+                className="bg-white rounded-lg shadow-md p-6 block"
+              >
                 <div className="relative h-[200px] mb-4 rounded-lg overflow-hidden">
                   <img
                     src={item.thumbnail_img_url || `https://www.ocumail.com${item.imgurl}`}
@@ -109,23 +113,10 @@ const InfoCentreListPage = () => {
                 >
                   {item.body}
                 </p>
-                <button
-                  onClick={() => handleExplore(item.id, item.name)}
-                  className="w-full sm:w-[200px] text-sm bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform transform hover:scale-105 text-center"
-                >
+                <span className="w-full sm:w-[200px] text-sm bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform transform hover:scale-105 text-center block">
                   Explore {item.name}
-                </button>
-                {item.linkurl && (
-                  <a
-                    href={item.linkurl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full sm:w-[200px] text-sm bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform text-center"
-                  >
-                    Learn More
-                  </a>
-                )}
-              </div>
+                </span>
+              </Link>
             ))}
           </div>
         </div>

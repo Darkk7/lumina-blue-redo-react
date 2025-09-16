@@ -3,9 +3,30 @@
 import { FaFacebook, FaInstagram, FaLinkedin, FaPinterest, FaWhatsapp, FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaTiktok, FaGoogle } from 'react-icons/fa';
 import { useSiteSettings } from "../context/SiteSettingsContext";
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 const FooterPage = () => {
   const { siteSettings } = useSiteSettings();
+  const [blogs, setBlogs] = useState([]);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const response = await fetch(`/api/website/${siteSettings.practiceId}/blogs`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch blogs');
+        }
+        const data = await response.json();
+        // Sort by date and take the 2 most recent
+        const sortedBlogs = data.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 2);
+        setBlogs(sortedBlogs);
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+      }
+    };
+
+    fetchBlogs();
+  }, [siteSettings.practiceId]);
 
   const getLink = (path) => {
     if (!siteSettings?.practiceId) {
@@ -78,26 +99,21 @@ const FooterPage = () => {
               <li><Link href={getLink("/#services")} className="text-white hover:text-primary">Services</Link></li>
               <li><Link href={getLink("/#team")} className="text-white hover:text-primary">Team</Link></li>
               <li><Link href={getLink("/#testimonials")} className="text-white hover:text-primary">Feedback</Link></li>
-              <li><Link href={getLink("/simon_dev")} className="text-white hover:text-primary">Simon Page</Link></li>
             </ul>
           </div>
 
           {/* Column 3: Latest Blog Posts */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">Blog Posts</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">Recent News</h3>
             <div className="space-y-4">
-              <div className="border-b border-gray-200 pb-2">
-                <a href="#" className="text-primary hover:text-white">
-                  <p className="font-medium">Understanding Different Types of Lenses</p>
-                  <p className="text-sm text-white">June 15, 2023</p>
-                </a>
-              </div>
-              <div>
-                <a href="#" className="text-primary hover:text-white">
-                  <p className="font-medium">How Often Should You Get an Eye Exam?</p>
-                  <p className="text-sm text-white">May 28, 2023</p>
-                </a>
-              </div>
+              {blogs.map((blog, index) => (
+                <div key={index} className="border-b border-gray-200 pb-2">
+                  <a href="#" className="text-primary hover:text-white">
+                    <p className="font-medium">{blog.title}</p>
+                    <p className="text-sm text-white">{new Date(blog.date).toLocaleDateString()}</p> 
+                  </a>
+                </div>
+              ))}
             </div>
           </div>
 

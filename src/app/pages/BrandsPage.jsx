@@ -51,8 +51,8 @@ const BrandsPage = () => {
 
   return (
     <section id="brands" className="w-full bg-gray-100 py-16 px-4 sm:px-8 lg:px-16 text-center">
-      <h2 className="text-3xl md:text-4xl font-bold text-black mb-5">Our Brands</h2>
-      <p className="text-lg text-center mb-12 text-gray-600 max-w-3xl mx-auto"></p>
+      <h2 className="text-3xl font-bold text-black mb-12">Our Brands</h2>
+      <p className="text-lg text-center mb-12 text-gray-600 max-w-5xl mx-auto">The brands we stock reflect what matters to us—quality, reliability, and the confidence to recommend them to our patients every day.</p>
       <div className="max-w-7xl mx-auto px-4">
         <Slider {...settings} className="[&_.slick-slide]:px-3">
           {siteSettings && siteSettings.brands && siteSettings.brands

@@ -6,15 +6,9 @@ import { useSiteSettings } from '../context/SiteSettingsContext';
 
 const CustomPanelPage = () => {
   const { siteSettings, isLoading, error } = useSiteSettings();
-  const [offsetY, setOffsetY] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setOffsetY(window.scrollY * 0.3); // Adjust the multiplier to control the speed of parallax
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    // No scroll or touch event listeners needed
   }, []);
 
   if (isLoading) {
@@ -51,23 +45,23 @@ const CustomPanelPage = () => {
 
   return (
     <section id="about" className="w-full overflow-hidden bg-gray-100 py-6 md:py-8 flex items-center justify-center min-h-[400px] relative">
-      {/* Background Image with Parallax Effect */}
+      {/* Static Background Image */}
       <div className="absolute inset-0 overflow-hidden">
         <div 
-          className="absolute inset-0 w-full h-full"
+          className="absolute inset-0 w-full h-full parallax-bg"
           style={{
             backgroundImage: `url(${backgroundImage})`,
+            backgroundAttachment: 'fixed',
             backgroundSize: 'cover',
-            backgroundPosition: `center ${-offsetY}px`,
+            backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-            opacity: 0.9,
-            transition: 'background-position 0.1s ease-out'
+            opacity: 0.9
           }}
         >
           <div className="absolute inset-0 bg-black opacity-50"></div>
         </div>
       </div>
-      
+
       <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
         <div className="flex flex-col items-center">
           <div className="w-full space-y-6">

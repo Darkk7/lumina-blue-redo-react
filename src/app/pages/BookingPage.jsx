@@ -143,6 +143,14 @@ const BookingPage = () => {
     }
   }, [siteSettings]);
 
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const displayErrorMessage = (message) => {
+    setErrorMessage(message);
+    setShowError(true);
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -318,8 +326,9 @@ const BookingPage = () => {
   };
 
   const handleRequestCall = async () => {
+    console.log('formData:', formData);
     if (!formData.name || !formData.mobile) {
-      alert('Please provide your name and phone number');
+      displayErrorMessage('Please provide the following:\n- Name\n- Contact Number');
       return;
     }
     
@@ -338,7 +347,6 @@ const BookingPage = () => {
       formDataToSend.append('appointment[end_time]', '');
       formDataToSend.append('appointment[practitioner_id]', formData.practitioner || '');
       formDataToSend.append('appointment[status]', 'requested');
-      formDataToSend.append('appointment[practice_id]', practiceId);
       formDataToSend.append('appointment[source]', 'lumina');
 
       formDataToSend.append('practice[id]', practiceId);
@@ -362,7 +370,7 @@ const BookingPage = () => {
       }
     } catch (error) {
       console.error('Error requesting call:', error);
-      alert('There was an error processing your request. Please try again.');
+      displayErrorMessage('There was an error processing your request. Please try again.');
     }
   };
 
@@ -370,7 +378,7 @@ const BookingPage = () => {
     e.preventDefault();
     
     if (!formData.timeSlot || !formData.date || !formData.practitioner) {
-      alert('Please fill in all required fields and select a time slot');
+      displayErrorMessage('Please fill in all required fields and select a time slot');
       return;
     }
     
@@ -451,7 +459,7 @@ const BookingPage = () => {
       }
     } catch (error) {
       console.error('Error booking appointment:', error);
-      alert('There was an error booking your appointment. Please try again.');
+      displayErrorMessage('There was an error booking your appointment. Please try again.');
     }
   };
 
@@ -464,60 +472,74 @@ const BookingPage = () => {
         )}
         
         <section id="booking" className="section cta pt-0 pb-0">
-          <div className="book flex flex-col lg:flex-row bg-white rounded-lg shadow-md overflow-hidden" style={{ minHeight: "681px" }}>
-            <div className="map lg:w-1/2 relative">
-              <iframe
-                src={`https://maps.google.com/maps?q=${siteSettings.address_1}&output=embed`}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-              ></iframe>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="p-6 bg-white shadow-md rounded">
-                  <h5 className="secondary-color text-gray-800">Physical Address</h5>
-                  <ul className="list-unstyled">
-                    <li className="text-gray-500">{siteSettings.address_1}</li>
-                  </ul>
-                  <h5 className="secondary-color text-gray-800">Trading Hours</h5>
-                  <ul className="list-unstyled">
-                    {siteSettings.working_hours.map((schedule, index) => {
-                      const days = schedule.days;
-                      let displayDays = '';
+          <div className="flex flex-col lg:flex-row bg-white rounded-lg shadow-md overflow-hidden" style={{ minHeight: "800px" }}>
+            {/* Contact Information Card - Full width on mobile, left side on desktop */}
+            <div className="lg:order-1 order-2 lg:w-1/2 lg:flex lg:flex-col">
+              {/* Map - Full width on mobile, fixed height on desktop */}
+              <div className="h-64 lg:h-1/2">
+                <iframe
+                  src={`https://maps.google.com/maps?q=${siteSettings.address_1}&output=embed`}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                ></iframe>
+              </div>
+              
+              {/* Contact Info - Scrollable area below map */}
+              <div className="p-6 lg:overflow-y-auto lg:h-1/2">
+                <div className="max-w-2xl mx-auto space-y-6">
+                  <div>
+                    <h5 className="text-xl font-medium text-primary mb-2">Physical Address</h5>
+                    <p className="text-gray-600">{siteSettings.address_1}</p>
+                  </div>
+                  
+                  <div>
+                    <h5 className="text-xl font-medium text-primary mb-2">Trading Hours</h5>
+                    <ul className="space-y-1">
+                      {siteSettings.working_hours.map((schedule, index) => {
+                        const days = schedule.days;
+                        let displayDays = '';
 
-                      if (days.includes(0) && days.includes(1) && days.includes(2) && days.includes(3) && days.includes(4)) {
-                        displayDays = 'Monday - Friday';
-                      } else if (days.includes(5)) {
-                        displayDays = 'Saturday';
-                      } else if (days.includes(6)) {
-                        displayDays = 'Sunday';
-                      }
-                      else if (days.includes(7)) {
-                        displayDays = 'Public Holidays';
-                      }
+                        if (days.includes(0) && days.includes(1) && days.includes(2) && days.includes(3) && days.includes(4)) {
+                          displayDays = 'Monday - Friday';
+                        } else if (days.includes(5)) {
+                          displayDays = 'Saturday';
+                        } else if (days.includes(6)) {
+                          displayDays = 'Sunday';
+                        }
+                        else if (days.includes(7)) {
+                          displayDays = 'Public Holidays';
+                        }
 
-                      return (
-                        <li key={index} className="text-gray-500">
-                          {schedule.open ? `${displayDays}: ${schedule.start} - ${schedule.end}` : `${displayDays}: Closed`}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                  <h5 className="secondary-color text-gray-800">Contact Details</h5>
-                  <ul className="list-unstyled">
-                    <li className="text-gray-500"> {siteSettings.tel} </li>
-                    <li className="text-gray-500"> {siteSettings.email} </li>
-                  </ul>
+                        return (
+                          <li key={index} className="text-gray-600">
+                            {schedule.open ? `${displayDays}: ${schedule.start} - ${schedule.end}` : `${displayDays}: Closed`}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h5 className="text-xl font-medium text-primary mb-2">Contact Details</h5>
+                    <ul className="space-y-1">
+                      <li className="text-gray-600">{siteSettings.tel}</li>
+                      <li className="text-gray-600">{siteSettings.email}</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="container lg:w-1/2 p-8">
-              <h3 id="book_appointment" className="text-2xl mb-4 font-bold text-center text-gray-800">
+            
+            {/* Booking Form - Full width on mobile, right side on desktop */}
+            <div className="lg:order-2 order-1 lg:w-1/2 p-6 lg:p-8 bg-gray-50">
+              <h3 id="book_appointment" className="text-3xl lg:text-4xl mb-6 font-bold text-center text-gray-800">
                 <span className="text-primary">Book</span> Your Appointment
               </h3>
               <form 
                 onSubmit={handleSubmit}
-                className="form bg-white rounded-lg shadow-md px-8 pt-8 pb-6 mb-4 w-full max-w-2xl mx-auto"
+                className="bg-white rounded-lg shadow-md p-6 w-full max-w-2xl mx-auto"
                 id="booking_form" 
                 name="booking_form"
               >
@@ -666,6 +688,12 @@ const BookingPage = () => {
                     {showSuccessMessage && (
                       <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
                         Your appointment has been booked successfully!
+                      </div>
+                    )}
+                    
+                    {showError && (
+                      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <span className="block sm:inline">{errorMessage}</span>
                       </div>
                     )}
                     
