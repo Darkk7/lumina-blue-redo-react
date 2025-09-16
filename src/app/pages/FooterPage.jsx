@@ -106,14 +106,17 @@ const FooterPage = () => {
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Recent News</h3>
             <div className="space-y-4">
-              {blogs.map((blog, index) => (
-                <div key={index} className="border-b border-gray-200 pb-2">
-                  <a href="#" className="text-primary hover:text-white">
-                    <p className="font-medium">{blog.title}</p>
-                    <p className="text-sm text-white">{new Date(blog.date).toLocaleDateString()}</p> 
-                  </a>
-                </div>
-              ))}
+               {blogs.map(blog => (
+        <div key={blog.id} className="border-b border-gray-200 pb-2 mb-2">
+          <Link 
+            href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`} 
+            style={{ color: "var(--primary-color)" }} // apply dynamic color here
+          >
+            {blog.title}
+          </Link>
+          <div className="text-sm text-gray-400">{blog.date}</div>
+        </div>
+      ))}
             </div>
           </div>
 
