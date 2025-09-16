@@ -12,13 +12,6 @@ const formatCategoryName = (str) => {
     .join(' ');
 };
 
-const dataMapping = {
-  refractive_conditions: refractiveData,
-  rx_lens_options: rxLensData,
-  contact_lenses: contactLensesData,
-  // Add more mappings here as you create new JSON files
-};
-
 const getCategories = (categoryName) => {
   if (!categoryName) {
     console.error("Category name is undefined");

@@ -80,9 +80,27 @@ const InfoCentreListPage = () => {
         </div>
       </div>
 
+      {/* Breadcrumb Navigation */}
+      <div className="py-8 pb-0">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-center">
+            <div className="text-center">
+              <div className="text-sm">
+                <Link
+                  href={`/website/${siteSettings.practiceId}/info_centre`}
+                  className="text-primary hover:text-primary-dark underline"
+                >
+                  Info Centre
+                </Link>
+                <span className="text-gray-600">{categoryName}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Main Content */}
-      <div className="container mx-auto px-4">
-        <div className="py-8">
+        <div className="">
           <h1 className="text-4xl font-bold text-gray-800 mb-8">{categoryName}</h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -118,8 +136,7 @@ const InfoCentreListPage = () => {
                 </span>
               </Link>
             ))}
-          </div>
-        </div>
+          </div>        
       </div>
     </main>
   );

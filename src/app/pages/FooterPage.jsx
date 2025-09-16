@@ -146,7 +146,6 @@ const FooterPage = () => {
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#privacy" className="text-white hover:text-primary text-sm">Privacy Policy</a>
               <a href="#paia" className="text-white hover:text-primary text-sm">PAIA Policy</a>
-              <a href="#news" className="text-white hover:text-primary text-sm">News Feed</a>
             </div>
           </div>
         </div>
