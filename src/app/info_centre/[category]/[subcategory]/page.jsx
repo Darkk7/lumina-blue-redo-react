@@ -13,6 +13,7 @@ export default function SubcategoryPage() {
   const { category, subcategory } = useParams();
   const { siteSettings } = useSiteSettings();
   const [content, setContent] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -24,11 +25,16 @@ export default function SubcategoryPage() {
   };
 
   useEffect(() => {
-    const fetchContent = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
 
+        // Fetch categories
+        const categoriesResponse = await axios.get('https://www.ocumail.com/api/section_categories');
+        setCategories(categoriesResponse.data);
+
+        // Rest of your existing fetch logic
         const itemsResponse = await axios.get('https://www.ocumail.com/api/section_items');
         const items = itemsResponse.data;
 
@@ -50,24 +56,46 @@ export default function SubcategoryPage() {
 
         const attributesResponse = await axios.get(`https://www.ocumail.com/api/item_attributes/${item.id}`);
         const attributes = attributesResponse.data;
+        
+        // Debug: Log all attributes
+        console.log('All attributes:', attributes);
+
+        const bannerUrl = item.thumbnail_img_url 
+          ? item.thumbnail_img_url
+          : item.imgurl 
+            ? `https://www.ocumail.com${item.imgurl}`
+            : '';
+            
+        console.log('Thumbnail URL:', item.thumbnail_img_url);
+        console.log('Image URL:', item.imgurl);
+        console.log('Final banner URL:', bannerUrl);
+
+        const overview = attributes.find(attr => attr.name === 'Overview')?.data || '';
+        console.log('Overview content:', overview);
 
         setContent({
           id: item.id,
           name: item.name,
-          banner: attributes.find(attr => attr.name === 'bannerImg')?.data || '',
-          overview: attributes.find(attr => attr.name === 'Overview')?.data || '',
+          banner: bannerUrl,
+          overview: overview,
           attributes: attributes.filter(attr => attr.name !== 'Overview' && attr.name !== 'bannerImg')
         });
-      } catch (error) {
-        console.error('Error fetching content:', error);
-        setError('Failed to load content');
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError('Failed to load content. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchContent();
+    fetchData();
   }, [category, subcategory]);
+
+  // Get category name by ID
+  const getCategoryName = (categoryId) => {
+    const foundCategory = categories.find(cat => cat.id === parseInt(categoryId));
+    return foundCategory ? foundCategory.name : categoryId;
+  };
 
   const renderContent = () => {
     if (!content) return null;
@@ -136,9 +164,13 @@ export default function SubcategoryPage() {
                     {imageAttr && (
                       <div className="my-4 flex justify-center">
                         <img
-                          src={imageAttr.data}
+                          src={imageAttr.data.startsWith('http') ? imageAttr.data : `https://www.ocumail.com${imageAttr.data}`}
                           alt=""
                           className="rounded-lg shadow-md max-w-2xl w-full h-auto object-contain"
+                          onError={(e) => {
+                            console.error('Failed to load image:', imageAttr.data);
+                            e.target.style.display = 'none';
+                          }}
                         />
                       </div>
                     )}
@@ -214,23 +246,20 @@ export default function SubcategoryPage() {
           <div className="mb-8 flex justify-center">
             <div className="text-sm">
               <Link
-                href={`/info_centre`}
+                href={`/website/${siteSettings?.practiceId}/info_centre`}
                 className="text-primary hover:text-primary-dark underline"
               >
                 Info Centre
               </Link>
               <span className="text-primary mx-2">{'>'}</span>
               <Link
-                href={`/info_centre/${category}`}
+                href={`/website/${siteSettings?.practiceId}/info_centre/${category}`}
                 className="text-primary hover:text-primary-dark underline"
               >
-                {category
-                  .split('_')
-                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(' ')}
+                {getCategoryName(category).replace(/&/g, '&')}
               </Link>
               <span className="text-primary mx-2">{'>'}</span>
-              <span className="text-gray-600">{content?.name}</span>
+              <span className="text-gray-600">{content?.name || subcategory}</span>
             </div>
           </div>
 
