@@ -13,7 +13,7 @@ module.exports = {
          primary: "var(--primary-color)",
         light: "color-mix(in srgb, var(--primary-color) 10%, white)",
         gray:{
-          400: "#f0f0f0"
+          400: "#f3f4f6"
         },
       },
     },
