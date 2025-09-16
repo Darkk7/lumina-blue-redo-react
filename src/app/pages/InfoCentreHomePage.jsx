@@ -72,7 +72,7 @@ const InfoCentreHomePage = () => {
   };
 
   return (
-    <div>
+    <div className=" w-full">
       {/* Hero Section */}
       <div className="w-full h-[500px] bg-[url('https://www.imageeyecareoptometrists.com/assets/info_centre_banner-4940284541b3ff321b2a3d735fc5ef1caa0f4c66de9804905118656edf31c88d.jpg')] bg-cover bg-center text-white">
         <div className="h-full bg-black bg-opacity-50 flex items-center justify-center">
