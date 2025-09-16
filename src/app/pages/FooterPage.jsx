@@ -110,7 +110,7 @@ const FooterPage = () => {
         <div key={blog.id} className="border-b border-gray-200 pb-2 mb-2">
           <Link 
             href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`} 
-            style={{ color: "var(--primary-color)" }} // apply dynamic color here
+            style={{ color: "var(--primary-color)" }}
           >
             {blog.title}
           </Link>

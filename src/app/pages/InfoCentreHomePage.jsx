@@ -72,7 +72,7 @@ const InfoCentreHomePage = () => {
   };
 
   return (
-    <div className=" w-full">
+    <div>
       {/* Hero Section */}
       <div className="w-full h-[500px] bg-[url('https://www.imageeyecareoptometrists.com/assets/info_centre_banner-4940284541b3ff321b2a3d735fc5ef1caa0f4c66de9804905118656edf31c88d.jpg')] bg-cover bg-center text-white">
         <div className="h-full bg-black bg-opacity-50 flex items-center justify-center">
@@ -121,34 +121,6 @@ const InfoCentreHomePage = () => {
         </div>
       </div>
 
-      {/* Mobile Carousel (Optional - Just add for smaller screen users) */}
-      <div className="md:hidden py-12 px-4">
-        <div className="overflow-x-scroll flex space-x-6">
-          {categories.map((category) => (
-            <div key={category.id} className="flex-shrink-0 w-60">
-              <Link
-                href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}`}
-                className="block bg-white rounded-xl shadow-md overflow-hidden"
-              >
-                <div className="relative h-48 w-full">
-                  {category.thumbnailImgUrl && (
-                    <Image
-                      src={category.thumbnailImgUrl}
-                      alt={category.name}
-                      layout="fill"
-                      className="object-cover"
-                    />
-                  )}
-                </div>
-                <div className="p-4">
-                  <h3 className="text-xl font-semibold text-gray-800">{category.name}</h3>
-                  <p className="text-gray-500 text-sm">Learn more about {category.name.toLowerCase()}.</p>
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
-      </div>
       <FooterPage />
     </div>
   );
