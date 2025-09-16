@@ -185,7 +185,7 @@ export default function SubcategoryPage() {
   };
 
   return (
-    <div className="main bg-light">
+    <div className="main bg-gray-400">
       <Navbar />
       
       {/* Keep the original banner section */}
@@ -228,7 +228,7 @@ export default function SubcategoryPage() {
     </div>
 
     {/* Main Content with SimonPage styling */}
-    <div className="bg-white rounded-lg shadow-lg p-8 max-w-6xl mx-auto border-2 border-primary">
+    <div className="bg-white rounded-lg shadow-lg p-8 max-w-6xl mx-auto border-2 border-gray-500">
       {loading ? (
         <div className="flex justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
