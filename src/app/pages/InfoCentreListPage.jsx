@@ -107,7 +107,7 @@ const InfoCentreListPage = () => {
             {sectionItems.map((item) => (
               <Link
                 key={item.id}
-                href={`/info_centre/${category}/${item.id}`}
+                href={`/website/${siteSettings?.practiceId}/info_centre/${category}/${item.id}`}
                 className="bg-white rounded-lg shadow-md p-6 block"
               >
                 <div className="relative h-[200px] mb-4 rounded-lg overflow-hidden">
