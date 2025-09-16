@@ -20,7 +20,6 @@ export default function SubcategoryPage() {
     if (!siteSettings?.practiceId) {
       return path;
     }
-
     return `/website/${siteSettings.practiceId}${path}`;
   };
 
@@ -29,16 +28,16 @@ export default function SubcategoryPage() {
       try {
         setLoading(true);
         setError(null);
-        
+
         const itemsResponse = await axios.get('https://www.ocumail.com/api/section_items');
         const items = itemsResponse.data;
-        
-        const itemByName = items.find(i => 
+
+        const itemByName = items.find(i =>
           i.section_category_id === parseInt(category) &&
           i.name.toLowerCase() === subcategory.toLowerCase()
         );
 
-        const itemById = items.find(i => 
+        const itemById = items.find(i =>
           i.section_category_id === parseInt(category) &&
           i.id === parseInt(subcategory)
         );
@@ -76,22 +75,21 @@ export default function SubcategoryPage() {
     if (error) return <p className="text-red-600 p-4">{error}</p>;
 
     return (
-      <div className="space-y-8">
+      <div className="space-y-12">
         {/* Overview */}
         {content.overview && (
-          <div 
-            className="prose max-w-none text-gray-700"
-            dangerouslySetInnerHTML={{ __html: content.overview }} 
+          <div
+            className="prose prose-lg max-w-3xl mx-auto text-gray-700 leading-relaxed text-justify"
+            dangerouslySetInnerHTML={{ __html: content.overview }}
           />
         )}
 
         {/* Sections */}
         {content.attributes
-          .filter(attr => attr.name.includes('.') && 
-                         !attr.name.startsWith('Reference.') && 
+          .filter(attr => attr.name.includes('.') &&
+                         !attr.name.startsWith('Reference.') &&
                          !['bannerImg', 'Overview'].includes(attr.name))
           .sort((a, b) => {
-            // Sort by section number
             const getSectionNumber = (name) => {
               const match = name.match(/\.(\d+)\./);
               return match ? parseInt(match[1]) : 0;
@@ -102,41 +100,49 @@ export default function SubcategoryPage() {
             const sectionNumber = parseInt(attr.name.split('.')[1]) || 0;
             if (sectionNumber === 0) return null;
 
-            const isNewSection = idx === 0 || 
+            const isNewSection = idx === 0 ||
               (parseInt(arr[idx-1]?.name.split('.')[1]) || 0) !== sectionNumber;
 
             if (isNewSection) {
               // Find all attributes for this section
-              const sectionAttrs = content.attributes.filter(a => 
+              const sectionAttrs = content.attributes.filter(a =>
                 a.name.startsWith(`Section.${sectionNumber}.`)
               );
-              
+
               const titleAttr = sectionAttrs.find(a => a.name.endsWith('.Title'));
               const bodyAttr = sectionAttrs.find(a => a.name.endsWith('.Body'));
               const imageAttr = sectionAttrs.find(a => a.name.endsWith('.Image'));
 
               return (
-                <div key={`section-${sectionNumber}`} className="space-y-6">
+                <div key={`section-${sectionNumber}`} className="space-y-8">
+                  {/* Section Title */}
                   {titleAttr && (
-                    <h3 className="text-2xl font-bold text-gray-900 pb-2 border-b-2 border-primary">
-                      {titleAttr.data}
-                    </h3>
-                  )}
-                  {bodyAttr && (
-                    <div 
-                      className="prose max-w-none text-gray-700 leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: bodyAttr.data }} 
-                    />
-                  )}
-                  {imageAttr && (
-                    <div className="my-4 flex justify-center">
-                      <img
-                        src={imageAttr.data}
-                        alt=""
-                        className="rounded-lg shadow-md max-w-full h-auto max-h-96 object-contain"
-                      />
+                    <div className="flex justify-left">
+                      <h3 className="inline-block px-1 text-2xl font-bold text-gray-900 pb-2 border-b-2 border-primary">
+                        {titleAttr.data}
+                      </h3>
                     </div>
                   )}
+
+                  {/* Section Body + Image */}
+                  <div className="flex flex-col items-center space-y-6">
+                    {bodyAttr && (
+                      <div
+                        className="prose prose-lg max-w-3xl text-gray-700 leading-relaxed text-justify"
+                        dangerouslySetInnerHTML={{ __html: bodyAttr.data }}
+                      />
+                    )}
+
+                    {imageAttr && (
+                      <div className="my-4 flex justify-center">
+                        <img
+                          src={imageAttr.data}
+                          alt=""
+                          className="rounded-lg shadow-md max-w-2xl w-full h-auto object-contain"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               );
             }
@@ -185,7 +191,7 @@ export default function SubcategoryPage() {
   };
 
   return (
-    <div className="main bg-light">
+    <div className="main bg-gray-400">
       <Navbar />
       
       {/* Keep the original banner section */}
@@ -195,54 +201,53 @@ export default function SubcategoryPage() {
           style={{ backgroundImage: `url(${content.banner})` }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <h1 className="text-5xl font-bold ">{content.name}</h1>
+            <h1 className="text-5xl font-bold">{content.name}</h1>
           </div>
         </div>
       )}
 
       {/* Content Section with SimonPage styling */}
-<div className="content-container">
-  {/* Keep the original breadcrumb */}
-  <div className="container mx-auto px-4 py-12">
-    <div className="mb-8 flex justify-center"> {/* Center the breadcrumb */}
-      <div className="text-sm">
-        <Link
-          href={`/info_centre`}
-          className="text-primary hover:text-primary-dark underline"
-        >
-          Info Centre
-        </Link>
-        <span className="text-primary mx-2">{'>'}</span>
-        <Link
-          href={`/info_centre/${category}`}
-          className="text-primary hover:text-primary-dark underline"
-        >
-          {category
-            .split('_')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')}
-        </Link>
-        <span className="text-primary mx-2">{'>'}</span>
-        <span className="text-gray-600">{content?.name}</span>
-      </div>
-    </div>
+      <div className="content-container">
+        {/* Keep the original breadcrumb */}
+        <div className="container mx-auto px-4 py-12">
+          <div className="mb-8 flex justify-center">
+            <div className="text-sm">
+              <Link
+                href={`/info_centre`}
+                className="text-primary hover:text-primary-dark underline"
+              >
+                Info Centre
+              </Link>
+              <span className="text-primary mx-2">{'>'}</span>
+              <Link
+                href={`/info_centre/${category}`}
+                className="text-primary hover:text-primary-dark underline"
+              >
+                {category
+                  .split('_')
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ')}
+              </Link>
+              <span className="text-primary mx-2">{'>'}</span>
+              <span className="text-gray-600">{content?.name}</span>
+            </div>
+          </div>
 
-    {/* Main Content with SimonPage styling */}
-    <div className="bg-white rounded-lg shadow-lg p-8 max-w-6xl mx-auto border-2 border-primary">
-      {loading ? (
-        <div className="flex justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          {/* Main Content with SimonPage styling */}
+          <div className="bg-white rounded-lg shadow-lg p-10 max-w-4xl mx-auto border-2 border-gray-500">
+            {loading ? (
+              <div className="flex justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : error ? (
+              <div className="text-center text-red-600">{error}</div>
+            ) : (
+              renderContent()
+            )}
+          </div>
         </div>
-      ) : error ? (
-        <div className="text-center text-red-600">{error}</div>
-      ) : (
-        renderContent()
-      )}
-    </div>
-  </div>
-</div>
+      </div>
 
-      
       <FooterPage practiceId={siteSettings?.practiceId} />
     </div>
   );
