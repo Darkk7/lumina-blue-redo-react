@@ -174,6 +174,7 @@ export default function SubcategoryPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-primary hover:underline"
+                          
                         >
                           {titleAttr.data}
                         </a>
@@ -201,7 +202,7 @@ export default function SubcategoryPage() {
           style={{ backgroundImage: `url(${content.banner})` }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <h1 className="text-5xl font-bold">{content.name}</h1>
+            <h1 className="text-5xl font-bold ">{content.name}</h1>
           </div>
         </div>
       )}
