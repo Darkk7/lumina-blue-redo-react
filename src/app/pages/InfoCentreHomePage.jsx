@@ -81,7 +81,7 @@ const InfoCentreHomePage = () => {
       </div>
 
       {/* Stacked Category Blocks */}
-      <div className="py-16 px-4 bg-gray-50">
+      <div className="py-16 px-4 bg-gray-100">
         <div className="max-w-7xl mx-auto space-y-20">
           {categories.map((category, index) => (
             <Link
