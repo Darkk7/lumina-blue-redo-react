@@ -1,160 +1,313 @@
-// src/app/pages/PaiaManualPage.jsx
+
+"use client";
+
 import React from "react";
-import PropTypes from "prop-types";
+import FooterPage from "../pages/FooterPage";
+import Navbar from "./Navbar";
+import { useSiteSettings } from "../context/SiteSettingsContext";
+import Link from "next/link";
 
-/**
- * PAIAManual
- *
- * A clean, professional React component that renders a Promotion of Access to Information Act (PAIA)
- * manual. Designed to be print-friendly and suitable for legal / compliance pages.
- *
- * Props
- * - practiceName: string - the organisation or practice name
- * - address: string - physical/postal address
- * - telephone: string
- * - email: string
- *
- * Notes
- * - Styling uses Tailwind utility classes. If your project does not use Tailwind, replace classes
- *   or add a small stylesheet to match your brand.
- */
-export default function PrivacyPolicyPage({
-  practiceName,
-  address,
-  telephone,
-  email,
-  className = "",
-}) {
+export default function PrivacyPolicyPage() {
+  const { siteSettings, isLoading, error } = useSiteSettings();
+  const currentYear = new Date().getFullYear();
+
+  
+
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p className="text-gray-700 text-lg">Loading Privacy Policy...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center bg-white p-8 rounded border border-gray-300">
+          <div className="text-red-500 text-4xl mb-4">⚠</div>
+          <p className="text-red-700 text-lg font-medium mb-2">Failed to Load Privacy Policy</p>
+          <p className="text-gray-700">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+
+
   return (
-    <article className={`prose-lg mx-auto my-8 p-6 bg-white rounded-md shadow ${className}`}>
-      <header>
-        <h1 className="text-2xl font-semibold">{practiceName} — Privacy Policy</h1>
-        <hr className="my-4" />
-      </header>
+    <div
+      className="bg-gray-50 min-h-screen"
+      style={{ "--primary-color": siteSettings?.primaryColor || "#1f2937" }}
+    >
 
-      <section>
-        <h2 className="text-xl font-medium">1. Introduction</h2>
-        <p>
-          The Promotion of Access to Information Act, No. 2 of 2000 (PAIA) gives effect to the constitutional
-          right of access to information held by public and private bodies. {practiceName} acknowledges the
-          importance of transparency and accountability and is committed to fulfilling its obligations under
-          PAIA.
+      <Navbar/>
+       {/* Home Page Section */}
+      {siteSettings.banners.length > 0 && (
+        <div
+          className="w-full h-[600px] bg-cover bg-center text-center text-white"
+          style={{
+            backgroundImage: `url(${siteSettings.banners[0].bannerImg})`,
+          }}
+        >
+          <div
+            className="bg-black bg-opacity-50 h-full flex flex-col items-center justify-center p-4"
+            style={{
+              fontFamily: siteSettings.banners[0].titleGoogleFont || 'inherit'
+            }}
+          >
+            <p style={{ fontSize: `${siteSettings.banners[0].titleFontSize}px`, fontFamily: `${siteSettings.banners[0].titleGoogleFont}` }}>
+              {siteSettings?.name}
+            </p>
+            <hr className="border-t-4 border-[var(--primary-color)]  w-7 mx-auto" />
+            <i className="text-white text-2xl">Privacy Policy</i>
+            
+          </div>
+        </div>
+      )}
+
+      {/* Main Content */}
+      <article className="max-w-4xl mx-auto px-6 py-8">
+        <div className="bg-white border border-gray-300 rounded">
+          {/* Document Info */}
+          <div className="bg-gray-100 px-8 py-4 border-b border-gray-300">
+            <div className="flex flex-col sm:flex-row justify-between items-center text-sm text-gray-700">
+              <span className="font-medium">
+                Promotion of Access to Information Act Manual
+              </span>
+              <span>Last Updated: {currentYear}</span>
+            </div>
+          </div>
+<div className="px-8 py-8 prose prose-gray max-w-none">
+
+ {/* 1. Introduction */}
+<section className="mb-12">
+  <h2 className="text-3xl font-bold text-[var(--primary-color)] mb-6 border-b-2 border-gray-300 pb-2">
+    1. Introduction
+  </h2>
+
+  {/* 1.1 Purpose */}
+  <div className="mb-6 bg-gray-50 p-6 rounded shadow-sm border border-gray-200">
+    <h3 className="text-xl font-semibold text-gray-800 mb-2">Purpose</h3>
+    <p className="text-gray-700 leading-relaxed">
+      This Security Policy defines the security requirements for the proper and secure use of the company's IT services. Its goal is to protect the company and its users against threats that could compromise integrity, privacy, reputation, or business outcomes.
+    </p>
+  </div>
+
+  {/* 1.2 Scope */}
+  <div className="mb-6 bg-gray-50 p-6 rounded shadow-sm border border-gray-200">
+    <h3 className="text-xl font-semibold text-gray-800 mb-2">Scope</h3>
+    <p className="text-gray-700 leading-relaxed">
+      This policy applies to all users of the company’s IT services, including temporary users, visitors with temporary access, and partners with limited or unlimited access. Compliance with the policies in this document is mandatory.
+    </p>
+  </div>
+
+  {/* 1.3 Company Details */}
+  <div className="mb-6 bg-gray-50 p-6 rounded shadow-sm border border-gray-200">
+    <h3 className="text-xl font-semibold text-gray-800 mb-4">Company Details</h3>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-1">
+        <p className="text-gray-700"><strong>Organization Name:</strong> {siteSettings?.name}</p>
+        <p className="text-gray-700"><strong>Physical Address:</strong> {siteSettings?.address_1}</p>
+        <p className="text-gray-700"><strong>Email:</strong> {siteSettings?.email}</p>
+      </div>
+      <div className="space-y-1">
+        <p className="text-gray-700"><strong>Telephone:</strong> {siteSettings?.tel}</p>
+        <p className="text-gray-700"><strong>Policy Author:</strong> {siteSettings?.name}</p>
+      </div>
+    </div>
+  </div>
+
+  {/* 1.4 Responsibilities */}
+  <div className="mb-6 bg-gray-50 p-6 rounded shadow-sm border border-gray-200">
+    <h3 className="text-xl font-semibold text-gray-800 mb-4">Responsibilities</h3>
+    <div className="space-y-4">
+      <div>
+        <h4 className="font-semibold text-gray-800">Chief Information Officer</h4>
+        <p className="text-gray-700">Accountable for all aspects of information security.</p>
+      </div>
+      <div>
+        <h4 className="font-semibold text-gray-800">Information Security Officer</h4>
+        <p className="text-gray-700">
+          Responsible for IT security infrastructure, planning against threats, implementing and maintaining security policies, training programs, incident response, and supporting disaster recovery.
         </p>
-      </section>
+      </div>
+      <div>
+        <h4 className="font-semibold text-gray-800">Information Owners</h4>
+        <p className="text-gray-700">Define security requirements, determine privileges, and access rights for their areas.</p>
+      </div>
+      <div>
+        <h4 className="font-semibold text-gray-800">IT Security Team</h4>
+        <p className="text-gray-700">Implements IT security, maintains access rights, and supports security policies.</p>
+      </div>
+      <div>
+        <h4 className="font-semibold text-gray-800">Users</h4>
+        <p className="text-gray-700">Follow security policies and report any attempted breaches.</p>
+      </div>
+    </div>
+  </div>
 
-      <section>
-        <h2 className="text-xl font-medium">2. Contact Details</h2>
-        <dl className="grid grid-cols-1 gap-2 md:grid-cols-2">
-          <div>
-            <dt className="font-semibold">Organization's Name</dt>
-            <dd>{practiceName}</dd>
+  {/* 1.5 General Policy Definitions */}
+  <div className="bg-gray-50 p-6 rounded shadow-sm border border-gray-200">
+    <h3 className="text-xl font-semibold text-gray-800 mb-2">General Policy Definitions</h3>
+    <p className="text-gray-700 leading-relaxed">
+      Exceptions to any policy require authorization from the Information Security Officer, with each exception logged in a security log detailing date, reason, and risk mitigation. All IT services are used in compliance with their technical and security requirements. Infractions may result in disciplinary action or prosecution.
+    </p>
+  </div>
+</section>
+
+
+  {/* 2. IT Assets Policy */}
+  <section className="mb-12">
+    <h2 className="text-2xl font-bold text-[var(--primary-color)] mb-4 border-b border-gray-300 pb-2">
+      2. IT Assets Policy
+    </h2>
+
+    <p className="text-gray-800 leading-relaxed">
+      This section defines requirements for proper handling of all IT assets including desktops, laptops, printers, applications, and software.
+    </p>
+
+    <ul className="list-disc ml-6 text-gray-800 space-y-1">
+      <li>IT assets must only be used for authorized business activities.</li>
+      <li>All assets are classified according to their business function.</li>
+      <li>Users are responsible for the assets assigned to them; oversight is provided by the ISO.</li>
+      <li>Active devices must be secured when unattended, and access is restricted to authorized personnel.</li>
+      <li>Portable devices must be encrypted, maintained, and protected from theft or damage.</li>
+      <li>Loss, theft, or damage must be reported immediately to the Information Security Officer.</li>
+      <li>Disposal of assets storing confidential information must be physically destroyed or securely erased in the presence of the ISO.</li>
+      <li>Paper documents must be shredded using a confetti cross shredder.</li>
+    </ul>
+  </section>
+
+  {/* 3. Access Control Policy */}
+  <section className="mb-12">
+    <h2 className="text-2xl font-bold text-[var(--primary-color)] mb-4 border-b border-gray-300 pb-2">
+      3. Access Control Policy
+    </h2>
+    <p className="text-gray-800 leading-relaxed">
+      Access to IT systems is controlled under the principle of least privilege. All confidential or sensitive systems use password-based authentication and access control lists. Users are monitored for attempts to bypass controls, and automatic scanning and periodic reviews are in place.
+    </p>
+  </section>
+
+  {/* 4. Password Control Policy */}
+  <section className="mb-12">
+    <h2 className="text-2xl font-bold text-[var(--primary-color)] mb-4 border-b border-gray-300 pb-2">
+      4. Password Control Policy
+    </h2>
+    <p className="text-gray-800 leading-relaxed">
+      Users have unique identities and strong alphanumeric passwords with complexity rules. Passwords are rotated regularly and sharing is prohibited. Accounts are locked if suspicious activity is detected.
+    </p>
+  </section>
+
+  {/* 5. Email Policy */}
+  <section className="mb-12">
+    <h2 className="text-2xl font-bold text-[var(--primary-color)] mb-4 border-b border-gray-300 pb-2">
+      5. Email Policy
+    </h2>
+    <p className="text-gray-800 leading-relaxed">
+      Company email resources are for business purposes only. Confidential information must only be shared with authorized recipients. Security measures, including digital rights, antivirus scanning, and strong passwords, are enforced. Users must not respond directly to attacks, but report to the ISO.
+    </p>
+  </section>
+
+  {/* 6. Internet Policy */}
+  <section className="mb-12">
+    <h2 className="text-2xl font-bold text-[var(--primary-color)] mb-4 border-b border-gray-300 pb-2">
+      6. Internet Policy
+    </h2>
+    <p className="text-gray-800 leading-relaxed">
+      Internet access is limited to business use. Risky sites, personal browsing, or unauthorized downloads are prohibited. Traffic is monitored, and attacks or abuse must be reported.
+    </p>
+  </section>
+
+  {/* 7. Antivirus Policy */}
+  <section className="mb-12">
+    <h2 className="text-2xl font-bold text-[var(--primary-color)] mb-4 border-b border-gray-300 pb-2">
+      7. Antivirus Policy
+    </h2>
+    <p className="text-gray-800 leading-relaxed">
+      All devices connecting to the company network must have centrally managed antivirus with real-time protection. Definitions must auto-update, and devices must be “healthy” to access company resources.
+    </p>
+  </section>
+
+  {/* 8. Information Classification Policy */}
+  <section className="mb-12">
+    <h2 className="text-2xl font-bold text-[var(--primary-color)] mb-4 border-b border-gray-300 pb-2">
+      8. Information Classification Policy
+    </h2>
+    <p className="text-gray-800 leading-relaxed">
+      Information is classified into confidential, sensitive, shareable, private, and public categories. Owners and the ISO ensure confidentiality, integrity, and availability. Breaches must be reported immediately.
+    </p>
+  </section>
+
+  {/* 9. Remote Access Policy */}
+  <section className="mb-12">
+    <h2 className="text-2xl font-bold text-[var(--primary-color)] mb-4 border-b border-gray-300 pb-2">
+      9. Remote Access Policy
+    </h2>
+    <p className="text-gray-800 leading-relaxed">
+      Secure remote access is granted only with authorization and through mutually authenticated secure channels. Remote access to confidential information is restricted.
+    </p>
+  </section>
+
+  {/* 10. Outsourcing Policy */}
+  <section className="mb-12">
+    <h2 className="text-2xl font-bold text-[var(--primary-color)] mb-4 border-b border-gray-300 pb-2">
+      10. Outsourcing Policy
+    </h2>
+    <p className="text-gray-800 leading-relaxed">
+      Outsourcing IT services requires careful risk evaluation, provider selection, service level agreements, and auditing to ensure security and performance.
+    </p>
+  </section>
+
+  {/* 11. Annex / Glossary */}
+  <section className="mb-12">
+    <h2 className="text-2xl font-bold text-[var(--primary-color)] mb-4 border-b border-gray-300 pb-2">
+      11. Glossary
+    </h2>
+    <ul className="list-disc ml-6 text-gray-800 space-y-1">
+      <li><strong>Access Management:</strong> Process that allows users to access IT services or assets.</li>
+      <li><strong>Asset:</strong> Any resource or capability contributing to service delivery.</li>
+      <li><strong>Audit:</strong> Formal inspection to verify compliance, accuracy, and effectiveness.</li>
+      <li><strong>Confidentiality:</strong> Principle that data is accessed only by authorized personnel.</li>
+      <li><strong>External Service Provider:</strong> IT service provider from another organization.</li>
+      <li><strong>Identity:</strong> Unique name to identify a user or role.</li>
+      <li><strong>Information Security Policy:</strong> Governs organization’s approach to information security.</li>
+      <li><strong>Outsourcing:</strong> Using an external provider to manage IT services.</li>
+      <li><strong>Policy:</strong> Documented management expectations guiding decisions and processes.</li>
+      <li><strong>Risk:</strong> Event that could cause harm or impact objectives.</li>
+      <li><strong>Service Level:</strong> Measured achievement against defined targets.</li>
+      <li><strong>Warranty:</strong> Assurance that a product or service meets agreed requirements.</li>
+    </ul>
+  </section>
+
+</div>
+
+
+          {/* Footer Info */}
+          <div className="bg-gray-100 px-8 py-6 border-t border-gray-300">
+            <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-700">
+              <div>
+                <p className="font-medium">{siteSettings?.name} - Privacy Policy</p>
+                <p>
+                  Compiled in accordance with the Promotion of Access to
+                  Information Act, No. 2 of 2000
+                </p>
+              </div>
+              <div className="mt-4 md:mt-0 text-right">
+                
+                <p>Last Updated: {currentYear}</p>
+              </div>
+            </div>
           </div>
-          <div>
-            <dt className="font-semibold">Physical Address</dt>
-            <dd>{address}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Postal Address</dt>
-            <dd>{address}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Telephone Number</dt>
-            <dd>{telephone}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Email</dt>
-            <dd>{email}</dd>
-          </div>
-        </dl>
-      </section>
+        </div>
+      </article>
 
-      <section>
-        <h2 className="text-xl font-medium">3. Guide to Using the Manual</h2>
-        <p>
-          This manual provides information about the types of records held by {practiceName} and how members of the
-          public can access them. It also outlines the procedures for requesting access to records and the fees
-          associated with such requests.
-        </p>
-      </section>
-
-      <section>
-        <h2 className="text-xl font-medium">4. The Structure of the Organization</h2>
-
-        <h3 className="font-semibold">Departments</h3>
-        <ul className="list-disc list-inside">
-          <li><strong>Administration:</strong> Responsible for overall management and coordination of organizational activities, including human resources, finance, and facilities management.</li>
-          <li><strong>Operations:</strong> Handles day-to-day operational tasks, ensuring efficient workflow and resource allocation.</li>
-          <li><strong>Sales and Marketing:</strong> Focuses on promoting products and services, managing customer relationships, and driving growth.</li>
-          <li><strong>Research and Development:</strong> Conducts research, innovation, and product development initiatives.</li>
-          <li><strong>Customer Service:</strong> Provides support and assistance to customers, addressing inquiries and resolving issues.</li>
-        </ul>
-
-        <h3 className="font-semibold mt-4">Divisions</h3>
-        <ul className="list-disc list-inside">
-          <li><strong>Product Division:</strong> Manages development, production, and distribution of product lines.</li>
-          <li><strong>Geographic Division:</strong> Organizes operations by region to cater to diverse market needs.</li>
-          <li><strong>Strategic Business Units (SBUs):</strong> Specialized units based on specific market segments or product categories.</li>
-        </ul>
-
-        <h3 className="font-semibold mt-4">Key Personnel</h3>
-        <ul className="list-disc list-inside">
-          <li><strong>CEO (Chief Executive Officer):</strong> Provides overall strategic direction and leadership.</li>
-          <li><strong>CFO (Chief Financial Officer):</strong> Manages financial planning, budgeting and reporting.</li>
-          <li><strong>COO (Chief Operating Officer):</strong> Oversees day-to-day operations and process optimisation.</li>
-          <li><strong>CMO (Chief Marketing Officer):</strong> Leads marketing strategies and initiatives.</li>
-          <li><strong>CTO (Chief Technology Officer):</strong> Guides technology decisions and innovation efforts.</li>
-        </ul>
-      </section>
-
-      <section>
-        <h2 className="text-xl font-medium">5. Records Available in Terms of Other Legislation</h2>
-        <ul className="list-disc list-inside">
-          <li><strong>Companies Act:</strong> Records related to company incorporation, shareholder information, director appointments, financial statements, and annual returns.</li>
-          <li><strong>Income Tax Act:</strong> Records pertaining to tax obligations, financial statements, payroll records, and correspondence with tax authorities.</li>
-          <li><strong>Labour Legislation:</strong> Employment contracts, remuneration records, leave records, disciplinary proceedings, and health and safety compliance documentation.</li>
-          <li><strong>Consumer Protection Legislation:</strong> Records concerning consumer transactions, warranties, refunds and complaints.</li>
-          <li><strong>Financial Regulations:</strong> Additional records to comply with regulatory bodies such as the Financial Sector Conduct Authority or the Reserve Bank.</li>
-          <li><strong>Environmental Regulations:</strong> Records related to environmental assessments, permits and sustainability initiatives.</li>
-        </ul>
-      </section>
-
-      <section>
-        <h2 className="text-xl font-medium">6. Access to the Records Held</h2>
-        <ul className="list-disc list-inside">
-          <li><strong>Financial Records:</strong> Invoices, receipts, bank statements, budget reports and financial statements.</li>
-          <li><strong>Personnel Records:</strong> Employment contracts, performance evaluations, training records, leave requests and disciplinary records.</li>
-          <li><strong>Policies and Procedures:</strong> Official organisational policies and guidelines on matters such as HR, finance and operations.</li>
-          <li><strong>Contracts and Agreements:</strong> Client contracts, supplier agreements, partnership agreements and leases.</li>
-          <li><strong>Marketing and Sales Records:</strong> Campaign records, sales reports and customer feedback.</li>
-          <li><strong>Health and Safety Records:</strong> Protocols, incident reports and compliance documentation.</li>
-          <li><strong>Intellectual Property Records:</strong> Trademarks, copyrights, patents and related documentation.</li>
-          <li><strong>Compliance Records:</strong> Documentation demonstrating compliance with relevant laws and standards.</li>
-        </ul>
-      </section>
-
-      <section>
-        <h2 className="text-xl font-medium">7. Procedures to Access Records</h2>
-        <ol className="list-decimal list-inside space-y-2">
-          <li><strong>Submit a Written Request:</strong> Submit a written request for access to records to the designated Information Officer. Include details of the records and contact info.</li>
-          <li><strong>Use Prescribed Form:</strong> Requesters may need to use a prescribed form provided by the organisation.</li>
-          <li><strong>Provide Identification:</strong> Proof of ID may be required (ID, driver's license, passport).</li>
-          <li><strong>Pay Applicable Fees:</strong> Fees may be payable in accordance with relevant legislation.</li>
-          <li><strong>Processing Time:</strong> Requests processed within PAIA stipulated timeframe.</li>
-          <li><strong>Receive Response:</strong> Written response indicating approval or denial; if approved, arrangements for inspection or copies.</li>
-        </ol>
-      </section>
-
-      <section>
-        <h2 className="text-xl font-medium">8. Availability of the Manual</h2>
-        <p>This manual is available for inspection at {practiceName} during normal office hours.</p>
-      </section>
-
-      <footer className="mt-8 pt-4 border-t">
-        <p className="text-sm">Last updated: {new Date().getFullYear()}</p>
-      </footer>
-    </article>
+      <FooterPage />
+    </div>
   );
 }
-
-
-
