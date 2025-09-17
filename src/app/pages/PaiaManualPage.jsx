@@ -11,8 +11,6 @@ export default function PaiaManualPage() {
   const { siteSettings, isLoading, error } = useSiteSettings();
   const currentYear = new Date().getFullYear();
 
-  
-
   // Handle loading state
   if (isLoading) {
     return (
@@ -31,23 +29,22 @@ export default function PaiaManualPage() {
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center bg-white p-8 rounded border border-gray-300">
           <div className="text-red-500 text-4xl mb-4">⚠</div>
-          <p className="text-red-700 text-lg font-medium mb-2">Failed to Load PAIA Manual</p>
+          <p className="text-red-700 text-lg font-medium mb-2">
+            Failed to Load PAIA Manual
+          </p>
           <p className="text-gray-700">{error}</p>
         </div>
       </div>
     );
   }
 
-
-
   return (
     <div
       className="bg-gray-50 min-h-screen"
       style={{ "--primary-color": siteSettings?.primaryColor || "#1f2937" }}
     >
-
-      <Navbar/>
-       {/* Home Page Section */}
+      <Navbar />
+      {/* Home Page Section */}
       {siteSettings.banners.length > 0 && (
         <div
           className="w-full h-[600px] bg-cover bg-center text-center text-white"
@@ -58,15 +55,19 @@ export default function PaiaManualPage() {
           <div
             className="bg-black bg-opacity-50 h-full flex flex-col items-center justify-center p-4"
             style={{
-              fontFamily: siteSettings.banners[0].titleGoogleFont || 'inherit'
+              fontFamily: siteSettings.banners[0].titleGoogleFont || "inherit",
             }}
           >
-            <p style={{ fontSize: `${siteSettings.banners[0].titleFontSize}px`, fontFamily: `${siteSettings.banners[0].titleGoogleFont}` }}>
+            <p
+              style={{
+                fontSize: `${siteSettings.banners[0].titleFontSize}px`,
+                fontFamily: `${siteSettings.banners[0].titleGoogleFont}`,
+              }}
+            >
               {siteSettings?.name}
             </p>
             <hr className="border-t-4 border-[var(--primary-color)]  w-7 mx-auto" />
             <i className="text-white text-2xl">PAIA Manual</i>
-            
           </div>
         </div>
       )}
@@ -105,74 +106,67 @@ export default function PaiaManualPage() {
               <h2 className="text-2xl font-bold text-[var(--primary-color)] mb-4 border-b border-gray-300 pb-2">
                 2. Contact Details of Information Officer
               </h2>
-              <div className="border border-gray-300 rounded">
-                <div className="bg-gray-100 px-6 py-3 border-b border-gray-300">
-                  <h3 className="font-semibold text-gray-800">
-                    Practice Information
-                  </h3>
-                </div>
-                <div className="p-6">
-                  <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <div>
-                        <dt className="font-semibold text-gray-800 mb-1">
-                          Organization Name
-                        </dt>
-                        <dd className="text-gray-700">{siteSettings?.name}</dd>
-                      </div>
-                      <div>
-                        <dt className="font-semibold text-gray-800 mb-1">
-                          Physical Address
-                        </dt>
-                        <dd className="text-gray-700">
-                          {siteSettings?.address_1}
-                        </dd>
-                      </div>
-                      
-                    </div>
-                    <div className="space-y-4">
-                      <div>
-                        <dt className="font-semibold text-gray-800 mb-1">
-                          Telephone Number
-                        </dt>
-                        <dd className="text-gray-700">{siteSettings?.tel}</dd>
-                      </div>
-                      <div>
-                        <dt className="font-semibold text-gray-800 mb-1">
-                          Email Address
-                        </dt>
-                        <dd className="text-gray-700">{siteSettings?.email}</dd>
-                      </div>
-                      <div>
-                    <h5 className="font-semibold text-gray-800 mb-1">Business Hours</h5>
-                    <ul className="space-y-1">
-                      {siteSettings.working_hours.map((schedule, index) => {
-                        const days = schedule.days;
-                        let displayDays = '';
+              <section className="mb-6 bg-gray-50 p-6 rounded shadow-sm border border-gray-200">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Left column */}
+                  <div className="space-y-1">
+                    <p className="text-gray-700">
+                      <strong>Organization Name:</strong> {siteSettings?.name}
+                    </p>
+                    <p className="text-gray-700">
+                      <strong>Physical Address:</strong>{" "}
+                      {siteSettings?.address_1}
+                    </p>
 
-                        if (days.includes(0) && days.includes(1) && days.includes(2) && days.includes(3) && days.includes(4)) {
-                          displayDays = 'Monday - Friday';
-                        } else if (days.includes(5)) {
-                          displayDays = 'Saturday';
-                        } else if (days.includes(6)) {
-                          displayDays = 'Sunday';
-                        }
-                        else if (days.includes(7)) {
-                          displayDays = 'Public Holidays';
-                        }
-
-                        return (
-                          <li key={index} className="text-black">
-                            {schedule.open ? `${displayDays}: ${schedule.start} - ${schedule.end}` : `${displayDays}: Closed`}
-                          </li>
-                        );
-                      })}
-                    </ul>
+                    <p className="text-gray-700">
+                      <strong>Telephone:</strong> {siteSettings?.tel}
+                    </p>
+                    <p className="text-gray-700">
+                      <strong>Email:</strong> {siteSettings?.email}
+                    </p>
                   </div>
+
+                  {/* Right column */}
+                  <div className="space-y-1">
+                    
+                    <div>
+                      <p className="text-gray-700 font-semibold mb-1">
+                        Business Hours:
+                      </p>
+                      <ul className="space-y-1">
+                        {siteSettings.working_hours.map((schedule, index) => {
+                          const days = schedule.days;
+                          let displayDays = "";
+
+                          if (
+                            days.includes(0) &&
+                            days.includes(1) &&
+                            days.includes(2) &&
+                            days.includes(3) &&
+                            days.includes(4)
+                          ) {
+                            displayDays = "Monday - Friday";
+                          } else if (days.includes(5)) {
+                            displayDays = "Saturday";
+                          } else if (days.includes(6)) {
+                            displayDays = "Sunday";
+                          } else if (days.includes(7)) {
+                            displayDays = "Public Holidays";
+                          }
+
+                          return (
+                            <li key={index} className="text-gray-700">
+                              {schedule.open
+                                ? `${displayDays}: ${schedule.start} - ${schedule.end}`
+                                : `${displayDays}: Closed`}
+                            </li>
+                          );
+                        })}
+                      </ul>
                     </div>
-                  </dl>
+                  </div>
                 </div>
-              </div>
+              </section>
             </section>
 
             {/* 3. Guide to Using Manual */}
@@ -319,14 +313,15 @@ export default function PaiaManualPage() {
           <div className="bg-gray-100 px-8 py-6 border-t border-gray-300">
             <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-700">
               <div>
-                <p className="font-medium">{siteSettings?.name} - PAIA Manual</p>
+                <p className="font-medium">
+                  {siteSettings?.name} - PAIA Manual
+                </p>
                 <p>
                   Compiled in accordance with the Promotion of Access to
                   Information Act, No. 2 of 2000
                 </p>
               </div>
               <div className="mt-4 md:mt-0 text-right">
-                
                 <p>Last Updated: {currentYear}</p>
               </div>
             </div>
