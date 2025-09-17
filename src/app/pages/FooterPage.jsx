@@ -107,16 +107,16 @@ const FooterPage = () => {
             <h3 className="text-lg font-semibold text-white mb-4">Recent News</h3>
             <div className="space-y-4">
                {blogs.map(blog => (
-        <div key={blog.id} className="border-b border-gray-200 pb-2 mb-2">
-          <Link 
-            href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`} 
-            style={{ color: "var(--primary-color)" }}
-          >
-            {blog.title}
-          </Link>
-          <div className="text-sm text-gray-400">{blog.date}</div>
-        </div>
-      ))}
+            <div key={blog.id} className="border-b border-gray-200 pb-2 mb-2">
+              <Link
+                href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}
+                className="text-[var(--primary-color)] hover:text-white"
+              >
+                {blog.title}
+              </Link>
+              <div className="text-sm text-gray-400">{blog.date}</div>
+            </div>
+          ))}
             </div>
           </div>
 
@@ -147,8 +147,10 @@ const FooterPage = () => {
               &copy; {new Date().getFullYear()}. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#privacy" className="text-white hover:text-primary text-sm">Privacy Policy</a>
-                <Link href={getLink("/paia")} className="hover:text-primary whitespace-nowrap px-2">
+            <Link href={getLink("/privacy")} className="hover:text-primary whitespace-nowrap px-2">
+              <b>Privacy Policy</b>
+            </Link>
+            <Link href={getLink("/paia")} className="hover:text-primary whitespace-nowrap px-2">
               <b>PAIA Manual</b>
             </Link>
 

@@ -197,7 +197,7 @@ export default function SubcategoryPage() {
       {content?.banner && (
         <div 
           className="w-full h-[400px] bg-cover bg-center text-center text-white relative"
-          style={{ backgroundImage: `url(${content.banner})` }}
+          style={{ backgroundImage: `url(https://www.eyecareportal.com${content.banner})` }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <h1 className="text-5xl font-bold ">{content.name}</h1>
