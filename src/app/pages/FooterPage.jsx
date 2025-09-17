@@ -148,10 +148,10 @@ const FooterPage = () => {
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
             <Link href={getLink("/privacy")} className="hover:text-primary whitespace-nowrap px-2">
-              <b>Privacy Policy</b>
+              Privacy Policy
             </Link>
             <Link href={getLink("/paia")} className="hover:text-primary whitespace-nowrap px-2">
-              <b>PAIA Manual</b>
+              PAIA Manual
             </Link>
 
             </div>

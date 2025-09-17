@@ -1,6 +1,7 @@
 // src/app/pages/PaiaManualPage.jsx
 import React from "react";
 import PropTypes from "prop-types";
+import FooterPage from "../pages/FooterPage";
 
 /**
  * PAIAManual
@@ -26,6 +27,7 @@ export default function PaiaManualPage({
   className = "",
 }) {
   return (
+    <div>
     <article className={`prose-lg mx-auto my-8 p-6 bg-white rounded-md shadow ${className}`}>
       <header>
         <h1 className="text-2xl font-semibold">{practiceName} — PAIA Manual</h1>
@@ -153,6 +155,8 @@ export default function PaiaManualPage({
         <p className="text-sm">Last updated: {new Date().getFullYear()}</p>
       </footer>
     </article>
+    <FooterPage/>
+    </div>
   );
 }
 
