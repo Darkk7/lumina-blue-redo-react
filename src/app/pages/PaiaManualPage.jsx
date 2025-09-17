@@ -6,24 +6,10 @@ import FooterPage from "../pages/FooterPage";
 import { useSiteSettings } from "../context/SiteSettingsContext";
 
 export default function PaiaManualPage() {
-  const { siteSettings: fetchedSettings, isLoading, error } = useSiteSettings();
+  const { siteSettings, isLoading, error } = useSiteSettings();
 
-  // Fallback / default data
-  const fallbackSettings = {
-    name: "Demo Practice",
-    short_name: "Demo Practice",
-    address_1: "123 Demo Street",
-    tel: "+27 123 456 7890",
-    email: "info@demo.com",
-    primaryColor: "#1f2937",
-    working_hours: [
-      { days: "Monday - Friday", start: "08:00", end: "17:00", open: true },
-      { days: "Saturday", start: "08:00", end: "12:00", open: true },
-      { days: "Sunday", open: false },
-    ],
-  };
+ 
 
-  const siteSettings = fetchedSettings || fallbackSettings;
 
   if (isLoading) {
     return (
@@ -49,10 +35,7 @@ export default function PaiaManualPage() {
   }
 
   // Extract data safely
-  const practiceName = siteSettings.name || siteSettings.short_name || "Practice Name";
-  const practiceAddress = siteSettings.address_1 || "Physical address not available";
-  const practicePhone = siteSettings.tel || "Contact number not available";
-  const practiceEmail = siteSettings.email || "Email not available";
+
 
   // Format working hours
   const workingHours = Array.isArray(siteSettings.working_hours)
@@ -73,7 +56,7 @@ export default function PaiaManualPage() {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-6 py-8 text-center">
           <h1 className="text-4xl font-bold text-[var(--primary-color)] mb-2">PAIA Manual</h1>
-          <h2 className="text-2xl font-medium text-gray-700 mb-4">{practiceName}</h2>
+          <h2 className="text-2xl font-medium text-gray-700 mb-4">{siteSettings?.name}</h2>
           <div className="w-24 h-1 bg-[var(--primary-color)] mx-auto rounded-full"></div>
         </div>
       </div>
@@ -96,7 +79,7 @@ export default function PaiaManualPage() {
               <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-400">
                 <p className="text-gray-700 leading-relaxed">
                   The Promotion of Access to Information Act, No. 2 of 2000 (PAIA) gives effect to the constitutional 
-                  right of access to information held by public and private bodies. <strong>{practiceName}</strong> acknowledges the 
+                  right of access to information held by public and private bodies. <strong>{siteSettings?.name}</strong> acknowledges the 
                   importance of transparency and accountability and is committed to fulfilling its obligations under PAIA.
                 </p>
               </div>
@@ -114,25 +97,25 @@ export default function PaiaManualPage() {
                     <div className="space-y-4">
                       <div>
                         <dt className="font-semibold text-gray-700 mb-1">Organization Name</dt>
-                        <dd className="text-gray-600 bg-gray-50 p-3 rounded">{practiceName}</dd>
+                        <dd className="text-gray-600 bg-gray-50 p-3 rounded">{siteSettings?.name}</dd>
                       </div>
                       <div>
                         <dt className="font-semibold text-gray-700 mb-1">Physical Address</dt>
-                        <dd className="text-gray-600 bg-gray-50 p-3 rounded">{practiceAddress}</dd>
+                        <dd className="text-gray-600 bg-gray-50 p-3 rounded">{siteSettings?.address_1}</dd>
                       </div>
                       <div>
                         <dt className="font-semibold text-gray-700 mb-1">Postal Address</dt>
-                        <dd className="text-gray-600 bg-gray-50 p-3 rounded">{practiceAddress}</dd>
+                        <dd className="text-gray-600 bg-gray-50 p-3 rounded">{siteSettings?.address_1}</dd>
                       </div>
                     </div>
                     <div className="space-y-4">
                       <div>
                         <dt className="font-semibold text-gray-700 mb-1">Telephone Number</dt>
-                        <dd className="text-gray-600 bg-gray-50 p-3 rounded">{practicePhone}</dd>
+                        <dd className="text-gray-600 bg-gray-50 p-3 rounded">{siteSettings?.tel}</dd>
                       </div>
                       <div>
                         <dt className="font-semibold text-gray-700 mb-1">Email Address</dt>
-                        <dd className="text-gray-600 bg-gray-50 p-3 rounded">{practiceEmail}</dd>
+                        <dd className="text-gray-600 bg-gray-50 p-3 rounded">{siteSettings?.email}</dd>
                       </div>
                       <div>
                         <dt className="font-semibold text-gray-700 mb-1">Business Hours</dt>
@@ -156,7 +139,7 @@ export default function PaiaManualPage() {
               <h2 className="text-2xl font-bold text-[var(--primary-color)] mb-6 pb-2 border-b-2 border-gray-200">3. Guide to Using this Manual</h2>
               <div className="bg-amber-50 p-6 rounded-lg border-l-4 border-amber-400">
                 <p className="text-gray-700 leading-relaxed">
-                  This manual provides comprehensive information about the types of records held by <strong>{practiceName}</strong> and 
+                  This manual provides comprehensive information about the types of records held by <strong>{siteSettings?.name}</strong> and 
                   the procedures for accessing them. It outlines the request process, associated fees, and the rights and 
                   obligations of both the organization and information requesters under PAIA.
                 </p>
@@ -221,7 +204,7 @@ export default function PaiaManualPage() {
           <div className="bg-gray-100 px-8 py-6 border-t">
             <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600">
               <div>
-                <p className="font-medium">{practiceName} - PAIA Manual</p>
+                <p className="font-medium">{siteSettings?.name} - PAIA Manual</p>
                 <p>Compiled in accordance with the Promotion of Access to Information Act, No. 2 of 2000</p>
               </div>
               <div className="mt-4 md:mt-0 text-right">
