@@ -57,9 +57,29 @@ const BlogHomePage = () => {
 
   // Sort blogs by date (newest first)
   const sortedBlogs = useMemo(() => {
-    if (!Array.isArray(blogs)) return [];
-    return [...blogs].sort((a, b) => new Date(b.date) - new Date(a.date));
+    if (!Array.isArray(blogs) || blogs.length === 0) return [];
+    
+    // Make a copy of the blogs array to avoid mutating the original
+    const blogsToSort = [...blogs];
+    
+    // Sort by date (newest first)
+    return blogsToSort.sort((a, b) => new Date(b.date) - new Date(a.date));
   }, [blogs]);
+  
+  // Log the blogs for debugging
+  useEffect(() => {
+    console.log('Blogs loaded:', {
+      count: sortedBlogs.length,
+      practiceId,
+      blogs: sortedBlogs.map(b => ({
+        id: b.id,
+        title: b.title,
+        practice_id: b.practice_id,
+        date: b.date,
+        show: b.show
+      }))
+    });
+  }, [sortedBlogs, practiceId]);
 
   if (loading) {
     return (

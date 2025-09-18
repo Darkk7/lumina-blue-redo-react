@@ -39,7 +39,7 @@ const InfoCentreListPage = () => {
         }
         const allItems = await itemsResponse.json();
         const filteredItems = allItems.filter(
-          (item) => item.section_category_id === parseInt(category)
+          (item) => item.section_category_id === parseInt(category) && item.enabled === true
         );
         setSectionItems(filteredItems);
         
@@ -101,7 +101,7 @@ const InfoCentreListPage = () => {
       </div>
 
       {/* Breadcrumb Navigation */}
-      <div className="py-8 pb-8">
+      <div className="py-8 pb-0">
         <div className="container mx-auto px-4">
           <div className="flex justify-center">
             <div className="text-center">
@@ -119,15 +119,15 @@ const InfoCentreListPage = () => {
       </div>
 
       {/* Main Content */}
-        <div className="">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {sectionItems.map((item) => (
               <Link
                 key={item.id}
                 href={`/website/${siteSettings?.practiceId}/info_centre/${category}/${item.id}`}
-                className="bg-white rounded-lg shadow-md p-6 block"
+                className="bg-white rounded-lg shadow-md p-6 block hover:shadow-lg transition-shadow duration-300"
               >
-                <div className="relative h-[200px] mb-4 rounded-lg overflow-hidden">
+                <div className="relative h-[200px] w-full mb-4 rounded-lg overflow-hidden">
                   <img
                     src={item.thumbnail_img_url || `https://www.ocumail.com${item.imgurl}`}
                     alt={item.name}

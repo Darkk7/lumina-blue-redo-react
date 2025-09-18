@@ -135,7 +135,7 @@ const BlogDetail = () => {
             </Link>
           </div>
           
-          <article className="bg-white rounded-lg shadow-md overflow-hidden">
+          <article className="bg-white rounded-lg shadow-md overflow-hidden border-2 border-[#6b7280]">
             {/* Blog Header Image */}
             {blog.header_image?.url && (
               <div className="relative w-full h-64 md:h-96">

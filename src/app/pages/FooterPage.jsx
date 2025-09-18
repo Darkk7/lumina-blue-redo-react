@@ -17,7 +17,6 @@ const FooterPage = () => {
           throw new Error('Failed to fetch blogs');
         }
         const data = await response.json();
-        // Sort by date and take the 2 most recent
         const sortedBlogs = data.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 2);
         setBlogs(sortedBlogs);
       } catch (error) {
@@ -106,16 +105,28 @@ const FooterPage = () => {
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Recent News</h3>
             <div className="space-y-4">
-               {blogs.map(blog => (
-            <div key={blog.id} className="border-b border-gray-200 pb-2 mb-2">
-              <Link
-                href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}
-                className="text-[var(--primary-color)] hover:text-white"
-              >
-                {blog.title}
-              </Link>
-              <div className="text-sm text-gray-400">{blog.date}</div>
-            </div>
+              {blogs.map(blog => (
+                <div key={blog.id} className="border-b border-gray-200 pb-3 mb-3">
+                  <Link href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}>
+                    {(blog.thumbnail_image?.url || blog.header_image?.url) && (
+                      <div className="relative w-24 h-24 mb-2 rounded overflow-hidden">
+                        <img
+                          src={blog.thumbnail_image?.url || blog.header_image?.url}
+                          alt={blog.title}
+                          className="w-full h-full object-cover hover:opacity-90 transition-opacity"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/placeholder-blog.jpg';
+                          }}
+                        />
+                      </div>
+                    )}
+                    <div className="text-[var(--primary-color)] hover:text-white font-medium">
+                      {blog.title}
+                    </div>
+                  </Link>
+                  <div className="text-sm text-gray-400">{blog.date}</div>
+                </div>
           ))}
             </div>
           </div>

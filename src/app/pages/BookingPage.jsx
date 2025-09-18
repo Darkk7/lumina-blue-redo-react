@@ -326,9 +326,8 @@ const BookingPage = () => {
   };
 
   const handleRequestCall = async () => {
-    console.log('formData:', formData);
     if (!formData.name || !formData.mobile) {
-      displayErrorMessage('Please provide the following:\n- Name\n- Contact Number');
+      displayErrorMessage('Please provide the following:\nName &\nContact Number');
       return;
     }
     
@@ -394,11 +393,9 @@ const BookingPage = () => {
         }
       }
 
-      // Format dates for the API
       const appointmentDate = new Date(formData.date);
       const [hours, minutes] = formData.timeSlot.split(':');
       
-      // Set the time for start and end (assuming 30-minute slots)
       const startTime = new Date(appointmentDate);
       startTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
       

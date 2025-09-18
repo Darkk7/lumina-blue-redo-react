@@ -12,15 +12,10 @@ export default function SubcategoryPage() {
   const { practiceId, category, subcategory } = useParams();
   const { siteSettings } = useSiteSettings();
   const [content, setContent] = useState(null);
+  const [categoryDetails, setCategoryDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const getLink = (path) => {
-    if (!siteSettings?.practiceId) {
-      return path;
-    }
-    return `/website/${siteSettings.practiceId}${path}`;
-  };
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -28,6 +23,18 @@ export default function SubcategoryPage() {
         setLoading(true);
         setError(null);
 
+        // First, fetch the category details
+        const categoryResponse = await axios.get('https://www.ocumail.com/api/section_categories');
+        const categories = categoryResponse.data;
+        const currentCategory = categories.find(cat => cat.id === parseInt(category));
+        
+        if (!currentCategory) {
+          throw new Error('Category not found');
+        }
+        
+        setCategoryDetails(currentCategory);
+
+        // Then fetch the section items
         const itemsResponse = await axios.get('https://www.ocumail.com/api/section_items');
         const items = itemsResponse.data;
 
@@ -48,7 +55,22 @@ export default function SubcategoryPage() {
         }
 
         const attributesResponse = await axios.get(`https://www.ocumail.com/api/item_attributes/${item.id}`);
-        const attributes = attributesResponse.data;
+        let attributes = attributesResponse.data;
+
+        // Process attributes to modify image paths in the data field
+        attributes = attributes.map(attr => {
+          if (attr.data && typeof attr.data === 'string') {
+            // Convert image paths to use /images/Body/ directory
+            let modifiedData = attr.data.replace(/src=["']([^"']+)["']/g, (match, src) => {
+              // Extract just the filename from any path
+              const filename = src.split('/').pop().split('\\').pop();
+              // Always point to /images/Body/filename
+              return `src="/images/Body/${filename}"`;
+            });
+            return { ...attr, data: modifiedData };
+          }
+          return attr;
+        });
 
         setContent({
           id: item.id,
@@ -222,13 +244,10 @@ export default function SubcategoryPage() {
                 href={`/website/${practiceId}/info_centre/${category}`}
                 className="text-primary hover:text-primary-dark underline"
               >
-                {category
-                  .split('_')
-                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(' ')}
+                {categoryDetails?.name || category}
               </Link>
               <span className="text-primary mx-2">{'>'}</span>
-              <span className="text-gray-600">{content?.name}</span>
+              <span className="text-gray-600">{content?.name || subcategory}</span>
             </div>
           </div>
 

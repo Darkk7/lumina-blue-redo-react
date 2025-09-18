@@ -1,56 +1,44 @@
 import { NextResponse } from 'next/server';
 
 export async function GET(request, { params }) {
-  const { practiceId } = params;
+  const { practiceId } = await params;
+  const practiceIdNum = parseInt(practiceId);
   
   try {
-    
-    const response = await fetch('https://www.eyecareportal.com/api/blogs', {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      // cache: 'no-store'
+    // Fetch all blogs
+    const blogsResponse = await fetch('https://www.eyecareportal.com/api/blogs', {
+      headers: { 'Content-Type': 'application/json' },
     });
 
-    if (!response.ok) {
-      const error = await response.text();
-      console.error('[Blogs API] Error response from server:', error);
-      return NextResponse.json(
-        { error: 'Failed to fetch blogs', details: error },
-        { status: response.status }
-      );
+    if (!blogsResponse.ok) {
+      throw new Error(`Failed to fetch blogs: ${blogsResponse.statusText}`);
     }
 
-    const data = await response.json();
+    let blogs = await blogsResponse.json();
     
-    if (!Array.isArray(data)) {
-      console.error('[Blogs API] Expected array of blogs but got:', typeof data, data);
-      return NextResponse.json(
-        { error: 'Invalid data format received from API', receivedType: typeof data },
-        { status: 500 }
-      );
+    if (!Array.isArray(blogs)) {
+      throw new Error('Invalid blog data format received');
     }
 
-    if (data.length === 0) {
-      console.warn('[Blogs API] Received empty blog list from API');
-      return NextResponse.json([]);
-    }
-
-    const filteredBlogs = data.filter(blog => {
-      const isGlobalBlog = blog.practice_id === null && blog.show === true;
-      const isPracticeBlog = blog.practice_id === parseInt(practiceId) && blog.show === true;
-      const include = isGlobalBlog || isPracticeBlog;
+    const filteredBlogs = blogs.filter(blog => {
+      if (blog.show !== true) return false;
       
-      return include;
+      if (blog.practice_id === null) return true;
+      
+      return blog.practice_id === practiceIdNum;
     });
-    
-    if (filteredBlogs.length === 0) {
-      console.warn(`[Blogs API] No blogs found for practice ${practiceId}. Practice IDs in data:`, 
-        [...new Set(data.map(b => b.practice_id))].sort((a, b) => a - b)
-      );
-    }
-    
-    return NextResponse.json(filteredBlogs);
+
+    const blogsWithUrls = filteredBlogs.map(blog => ({
+      ...blog,
+      url: `/website/${practiceId}/blog/${blog.id}`
+    }));
+
+    // Sort by date (newest first)
+    const sortedBlogs = [...blogsWithUrls].sort((a, b) => {
+      return new Date(b.date) - new Date(a.date);
+    });
+
+    return NextResponse.json(sortedBlogs);
   } catch (error) {
     console.error('[Blogs API] Unhandled error:', error);
     return NextResponse.json(

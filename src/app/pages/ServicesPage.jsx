@@ -3,8 +3,9 @@
 import React from "react";
 import { useSiteSettings } from '../context/SiteSettingsContext';
 import Head from 'next/head';
+import { getServiceImage } from '../../utils/imagePaths';
 
-// Import the icomoon font
+//Ico moon font
 const IcomoonStyles = () => (
   <style jsx global>{`
     @font-face {
@@ -97,14 +98,16 @@ const IcomoonStyles = () => (
   `}</style>
 );
 
-const ServiceCard = ({ title, description, iconClass, imageName }) => {
+const ServiceCard = ({ title, description, iconClass, imageName, categoryId, serviceKey }) => {
   const { siteSettings } = useSiteSettings();
-  const primaryColor = siteSettings?.primaryColor || 'blue-600'; // Default to blue-600 if not set
+  const practiceId = siteSettings?.practiceId; // Get practiceId from site settings
+  const primaryColor = siteSettings?.primaryColor || 'blue-600';
   
   // Determine what to render based on available props
   const renderVisual = () => {
-    if (imageName) {
-      const imagePath = `/svg/${imageName}.svg`;
+    if (serviceKey && practiceId && categoryId) {
+      // Use the service key to get the correct image path
+      const imagePath = getServiceImage(practiceId, categoryId, serviceKey);
       
       return (
         <div className="w-16 h-16 mb-4 flex items-center justify-center">
@@ -166,12 +169,9 @@ const ServicesPage = () => {
 
   return (
     <>
-      <Head>
-        <title>Our Services | {siteSettings.practice_name || 'Eye Care Practice'}</title>
-        <meta name="description" content={siteSettings.service_description?.welcome_text || 'Professional eye care services'} />
-      </Head>
-      <IcomoonStyles />
-      
+
+      <IcomoonStyles />   
+
       <section className="w-full bg-gray-50 py-16 px-4" id="services">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-900 pt-8" style={{ textTransform: 'capitalize' }}>

@@ -6,36 +6,55 @@ import Link from 'next/link';
 const InfoCentreItem = () => {
   const { category, itemId } = useParams();
   const [itemContent, setItemContent] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [categoryDetails, setCategoryDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchItemContent = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await axios.get(`https://www.ocumail.com/api/section_items/${itemId}`);
-        if (!response.ok) {
+        
+        // First, fetch the category details
+        const categoryResponse = await fetch('https://www.ocumail.com/api/section_categories');
+        if (!categoryResponse.ok) {
+          throw new Error('Failed to fetch category details');
+        }
+        const categories = await categoryResponse.json();
+        const currentCategory = categories.find(cat => cat.id === parseInt(category));
+        
+        if (!currentCategory) {
+          throw new Error('Category not found');
+        }
+        
+        setCategoryDetails(currentCategory);
+        
+        // Then fetch the item content
+        const itemResponse = await fetch(`https://www.ocumail.com/api/section_items/${itemId}`);
+        if (!itemResponse.ok) {
           throw new Error('Failed to fetch item content');
         }
-        const data = await response.json();
-        // Find the specific item's content
-        const content = data.find(item => item.id === parseInt(itemId));
+        const itemData = await itemResponse.json();
+        const content = Array.isArray(itemData) 
+          ? itemData.find(item => item.id === parseInt(itemId))
+          : itemData;
+          
         if (content) {
           setItemContent(content);
         }
       } catch (error) {
-        console.error('Error fetching item content:', error);
-        setError('Failed to load item content');
+        console.error('Error fetching data:', error);
+        setError('Failed to load content');
       } finally {
         setLoading(false);
       }
     };
 
-    if (itemId) {
-      fetchItemContent();
+    if (category && itemId) {
+      fetchData();
     }
-  }, [itemId]);
+  }, [category, itemId]);
 
   if (loading) {
     return (
@@ -91,11 +110,18 @@ const InfoCentreItem = () => {
                 Info Centre
               </Link>
               <span className="text-primary mx-2">{'>'}</span>
-              <Link href={`/info_centre/${category}`} className="text-primary hover:text-primary-dark underline">
-                {category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+              <Link 
+                href={`/info_centre/${category}`} 
+                className="text-primary hover:text-primary-dark underline"
+              >
+                {categoryDetails?.name || 
+                  (typeof category === 'string' ? 
+                    category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+                    : String(category)
+                  )}
               </Link>
               <span className="text-primary mx-2">{'>'}</span>
-              <span className="text-gray-600">{itemContent.title}</span>
+              <span className="text-gray-600">{itemContent.titleawdaw || 'dwadawd'}</span>
             </div>
           </div>
 
