@@ -101,14 +101,14 @@ const InfoCentreListPage = () => {
       </div>
 
       {/* Breadcrumb Navigation */}
-      <div className="py-8 pb-0">
+      <div className="py-6 pb-0">
         <div className="container mx-auto px-4">
           <div className="flex justify-center">
             <div className="text-center">
-              <div className="text-sm">
+              <div className="text-xl font-medium">
                 <Link
                   href={`/website/${siteSettings.practiceId}/info_centre`}
-                  className="text-primary hover:text-primary-dark underline"
+                  className="text-primary underline hover:text-primary-dark transition-colors duration-200"
                 >
                   Info Centre
                 </Link>                
@@ -120,7 +120,7 @@ const InfoCentreListPage = () => {
 
       {/* Main Content */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {sectionItems.map((item) => (
               <Link
                 key={item.id}

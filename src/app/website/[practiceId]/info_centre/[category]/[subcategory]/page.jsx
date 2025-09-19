@@ -229,25 +229,25 @@ export default function SubcategoryPage() {
 
       {/* Content Section with SimonPage styling */}
       <div className="content-container">
-        {/* Keep the original breadcrumb */}
-        <div className="container mx-auto px-4 py-12">
+        {/* Enhanced Breadcrumb Navigation */}
+        <div className="container mx-auto px-4 py-6">
           <div className="mb-8 flex justify-center">
-            <div className="text-sm">
+            <div className="text-xl font-medium">
               <Link
                 href={`/website/${practiceId}/info_centre`}
-                className="text-primary hover:text-primary-dark underline"
+                className="text-primary underline hover:text-primary-dark transition-colors duration-200"
               >
                 Info Centre
               </Link>
-              <span className="text-primary mx-2">{'>'}</span>
+              <span className="text-primary mx-3">›</span>
               <Link
                 href={`/website/${practiceId}/info_centre/${category}`}
-                className="text-primary hover:text-primary-dark underline"
+                className="text-primary underline hover:text-primary-dark transition-colors duration-200"
               >
                 {categoryDetails?.name || category}
               </Link>
-              <span className="text-primary mx-2">{'>'}</span>
-              <span className="text-gray-600">{content?.name || subcategory}</span>
+              <span className="text-primary mx-3">›</span>
+              <span className="text-gray-700">{content?.name || subcategory}</span>
             </div>
           </div>
 

@@ -18,7 +18,9 @@ const InfoCentreHomePage = () => {
           console.error('Network response was not ok:', response.statusText);
           return;
         }
-        const allCategories = await response.json();
+        let allCategories = await response.json();
+        // Sort categories by orderby in ascending order (lower numbers first)
+        allCategories.sort((a, b) => (a.orderby || 0) - (b.orderby || 0));
         const ids = allCategories.map(category => category.id);
 
         const fetchedCategories = await Promise.all(

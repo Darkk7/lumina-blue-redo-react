@@ -38,7 +38,7 @@ const FooterPage = () => {
   return (
     <footer className="w-full py-12" style={{ backgroundColor: "#363636" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-2 gap-y-8">
           {/* Column 1: Logo with text */}
           <div className="space-y-4">
             <div className="flex items-center">
@@ -106,10 +106,21 @@ const FooterPage = () => {
             <h3 className="text-lg font-semibold text-white mb-4">Recent News</h3>
             <div className="space-y-4">
               {blogs.map(blog => (
-                <div key={blog.id} className="border-b border-gray-200 pb-3 mb-3">
-                  <Link href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}>
+                <div key={blog.id} className="border-b border-gray-700 pb-4 mb-4">
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <Link href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}>
+                        <div className="text-[var(--primary-color)] hover:text-white font-medium line-clamp-2 mb-1">
+                          {blog.title}
+                        </div>
+                      </Link>
+                      <div className="text-sm text-gray-400">{blog.date}</div>
+                    </div>
                     {(blog.thumbnail_image?.url || blog.header_image?.url) && (
-                      <div className="relative w-24 h-24 mb-2 rounded overflow-hidden">
+                      <Link 
+                        href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}
+                        className="flex-shrink-0 w-20 h-20 rounded overflow-hidden"
+                      >
                         <img
                           src={blog.thumbnail_image?.url || blog.header_image?.url}
                           alt={blog.title}
@@ -119,13 +130,9 @@ const FooterPage = () => {
                             e.target.src = '/placeholder-blog.jpg';
                           }}
                         />
-                      </div>
+                      </Link>
                     )}
-                    <div className="text-[var(--primary-color)] hover:text-white font-medium">
-                      {blog.title}
-                    </div>
-                  </Link>
-                  <div className="text-sm text-gray-400">{blog.date}</div>
+                  </div>
                 </div>
           ))}
             </div>

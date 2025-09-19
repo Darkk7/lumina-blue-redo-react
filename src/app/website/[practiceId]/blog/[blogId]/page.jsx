@@ -15,33 +15,50 @@ const BlogDetail = () => {
   const { siteSettings } = useSiteSettings();
   
   const [blog, setBlog] = useState(null);
+  const [recentPosts, setRecentPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
   const primaryColor = siteSettings?.primary_color || "#000000";
 
   useEffect(() => {
-    const fetchBlog = async () => {
+    const fetchBlogAndRecentPosts = async () => {
       if (!blogId) return;
       
       try {
         setLoading(true);
         setError(null);
         
-        const response = await fetch(`/api/website/${practiceId}/blogs/${blogId}`);
+        // Fetch blog post and recent posts in parallel
+        const [blogResponse, recentResponse] = await Promise.all([
+          fetch(`/api/website/${practiceId}/blogs/${blogId}`),
+          fetch(`/api/website/${practiceId}/blogs?limit=5`)
+        ]);
         
-        if (!response.ok) {
-          const errorData = await response.json();
+        if (!blogResponse.ok) {
+          const errorData = await blogResponse.json();
           throw new Error(errorData.error || 'Failed to fetch blog post');
         }
         
-        const blogData = await response.json();
+        const blogData = await blogResponse.json();
         
         if (!blogData || Object.keys(blogData).length === 0) {
           throw new Error('Blog post not found');
         }
         
+        // Get recent posts (excluding current post)
+        let recentPostsData = [];
+        if (recentResponse.ok) {
+          const data = await recentResponse.json();
+          recentPostsData = Array.isArray(data) ? data : (data.posts || []);
+          // Filter out current post and limit to 4
+          recentPostsData = recentPostsData
+            .filter(post => post.id && post.id.toString() !== blogId.toString())
+            .slice(0, 4);
+        }
+        
         setBlog(blogData);
+        setRecentPosts(recentPostsData);
       } catch (err) {
         console.error('[Blog Detail] Error:', err);
         setError(err.message || 'An error occurred while loading the blog post');
@@ -50,7 +67,7 @@ const BlogDetail = () => {
       }
     };
 
-    fetchBlog();
+    fetchBlogAndRecentPosts();
   }, [blogId, practiceId]);
 
   if (loading) {
@@ -120,51 +137,106 @@ const BlogDetail = () => {
           </div>
       </div>
 
-      <main className="min-h-screen bg-gray-50 pt-24">
-        <div className="container mx-auto px-4 pb-12 max-w-5xl">
-          <div className="mb-8">
-            <Link 
-              href={`/website/${practiceId}/blog`}
-              className="inline-flex items-center text-gray-600 hover:text-primary transition-colors mb-6"
-              style={{ '--tw-text-opacity': 1, color: `${primaryColor} !important` }}
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              Back to Blog
-            </Link>
-          </div>
-          
-          <article className="bg-white rounded-lg shadow-md overflow-hidden border-2 border-[#6b7280]">
-            {/* Blog Header Image */}
-            {blog.header_image?.url && (
-              <div className="relative w-full h-64 md:h-96">
-                <Image
-                  src={blog.header_image.url}
-                  alt={blog.title}
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 75vw"
-                />
-              </div>
-            )}
-            
-            {/* Blog Content */}
-            <div className="p-6 md:p-8">
-              <div className="mb-6">
-                <span className="text-sm text-gray-500">{formatDate(blog.date || blog.created_at)}</span>
-              </div>
-              
-              {/* Blog Content (HTML) */}
-              {blog.content && (
-                <div 
-                  className="prose max-w-none"
-                  dangerouslySetInnerHTML={{ __html: blog.content }}
-                />
-              )}
+      <main className="min-h-screen bg-gray-50 pt-20">
+        <div className="container mx-auto pt-0 pb-10 px-4">
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            {/* Main Content */}
+            <div className="lg:w-2/3">              
+              <article className="bg-transparent">
+                {/* Blog Header Image */}
+                {blog.header_image?.url && (
+                  <div className="relative w-full aspect-video rounded-lg overflow-hidden mb-6">
+                    <Image
+                      src={blog.header_image.url}
+                      alt={blog.title}
+                      fill
+                      className="object-cover"
+                      priority
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 75vw"
+                    />
+                  </div>
+                )}
+                
+                {/* Blog Content */}
+                <div>
+                  <div className="mb-4">
+                    <span className="text-sm text-gray-500">{formatDate(blog.date || blog.created_at)}</span>
+                  </div>
+                  
+                  {/* Blog Content (HTML) */}
+                  {blog.content && (
+                    <div 
+                      className="prose max-w-none text-gray-700 bg-transparent"
+                      dangerouslySetInnerHTML={{ __html: blog.content }}
+                    />
+                  )}
+                </div>
+              </article>
             </div>
-          </article>
+            
+            {/* Recent Posts Sidebar */}
+            <div className="lg:w-64 mt-8 lg:mt-0 lg:ml-8 h-full">
+              <div className="bg-white p-4 rounded-lg shadow-md border border-gray-200 h-full flex flex-col">
+                <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">Recent Posts</h3>
+                
+                {recentPosts.length > 0 ? (
+                  <ul className="space-y-8 flex-1">
+                    {recentPosts.map((post) => (
+                      <li key={post.id} className="pb-4 last:pb-0">
+                        <Link 
+                          href={`/website/${practiceId}/blog/${post.id}`}
+                          className="group block"
+                        >
+                          <div className="space-y-2">
+                            {post.thumbnail_image?.url ? (
+                              <div className="relative w-full h-32 rounded-lg overflow-hidden mb-2">
+                                <Image
+                                  src={post.thumbnail_image?.url || post.header_image?.url}
+                                  alt={post.title || 'Blog post thumbnail'}
+                                  fill
+                                  className="object-cover group-hover:opacity-90 transition-opacity"
+                                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                />
+                              </div>
+                            ) : (
+                              <div className="w-full h-32 bg-gray-100 flex items-center justify-center rounded-lg mb-2">
+                                <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                              </div>
+                            )}
+                            <h4 className="text-sm font-medium text-gray-900 group-hover:text-primary transition-colors line-clamp-2"
+                                style={{ '--tw-text-opacity': 1, color: `${primaryColor} !important` }}
+                            >
+                              {post.title}
+                            </h4>
+                            <p className="text-xs text-gray-500">
+                              {formatDate(post.date || post.created_at)}
+                            </p>
+                          </div>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-500 text-sm">No recent posts found.</p>
+                )}
+                
+                <div className="mt-6">
+                  <Link 
+                    href={`/website/${practiceId}/blog`}
+                    className="inline-flex items-center font-medium hover:underline"
+                    style={{ color: primaryColor }}
+                  >
+                    View All Posts
+                    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
       

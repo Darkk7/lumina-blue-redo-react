@@ -38,7 +38,7 @@ const AboutPage = () => {
   }
 
   return (
-    <section id="about" className="w-full bg-gray-100">
+    <section id="about" className="w-full bg-gray-50 pt-10">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center gap-8">
           <div className="w-full md:w-1/2 space-y-6">

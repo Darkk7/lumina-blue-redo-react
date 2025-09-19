@@ -44,165 +44,90 @@ const Navbar = () => {
 
   return (
     <header
-      className={`w-full fixed top-0 left-0 z-50 flex justify-between items-center py-4 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 2xl:px-40 transition-all ${
+      className={`w-full fixed top-0 left-0 z-50 flex justify-between items-center py-4 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 transition-all ${
         isSticky ? "bg-white shadow-lg text-black" : "bg-transparent text-white"
       }`}
     >
-      <Link href={getLink("/")}>
-        <Image
-          src={
-            isSticky
-              ? (siteSettings.about.logo_dark || "https://s3.eu-west-2.amazonaws.com/ocumailuserdata/1689179837_67_logo_dark_wide.png")
-              : (siteSettings.about.logo_light || "https://s3.eu-west-2.amazonaws.com/ocumailuserdata/1689179856_67_logo_light_wide.png")
-          }
-          alt="PracticeLogo"
-          width={200}
-          height={200}
-          className="text-2xl font-bold"
-        />
-      </Link>
+      <div className="flex items-center justify-between w-full">
+        {/* Logo */}
+        <Link href={getLink("/")} className="flex-shrink-0">
+          <Image
+            src={
+              isSticky || isMenuOpen
+                ? (siteSettings.about.logo_dark || "https://s3.eu-west-2.amazonaws.com/ocumailuserdata/1689179837_67_logo_dark_wide.png")
+                : (siteSettings.about.logo_light || "https://s3.eu-west-2.amazonaws.com/ocumailuserdata/1689179856_67_logo_light_wide.png")
+            }
+            alt="PracticeLogo"
+            width={160}
+            height={45}
+            className="h-auto max-h-12 w-auto"
+            priority
+          />
+        </Link>
 
-      <nav className="hidden md:flex items-center gap-8 font-medium">
-        <ul className="flex items-center gap-8">
-          <li>
-            <Link href={getLink("/")} className="hover:text-primary whitespace-nowrap px-2">
-              <b> HOME </b>
-            </Link>
-          </li>
-          <li>
-            <Link href={getLink("/#about")} className="hover:text-primary whitespace-nowrap px-2">
-              <b>ABOUT</b>
-            </Link>
-          </li>
-          <li>
-            <Link href={getLink("/#services")} className="hover:text-primary whitespace-nowrap px-2">
-              <b>SERVICES</b>
-            </Link>
-          </li>
-          <li>
-            <Link href={getLink("/#team")} className="hover:text-primary whitespace-nowrap px-2">
-              <b>TEAM</b>
-            </Link>
-          </li>
-          <li>
-            <Link href={getLink("/#testimonials")} className="hover:text-primary whitespace-nowrap px-2">
-              <b>FEEDBACK</b>
-            </Link>
-          </li>
-          <li>
-            <Link href={getLink("/info_centre")} className="hover:text-primary whitespace-nowrap px-2">
-              <b>INFO CENTRE</b>
-            </Link>
-          </li>
-          <li>
-            <Link href={getLink("/blog")} className="hover:text-primary whitespace-nowrap px-2">
-              <b>NEWS FEED</b>
-            </Link>
-          </li>
-        </ul>
-        {isSticky && (
-          <div className="ml-2">
-            <Link
-              href={siteSettings?.booking_url || '#booking'}
-              className="px-4 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all whitespace-nowrap"
-            >
-              MAKE A BOOKING
-            </Link>
-          </div>
-        )}
-      </nav>
+        {/* Desktop Navigation - Shows on lg screens and up */}
+        <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2 font-medium ml-8">
+          <ul className="flex items-center space-x-4 xl:space-x-6">
+            <li><Link href={getLink("/")} className="hover:text-primary whitespace-nowrap px-2"><b>HOME</b></Link></li>
+            <li><Link href={getLink("/#about")} className="hover:text-primary whitespace-nowrap px-2"><b>ABOUT</b></Link></li>
+            <li><Link href={getLink("/#services")} className="hover:text-primary whitespace-nowrap px-2"><b>SERVICES</b></Link></li>
+            <li><Link href={getLink("/#team")} className="hover:text-primary whitespace-nowrap px-2"><b>TEAM</b></Link></li>
+            <li><Link href={getLink("/#testimonials")} className="hover:text-primary whitespace-nowrap px-2"><b>FEEDBACK</b></Link></li>
+            <li><Link href={getLink("/info_centre")} className="hover:text-primary whitespace-nowrap px-2"><b>INFO CENTRE</b></Link></li>
+            <li><Link href={getLink("/blog")} className="hover:text-primary whitespace-nowrap px-2"><b>NEWS FEED</b></Link></li>
+          </ul>
+          
+          {isSticky && (
+            <div className="ml-4">
+              <Link
+                href={siteSettings?.booking_url || '#booking'}
+                className="px-4 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all whitespace-nowrap"
+              >
+                MAKE A BOOKING
+              </Link>
+            </div>
+          )}
+        </nav>
 
-      {/* Mobile Navbar */}
-      <div className="md:hidden">
-        <button
-          className="text-3xl focus:outline-none"
-          onClick={handleMenuToggle}
-        >
-          ☰
-        </button>
+        {/* Mobile Menu Button - Shows on screens smaller than lg */}
+        <div className="lg:hidden">
+          <button
+            className="text-3xl focus:outline-none"
+            onClick={handleMenuToggle}
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? '✕' : '☰'}
+          </button>
+        </div>
       </div>
 
-      <div
-        className={`${
-          isMenuOpen ? "block" : "hidden"
-        } md:hidden absolute top-16 left-0 w-full bg-white shadow-lg z-10`}
-      >
-        <ul className="flex flex-col items-center gap-4 py-4 text-xl font-medium">
-          <li>
-            <Link
-              href={getLink("/")}
-              className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
-              onClick={handleMenuToggle}
-            >
-              <b>HOME</b>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href={getLink("/#about")}
-              className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
-              onClick={handleMenuToggle}
-            >
-              <b>ABOUT</b>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href={getLink("/services")}
-              className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
-              onClick={handleMenuToggle}
-            >
-              <b>SERVICES</b>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href={getLink("/team")}
-              className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
-              onClick={handleMenuToggle}
-            >
-              <b>TEAM</b>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href={getLink("/testimonials")}
-              className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
-              onClick={handleMenuToggle}
-            >
-              <b>FEEDBACK</b>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href={getLink("/info_centre")}
-              className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
-              onClick={handleMenuToggle}
-            >
-              <b>INFO CENTRE</b>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href={getLink("/blog")}
-              className={`hover:text-primary ${!isSticky ? "text-black" : ""}`}
-              onClick={handleMenuToggle}
-            >
-              <b>NEWS FEED</b>
-            </Link>
-          </li>
-          {isSticky && (
-            <li className="mt-4">
-              <Link
-                href={siteSettings?.booking_url || '#'}
-                className="px-6 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all"
-                onClick={handleMenuToggle}
-              >
-                <b>MAKE A BOOKING</b>
-              </Link>
-            </li>
-          )}
-        </ul>
+      {/* Mobile Menu */}
+      <div className={`lg:hidden fixed inset-0 bg-white z-40 mt-16 overflow-y-auto transition-all duration-300 transform ${
+        isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+      }`}>
+        <div className="p-6">
+          <ul className="flex flex-col space-y-6 text-lg font-medium">
+            <li><Link href={getLink("/")} className="block py-2 hover:text-primary" onClick={handleMenuToggle}><b>HOME</b></Link></li>
+            <li><Link href={getLink("/#about")} className="block py-2 hover:text-primary" onClick={handleMenuToggle}><b>ABOUT</b></Link></li>
+            <li><Link href={getLink("/#services")} className="block py-2 hover:text-primary" onClick={handleMenuToggle}><b>SERVICES</b></Link></li>
+            <li><Link href={getLink("/#team")} className="block py-2 hover:text-primary" onClick={handleMenuToggle}><b>TEAM</b></Link></li>
+            <li><Link href={getLink("/#testimonials")} className="block py-2 hover:text-primary" onClick={handleMenuToggle}><b>FEEDBACK</b></Link></li>
+            <li><Link href={getLink("/info_centre")} className="block py-2 hover:text-primary" onClick={handleMenuToggle}><b>INFO CENTRE</b></Link></li>
+            <li><Link href={getLink("/blog")} className="block py-2 hover:text-primary" onClick={handleMenuToggle}><b>NEWS FEED</b></Link></li>
+            
+            {isSticky && (
+              <li className="mt-6">
+                <Link
+                  href={siteSettings?.booking_url || '#'}
+                  className="inline-block px-6 py-3 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all"
+                  onClick={handleMenuToggle}
+                >
+                  <b>MAKE A BOOKING</b>
+                </Link>
+              </li>
+            )}
+          </ul>
+        </div>
       </div>
     </header>
   );

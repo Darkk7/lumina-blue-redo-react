@@ -569,7 +569,7 @@ const BookingPage = () => {
                         placeholder="Name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        className="w-full p-3.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 placeholder-gray-400 transition duration-200"
+                        className="w-full p-3.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 placeholder-gray-600 transition duration-200"
                       />
                     </div>
                     
@@ -580,7 +580,7 @@ const BookingPage = () => {
                         placeholder="Email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="w-full p-3.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 placeholder-gray-400 transition duration-200"
+                        className="w-full p-3.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 placeholder-gray-600 transition duration-200"
                       />
                     </div>
                     
@@ -603,7 +603,7 @@ const BookingPage = () => {
                         placeholder="Additional Comments"
                         value={formData.comments}
                         onChange={handleInputChange}
-                        className="w-full p-3.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 placeholder-gray-400 transition duration-200"
+                        className="w-full p-3.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 placeholder-gray-600 transition duration-200"
                         rows="4"
                       />
 
