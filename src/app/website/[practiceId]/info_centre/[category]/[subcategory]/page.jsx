@@ -57,10 +57,15 @@ export default function SubcategoryPage() {
         const attributesResponse = await axios.get(`https://www.ocumail.com/api/item_attributes/${item.id}`);
         let attributes = attributesResponse.data;
 
-        // Process attributes to modify image paths in the data field
+        // Process attributes to modify image paths in the data field, but skip the Overview content
         attributes = attributes.map(attr => {
+          if (attr.name === 'Overview') {
+            // Leave Overview content as-is since it contains full URLs
+            return attr;
+          }
+          
           if (attr.data && typeof attr.data === 'string') {
-            // Convert image paths to use /images/Body/ directory
+            // Convert image paths to use /images/Body/ directory for non-Overview content
             let modifiedData = attr.data.replace(/src=["']([^"']+)["']/g, (match, src) => {
               // Extract just the filename from any path
               const filename = src.split('/').pop().split('\\').pop();
@@ -76,12 +81,19 @@ export default function SubcategoryPage() {
         const bannerImgAttr = attributes.find(attr => attr.name === 'bannerImg');
         const bannerUrl = bannerImgAttr?.data || '';
         
+        // Check if there's an Overview attribute
+        const overviewAttr = attributes.find(attr => attr.name === 'Overview');
+        
         setContent({
           id: item.id,
           name: item.name,
-          banner: bannerUrl, // Use the direct URL from bannerImg attribute
-          overview: attributes.find(attr => attr.name === 'Overview')?.data || '',
-          attributes: attributes.filter(attr => attr.name !== 'Overview' && attr.name !== 'bannerImg')
+          banner: bannerUrl,
+          overview: overviewAttr?.data || '',
+          hasOverview: !!overviewAttr,
+          // Only include non-Overview, non-banner attributes if there's no Overview
+          attributes: overviewAttr 
+            ? [] 
+            : attributes.filter(attr => !['Overview', 'bannerImg'].includes(attr.name))
         });
       } catch (error) {
         console.error('Error fetching content:', error);
@@ -101,27 +113,36 @@ export default function SubcategoryPage() {
 
     return (
       <div className="space-y-12">
-        {/* Overview */}
-        {content.overview && (
-          <div
-            className="prose prose-lg max-w-3xl mx-auto text-gray-700 leading-relaxed text-justify"
+        {content.hasOverview ? (
+          // Render Overview content if available
+          <div 
+            className="prose prose-lg max-w-6xl mx-auto text-gray-700 leading-relaxed"
             dangerouslySetInnerHTML={{ __html: content.overview }}
           />
-        )}
+        ) : (
+          // Otherwise render section-based content
+          <>
+            {/* Overview text if available but not using full Overview content */}
+            {content.overview && (
+              <div
+                className="prose prose-lg max-w-3xl mx-auto text-gray-700 leading-relaxed text-justify"
+                dangerouslySetInnerHTML={{ __html: content.overview }}
+              />
+            )}
 
-        {/* Sections */}
-        {content.attributes
-          .filter(attr => attr.name.includes('.') &&
-                         !attr.name.startsWith('Reference.') &&
-                         !['bannerImg', 'Overview'].includes(attr.name))
-          .sort((a, b) => {
-            const getSectionNumber = (name) => {
-              const match = name.match(/\.(\d+)\./);
-              return match ? parseInt(match[1]) : 0;
-            };
-            return getSectionNumber(a.name) - getSectionNumber(b.name);
-          })
-          .map((attr, idx, arr) => {
+            {/* Sections */}
+            {content.attributes
+              .filter(attr => attr.name.includes('.') &&
+                            !attr.name.startsWith('Reference.') &&
+                            !['bannerImg', 'Overview'].includes(attr.name))
+              .sort((a, b) => {
+                const getSectionNumber = (name) => {
+                  const match = name.match(/\.(\d+)\./);
+                  return match ? parseInt(match[1]) : 0;
+                };
+                return getSectionNumber(a.name) - getSectionNumber(b.name);
+              })
+              .map((attr, idx, arr) => {
             const sectionNumber = parseInt(attr.name.split('.')[1]) || 0;
             if (sectionNumber === 0) return null;
 
@@ -171,11 +192,13 @@ export default function SubcategoryPage() {
                 </div>
               );
             }
-            return null;
-          })}
+              return null;
+            })}
+          </>
+        )}
 
-        {/* References */}
-        {content.attributes.some(attr => attr.name.startsWith('Reference.')) && (
+        {/* References - Show only if not using Overview content or if explicitly included in Overview */}
+        {!content.hasOverview && content.attributes.some(attr => attr.name.startsWith('Reference.')) && (
           <div className="mt-12 pt-6 border-t border-gray-200">
             <h3 className="text-xl font-bold text-gray-900 mb-4">References</h3>
             <ol className="list-decimal list-inside space-y-2 text-gray-700">
@@ -226,7 +249,7 @@ export default function SubcategoryPage() {
           style={{ backgroundImage: content.banner ? `url(${content.banner})` : 'none' }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <h1 className="text-5xl font-bold ">{content.name}</h1>
+            <h1 className="text-5xl text-white font-bold ">{content.name}</h1>
           </div>
         </div>
       )}
@@ -251,7 +274,7 @@ export default function SubcategoryPage() {
                 {categoryDetails?.name || category}
               </Link>
               <span className="text-primary mx-3">›</span>
-              <span className="text-gray-700">{content?.names || subcategory}</span>
+              <span className="text-gray-700">{content?.name || subcategory}</span>
             </div>
           </div>
 
