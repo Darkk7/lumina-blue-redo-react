@@ -19,7 +19,7 @@ export async function GET(request, { params }) {
     }
 
     const data = await licenseResponse.json();
-    console.log("[License API] Raw data:", data);
+    
 
     // Handle if data is wrapped in an object like { licenses: [...] }
     const licensesArray = Array.isArray(data) ? data : data?.licenses || [];
