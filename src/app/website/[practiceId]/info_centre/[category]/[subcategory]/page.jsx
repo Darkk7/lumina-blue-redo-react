@@ -142,8 +142,8 @@ export default function SubcategoryPage() {
                 <div key={`section-${sectionNumber}`} className="space-y-8">
                   {/* Section Title */}
                   {titleAttr && (
-                    <div className="flex justify-left">
-                      <h3 className="inline-block px-1 text-2xl font-bold text-gray-900 pb-2 border-b-2 border-primary">
+                    <div className="flex justify-center">
+                      <h3 className="inline-block px-1 text-3xl font-bold text-gray-900 pb-2 border-b-2 border-primary">
                         {titleAttr.data}
                       </h3>
                     </div>
@@ -153,7 +153,7 @@ export default function SubcategoryPage() {
                   <div className="flex flex-col items-center space-y-6">
                     {bodyAttr && (
                       <div
-                        className="prose prose-lg max-w-3xl text-gray-700 leading-relaxed text-justify"
+                        className="prose prose-lg max-w-10xl text-gray-700 leading-relaxed text-justify p-3"
                         dangerouslySetInnerHTML={{ __html: bodyAttr.data }}
                       />
                     )}
@@ -256,7 +256,7 @@ export default function SubcategoryPage() {
           </div>
 
           {/* Main Content with SimonPage styling */}
-          <div className="bg-white rounded-lg shadow-lg p-10 max-w-4xl mx-auto border-2 border-gray-500">
+          <div className="bg-white rounded-lg shadow-lg p-4 max-w-6xl mx-auto border-2 border-gray-500">
             {loading ? (
               <div className="flex justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>

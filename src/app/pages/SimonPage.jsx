@@ -16,7 +16,11 @@ export default function SimonPage() {
 
   return (
     <div className ="main">
+<<<<<<< Updated upstream
        <Navbar/>       
+=======
+
+>>>>>>> Stashed changes
        
     <div className="content">
       <div className="section">
