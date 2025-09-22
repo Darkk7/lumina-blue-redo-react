@@ -100,13 +100,28 @@ const IcomoonStyles = () => (
 
 const ServiceCard = ({ title, description, iconClass, imageName, categoryId, serviceKey }) => {
   const { siteSettings } = useSiteSettings();
-  const practiceId = siteSettings?.practiceId; // Get practiceId from site settings
+  const practiceId = siteSettings?.practiceId;
   const primaryColor = siteSettings?.primaryColor || 'blue-600';
+  const [isExpanded, setIsExpanded] = React.useState(false);
+  const [isTruncated, setIsTruncated] = React.useState(false);
+  const descriptionRef = React.useRef(null);
+
+  // Check if text needs to be truncated
+  React.useEffect(() => {
+    if (descriptionRef.current) {
+      const needsTruncation = descriptionRef.current.scrollHeight > 100; // Adjust height as needed
+      setIsTruncated(needsTruncation && !isExpanded);
+    }
+  }, [description, isExpanded]);
+
+  // Toggle expanded state
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
   
   // Determine what to render based on available props
   const renderVisual = () => {
     if (serviceKey && practiceId && categoryId) {
-      // Use the service key to get the correct image path
       const imagePath = getServiceImage(practiceId, categoryId, serviceKey);
       
       return (
@@ -118,7 +133,6 @@ const ServiceCard = ({ title, description, iconClass, imageName, categoryId, ser
               className="max-w-full max-h-full object-contain"
               onError={(e) => {
                 console.error(`Failed to load image: ${imagePath}`);
-                // Fallback if image fails to load
                 e.target.style.display = 'none';
                 const fallback = e.target.nextElementSibling;
                 if (fallback) {
@@ -126,7 +140,6 @@ const ServiceCard = ({ title, description, iconClass, imageName, categoryId, ser
                 }
               }}
             />
-            {/* Fallback icon in case image fails to load */}
             <span 
               className={`icon ${iconClass || 'icon-eye'}`} 
               style={{ display: 'none' }}
@@ -152,8 +165,29 @@ const ServiceCard = ({ title, description, iconClass, imageName, categoryId, ser
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300 h-full">
       {renderVisual()}
-      <h3 className="text-2xl font-semibold text-black mb-2">{title}</h3>
-      <p className="text-gray-600">{description}</p>
+      <h3 className="text-2xl font-semibold text-black mb-3">{title}</h3>
+      <div 
+        ref={descriptionRef}
+        className={`text-gray-600 text-left w-full ${isTruncated ? 'line-clamp-4' : ''} transition-all duration-200`}
+      >
+        {description}
+      </div>
+      {isTruncated && (
+        <button 
+          onClick={toggleExpand}
+          className="mt-2 text-primary text-sm font-medium self-start"
+        >
+          Read More
+        </button>
+      )}
+      {!isTruncated && isExpanded && (
+        <button 
+          onClick={toggleExpand}
+          className="mt-2 text-primary text-sm font-medium self-start"
+        >
+          Show Less
+        </button>
+      )}
     </div>
   );
 };
@@ -162,7 +196,6 @@ const ServicesPage = () => {
   const { siteSettings } = useSiteSettings();
   const services = siteSettings?.services || [];
   
-  // Log the first service if it exists
   if (services.length > 0) {
   } else {
   }

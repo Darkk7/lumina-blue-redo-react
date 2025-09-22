@@ -55,7 +55,7 @@ const CustomPanelPage = () => {
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-            opacity: 0.9
+            opacity: 0.9,
           }}
         >
           <div className="absolute inset-0 bg-black opacity-50"></div>

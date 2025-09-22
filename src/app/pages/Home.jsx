@@ -51,10 +51,10 @@ export default function HomePage({ customerCode }) {
               fontFamily: siteSettings.banners[0].titleGoogleFont || 'inherit'
             }}
           >
-            <p style={{ fontSize: `${siteSettings.banners[0].titleFontSize}px` }}>
+            <p style={{ fontSize: `${siteSettings.banners[0].titleFontSize}px`, color: 'white' }}>
               {siteSettings.banners[0].title}
             </p>
-            <p style={{ fontSize: `${siteSettings.banners[0].textFontSize}px` }}>
+            <p style={{ fontSize: `${siteSettings.banners[0].textFontSize}px`, color: 'white' }}>
               {siteSettings.banners[0].text || "Serving the community for over 80 years delivering the highest quality care and products for our customers"}
             </p>
             <br></br>

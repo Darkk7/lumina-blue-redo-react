@@ -1,33 +1,45 @@
 import { NextResponse } from 'next/server';
 
 export async function GET(request, { params }) {
-  const { practiceId } = await params;
-  const practiceIdNum = parseInt(practiceId);
+  const { practiceId } = params;
   
   try {
-    // Fetch all blogs
-    const blogsResponse = await fetch('https://www.eyecareportal.com/api/blogs', {
+    // First, fetch global blogs (where practice_id is null)
+    const globalBlogsResponse = await fetch('https://www.eyecareportal.com/api/blogs', {
       headers: { 'Content-Type': 'application/json' },
     });
 
-    if (!blogsResponse.ok) {
-      throw new Error(`Failed to fetch blogs: ${blogsResponse.statusText}`);
+    if (!globalBlogsResponse.ok) {
+      throw new Error(`Failed to fetch global blogs: ${globalBlogsResponse.statusText}`);
     }
-
-    let blogs = await blogsResponse.json();
     
-    if (!Array.isArray(blogs)) {
-      throw new Error('Invalid blog data format received');
-    }
+    let globalBlogs = await globalBlogsResponse.json();
+    globalBlogs = Array.isArray(globalBlogs) ? globalBlogs : [];
 
-    const filteredBlogs = blogs.filter(blog => {
-      if (blog.show !== true) return false;
-      
-      if (blog.practice_id === null) return true;
-      
-      return blog.practice_id === practiceIdNum;
+    // Then fetch practice-specific blogs
+    const practiceBlogsResponse = await fetch(`https://www.eyecareportal.com/api/blogs?practice_id=${practiceId}`, {
+      headers: { 'Content-Type': 'application/json' },
     });
 
+    let practiceBlogs = [];
+    if (practiceBlogsResponse.ok) {
+      const data = await practiceBlogsResponse.json();
+      practiceBlogs = Array.isArray(data) ? data : [];
+    } else if (practiceBlogsResponse.status !== 404) {
+      // Only throw error if it's not a 404 (which might mean no blogs for this practice)
+      throw new Error(`Failed to fetch practice blogs: ${practiceBlogsResponse.statusText}`);
+    }
+
+    // Combine both global and practice-specific blogs
+    const allBlogs = [...globalBlogs, ...practiceBlogs];
+    
+    // Filter out any non-visible blogs
+    const filteredBlogs = allBlogs.filter(blog => {
+      if (!blog) return false;
+      return blog.show === true;
+    });
+    
+    // Add URLs to all blogs
     const blogsWithUrls = filteredBlogs.map(blog => ({
       ...blog,
       url: `/website/${practiceId}/blog/${blog.id}`

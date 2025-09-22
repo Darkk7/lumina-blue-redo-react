@@ -72,10 +72,14 @@ export default function SubcategoryPage() {
           return attr;
         });
 
+        // Find banner image URL from attributes
+        const bannerImgAttr = attributes.find(attr => attr.name === 'bannerImg');
+        const bannerUrl = bannerImgAttr?.data || '';
+        
         setContent({
           id: item.id,
           name: item.name,
-          banner: attributes.find(attr => attr.name === 'bannerImg')?.data || '',
+          banner: bannerUrl, // Use the direct URL from bannerImg attribute
           overview: attributes.find(attr => attr.name === 'Overview')?.data || '',
           attributes: attributes.filter(attr => attr.name !== 'Overview' && attr.name !== 'bannerImg')
         });
@@ -219,7 +223,7 @@ export default function SubcategoryPage() {
       {content?.banner && (
         <div 
           className="w-full h-[400px] bg-cover bg-center text-center text-white relative"
-          style={{ backgroundImage: `url(https://www.eyecareportal.com${content.banner})` }}
+          style={{ backgroundImage: content.banner ? `url(${content.banner})` : 'none' }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <h1 className="text-5xl font-bold ">{content.name}</h1>
@@ -247,7 +251,7 @@ export default function SubcategoryPage() {
                 {categoryDetails?.name || category}
               </Link>
               <span className="text-primary mx-3">›</span>
-              <span className="text-gray-700">{content?.name || subcategory}</span>
+              <span className="text-gray-700">{content?.names || subcategory}</span>
             </div>
           </div>
 
