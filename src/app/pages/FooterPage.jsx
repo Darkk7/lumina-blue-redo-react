@@ -1,6 +1,6 @@
 "use client";
 
-import { FaFacebook, FaInstagram, FaLinkedin, FaPinterest, FaWhatsapp, FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaTiktok, FaGoogle } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaLinkedin, FaPinterest, FaWhatsapp, FaMapMarkerAlt, FaPhone, FaEnvelope, FaTiktok, FaGoogle } from 'react-icons/fa';
 import { useSiteSettings } from "../context/SiteSettingsContext";
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -8,14 +8,32 @@ import { useEffect, useState } from 'react';
 const FooterPage = () => {
   const { siteSettings } = useSiteSettings();
   const [blogs, setBlogs] = useState([]);
+  const [licenseType, setLicenseType] = useState(null);
 
+  // Fetch license info
   useEffect(() => {
+    async function fetchLicense() {
+      if (!siteSettings?.practiceId) return;
+      try {
+        const res = await fetch(`/api/website/${siteSettings.practiceId}/check_licence`);
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json();
+        setLicenseType(data.product_type || null);
+      } catch (err) {
+        console.error("License fetch error:", err);
+      }
+    }
+    fetchLicense();
+  }, [siteSettings?.practiceId]);
+
+  // Fetch blogs only if license is NOT Comprehensive
+  useEffect(() => {
+    if (licenseType === "Comprehensive") return;
+
     const fetchBlogs = async () => {
       try {
         const response = await fetch(`/api/website/${siteSettings.practiceId}/blogs`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch blogs');
-        }
+        if (!response.ok) throw new Error('Failed to fetch blogs');
         const data = await response.json();
         const sortedBlogs = data.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 2);
         setBlogs(sortedBlogs);
@@ -23,23 +41,22 @@ const FooterPage = () => {
         console.error('Error fetching blogs:', error);
       }
     };
-
     fetchBlogs();
-  }, [siteSettings.practiceId]);
+  }, [siteSettings?.practiceId, licenseType]);
 
   const getLink = (path) => {
-    if (!siteSettings?.practiceId) {
-      return path;
-    }
-
+    if (!siteSettings?.practiceId) return path;
     return `/website/${siteSettings.practiceId}${path}`;
   };
+
+  // Determine whether to show the News column
+  const showNewsColumn = licenseType !== "Comprehensive";
 
   return (
     <footer className="w-full py-12" style={{ backgroundColor: "#363636" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-2 gap-y-8">
-          {/* Column 1: Logo with text */}
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${showNewsColumn ? 4 : 3} gap-x-2 gap-y-8`}>
+          {/* Column 1: Logo + Socials */}
           <div className="space-y-4">
             <div className="flex items-center">
               <img src={siteSettings.about.logo_light} alt="Logo" className="h-12 w-auto" />
@@ -101,42 +118,36 @@ const FooterPage = () => {
             </ul>
           </div>
 
-          {/* Column 3: Latest Blog Posts */}
-          <div>
-            <h3 className="text-lg font-semibold text-white mb-4">Recent News</h3>
-            <div className="space-y-4">
-              {blogs.map(blog => (
-                <div key={blog.id} className="border-b border-gray-700 pb-4 mb-4">
-                  <div className="flex gap-4">
-                    <div className="flex-1">
-                      <Link href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}>
-                        <div className="text-[var(--primary-color)] hover:text-white font-medium line-clamp-2 mb-1">
-                          {blog.title}
-                        </div>
-                      </Link>
-                      <div className="text-sm text-gray-400">{blog.date}</div>
+          {/* Column 3: Latest Blog Posts (only show if not Comprehensive) */}
+          {showNewsColumn && (
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-4">Recent News</h3>
+              <div className="space-y-4">
+                {blogs.map(blog => (
+                  <div key={blog.id} className="border-b border-gray-700 pb-4 mb-4">
+                    <div className="flex gap-4">
+                      <div className="flex-1">
+                        <Link href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}>
+                          <div className="text-[var(--primary-color)] hover:text-white font-medium line-clamp-2 mb-1">{blog.title}</div>
+                        </Link>
+                        <div className="text-sm text-gray-400">{blog.date}</div>
+                      </div>
+                      {(blog.thumbnail_image?.url || blog.header_image?.url) && (
+                        <Link href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`} className="flex-shrink-0 w-20 h-20 rounded overflow-hidden">
+                          <img
+                            src={blog.thumbnail_image?.url || blog.header_image?.url}
+                            alt={blog.title}
+                            className="w-full h-full object-cover hover:opacity-90 transition-opacity"
+                            onError={(e) => { e.target.onerror = null; e.target.src = '/placeholder-blog.jpg'; }}
+                          />
+                        </Link>
+                      )}
                     </div>
-                    {(blog.thumbnail_image?.url || blog.header_image?.url) && (
-                      <Link 
-                        href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}
-                        className="flex-shrink-0 w-20 h-20 rounded overflow-hidden"
-                      >
-                        <img
-                          src={blog.thumbnail_image?.url || blog.header_image?.url}
-                          alt={blog.title}
-                          className="w-full h-full object-cover hover:opacity-90 transition-opacity"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = '/placeholder-blog.jpg';
-                          }}
-                        />
-                      </Link>
-                    )}
                   </div>
-                </div>
-          ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Column 4: Get In Touch */}
           <div>
@@ -153,7 +164,7 @@ const FooterPage = () => {
               <div className="flex items-center">
                 <FaEnvelope className="h-5 w-5 text-primary mr-3" />
                 <a href={`mailto:${siteSettings.email}`} className="text-white hover:text-primary">{siteSettings.email}</a>
-              </div>              
+              </div>
             </div>
           </div>
         </div>
@@ -161,17 +172,10 @@ const FooterPage = () => {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-gray-200">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-white text-sm">
-              &copy; {new Date().getFullYear()}. All rights reserved.
-            </p>
+            <p className="text-white text-sm">&copy; {new Date().getFullYear()}. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href={getLink("/privacy")} className="hover:text-primary whitespace-nowrap px-2">
-              Privacy Policy
-            </Link>
-            <Link href={getLink("/paia")} className="hover:text-primary whitespace-nowrap px-2">
-              PAIA Manual
-            </Link>
-
+              <Link href={getLink("/privacy")} className="hover:text-primary whitespace-nowrap px-2">Privacy Policy</Link>
+              <Link href={getLink("/paia")} className="hover:text-primary whitespace-nowrap px-2">PAIA Manual</Link>
             </div>
           </div>
         </div>
