@@ -61,7 +61,7 @@ const FooterPage = () => {
             <div className="flex items-center">
               <img src={siteSettings.about.logo_light} alt="Logo" className="h-12 w-auto" />
             </div>
-            <p className="text-white">
+          <p className="text-white">
             Stay connected to our practice via our social platforms.
             </p>
             <div className="flex space-x-4">
