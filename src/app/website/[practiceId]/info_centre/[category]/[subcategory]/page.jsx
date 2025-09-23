@@ -65,11 +65,8 @@ export default function SubcategoryPage() {
           }
           
           if (attr.data && typeof attr.data === 'string') {
-            // Convert image paths to use /images/Body/ directory for non-Overview content
             let modifiedData = attr.data.replace(/src=["']([^"']+)["']/g, (match, src) => {
-              // Extract just the filename from any path
               const filename = src.split('/').pop().split('\\').pop();
-              // Always point to /images/Body/filename
               return `src="/images/Body/${filename}"`;
             });
             return { ...attr, data: modifiedData };

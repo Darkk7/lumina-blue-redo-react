@@ -168,7 +168,7 @@ const ServiceCard = ({ title, description, iconClass, imageName, categoryId, ser
       <h3 className="text-2xl font-semibold text-black mb-3">{title}</h3>
       <div 
         ref={descriptionRef}
-        className={`text-gray-600 text-left w-full ${isTruncated ? 'line-clamp-4' : ''} transition-all duration-200`}
+        className={`text-gray-600 text-left w-full ${isTruncated ? 'line-clamp-3' : ''} transition-all duration-200`}
       >
         {description}
       </div>

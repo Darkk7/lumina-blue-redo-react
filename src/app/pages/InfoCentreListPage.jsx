@@ -148,9 +148,11 @@ const InfoCentreListPage = () => {
                 >
                   {item.body}
                 </p>
-                <span className="w-full sm:w-[200px] text-sm bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform transform hover:scale-105 text-center block">
-                  Explore {item.name}
-                </span>
+                <div className="mt-auto">
+                  <span className="inline-block w-full text-sm bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform transform hover:scale-105 text-center whitespace-nowrap overflow-hidden text-ellipsis">
+                    Explore {item.name}
+                  </span>
+                </div>
               </Link>
             ))}
           </div>        

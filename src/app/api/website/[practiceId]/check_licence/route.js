@@ -21,10 +21,8 @@ export async function GET(request, { params }) {
     const data = await licenseResponse.json();
     
 
-    // Handle if data is wrapped in an object like { licenses: [...] }
     const licensesArray = Array.isArray(data) ? data : data?.licenses || [];
 
-    // Find Lumina Blue
     const lumina = licensesArray.find((lic) =>
       lic.description?.toLowerCase().includes("lumina blue")
     );
