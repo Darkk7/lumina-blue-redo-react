@@ -34,22 +34,49 @@ const Navbar = () => {
   }, [siteSettings?.practiceId]);
 
   // Scroll handling
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > window.innerHeight * 0.2) {
-        setIsSticky(true);
-        setIsScrolled(true);
-      } else {
-        setIsSticky(false);
-        setIsScrolled(false);
-      }
-    };
+useEffect(() => {
+  const handleScroll = () => {
+    // If menu is open on mobile, keep sticky and ignore scroll
+    if (isMenuOpen) {
+      setIsSticky(true);
+      setIsScrolled(true);
+      return;
+    }
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    // Otherwise, sticky depends on scroll position
+    if (window.scrollY > window.innerHeight * 0.2) {
+      setIsSticky(true);
+      setIsScrolled(true);
+    } else {
+      setIsSticky(false);
+      setIsScrolled(false);
+    }
+  };
 
-  const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
+  window.addEventListener("scroll", handleScroll);
+  handleScroll();
+
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [isMenuOpen]);
+
+// Menu toggle
+const handleMenuToggle = () => {
+  setIsMenuOpen(prev => {
+    const menuState = !prev;
+
+    if (menuState) {
+      // Menu opened =>always sticky
+      setIsSticky(true);
+    } else {
+      //Depends on position
+      setIsSticky(window.scrollY > window.innerHeight * 0.2);
+    }
+
+    return menuState;
+  });
+};
+
+ 
 
   const getLink = (path) => {
     if (!siteSettings?.practiceId) return path;
@@ -154,14 +181,14 @@ const Navbar = () => {
         }`}
       >
         <div className="p-6">
-          <ul className="flex flex-col space-y-6 text-lg font-medium">
+          <ul className="flex flex-col space-y-6 text-lg font-medium items-center">
             <li>
-              <Link href={getLink("/")} className="block py-2 hover:text-primary" onClick={handleMenuToggle}>
+              <Link href={getLink("/")} className="block py-2 hover:text-primary " onClick={handleMenuToggle}>
                 <b>HOME</b>
               </Link>
             </li>
             <li>
-              <Link href={getLink("/#about")} className="block py-2 hover:text-primary" onClick={handleMenuToggle}>
+              <Link href={getLink("/#about")} className="block py-2 hover:text-primary " onClick={handleMenuToggle}>
                 <b>ABOUT</b>
               </Link>
             </li>
