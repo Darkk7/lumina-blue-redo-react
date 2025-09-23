@@ -6,7 +6,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import Navbar from '../../../../../pages/Navbar';
 import { useSiteSettings } from '../../../../../context/SiteSettingsContext';
-import '../../../../../pages/simon_dev/style.css';
+
 
 export default function SubcategoryPage() {
   const { practiceId, category, subcategory } = useParams();
