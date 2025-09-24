@@ -59,7 +59,7 @@ const InfoCentreHomePage = () => {
       if (!response.ok) {
         if (response.status === 404) {
           console.warn('The requested item could not be found. Retrying...');
-          setTimeout(() => handleCategoryClick(id), 3000); //Look at this later (Error in network tab)
+          setTimeout(() => handleCategoryClick(id), 3000);
         } else {
           console.error(`Network response was not ok for ID: ${id}`, response.statusText);
         }
