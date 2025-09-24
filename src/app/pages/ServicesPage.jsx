@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { useSiteSettings } from '../context/SiteSettingsContext';
-import { getServiceImage } from '../../utils/imagePaths';
 
 // IcoMoon font
 const IcomoonStyles = () => (
@@ -29,59 +28,66 @@ const IcomoonStyles = () => (
       line-height: 1;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      
     }
 
-    .icon-comprehensiveeyeexams:before { content: "\e935"; }
-    .icon-visualacuity:before { content: "\e934"; }
-    .icon-lens-holder:before { content: "\e919"; }
-    .icon-lens-holder-1:before { content: "\e938"; }
-    .icon-repairing-service:before { content: "\e92c"; }
-    .icon-repair_1:before { content: "\e92b"; }
-    .icon-eyeglasses:before { content: "\e902"; }
-    .icon-eyeglasses-of-thin-shape:before { content: "\e903"; }
-    .icon-contactlens:before { content: "\e900"; }
-    .icon-driverlicense:before { content: "\e901"; }
-    .icon-filters:before { content: "\e904"; }
-    .icon-filters-1:before { content: "\e904"; }
-    .icon-foroptero:before { content: "\e906"; }
-    .icon-glaucoma:before { content: "\e907"; }
-    .icon-ophthalmology:before { content: "\e91a"; }
-    .icon-optometry:before { content: "\e91b"; }
-    .icon-paediatric_1:before { content: "\e928"; }
-    .icon-paediatric_2:before { content: "\e929"; }
-    .icon-paediatric_3:before { content: "\e92a"; }
-    .icon-skippers:before { content: "\e92d"; }
-    .icon-view:before { content: "\e92e"; }
+    .icon-comprehensiveeyeexams:before { content: "\\e935"; }
+    .icon-visualacuity:before { content: "\\e934"; }
+    .icon-lens-holder:before { content: "\\e919"; }
+    .icon-lens-holder-1:before { content: "\\e938"; }
+    .icon-repairing-service:before { content: "\\e92c"; }
+    .icon-repair_1:before { content: "\\e92b"; }
+    .icon-eyeglasses:before { content: "\\e902"; }
+    .icon-eyeglasses-of-thin-shape:before { content: "\\e903"; }
+    .icon-contactlens:before { content: "\\e900"; }
+    .icon-driverlicense:before { content: "\\e901"; }
+    .icon-filters:before { content: "\\e904"; }
+    .icon-filters-1:before { content: "\\e904"; }
+    .icon-foroptero:before { content: "\\e906"; }
+    .icon-glaucoma:before { content: "\\e907"; }
+    .icon-ophthalmology:before { content: "\\e91a"; }
+    .icon-optometry:before { content: "\\e91b"; }
+    .icon-paediatric_1:before { content: "\\e928"; }
+    .icon-paediatric_2:before { content: "\\e929"; }
+    .icon-paediatric_3:before { content: "\\e92a"; }
+    .icon-skippers:before { content: "\\e92d"; }
+    .icon-view:before { content: "\\e92e"; }
   `}</style>
 );
 
-// ServiceCard
-const ServiceCard = ({ title, description, iconId, iconClass, imageName, iconsMap }) => {
+const ServiceCard = ({ title, description, icon_id, iconClass, iconsMap }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  const resolvedIcon = iconId && iconsMap ? iconsMap[iconId] : iconClass || 'icon-eye';
+  const numericIconId = icon_id;
+  const resolvedIcon = numericIconId && iconsMap ? iconsMap[numericIconId] : iconClass || 'icon-eye';
 
-  const toggleExpand = () => setIsExpanded(!isExpanded);
-
+  // Dictionary
+  const imageMapping = {
+    100: '/Batman.jpg',
+    99: '/CustomPanelImage.webp',
+    94: 'https://raw.githubusercontent.com/sim0n-sk8/emailAssets/main/reportRedo/assets/Arch.png',
+    80: '/Batman.jpg',
+    96: '/CustomPanelImage.webp',
+    82: '/CustomPanelImage.webp'
+  };
+  
   const renderVisual = () => {
-    const imagePath = imageName
-      ? `https://raw.githubusercontent.com/sim0n-sk8/emailAssets/main/reportRedo/assets/${imageName}.png`
-      : null;
-
+    const imagePath = numericIconId ? (imageMapping[numericIconId] || icon_id) : icon_id;
+    
     return (
-      <div className="w-full h-40 mb-4 relative rounded-lg overflow-hidden">
-        {imagePath && !imageError ? (
-          <img
-            src={imagePath}
-            alt={title}
-            className="w-full h-full object-cover"
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <div className="flex items-center justify-center w-full h-full  ">
-<span className={`icon text-primary text-5xl ${resolvedIcon}`} />
+      <div className="w-full h-40 mb-4 relative rounded-lg overflow-hidden bg-gray-100">
+        <img
+          src={imagePath}
+          alt={title}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            console.error('Image failed to load:', imagePath, 'Error:', e);
+            setImageError(true);
+          }}
+        />
+        {imageError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+            <span className={`icon text-primary text-5xl ${resolvedIcon}`} />
           </div>
         )}
       </div>
@@ -92,7 +98,7 @@ const ServiceCard = ({ title, description, iconId, iconClass, imageName, iconsMa
   const isLongDescription = description && description.length > 100;
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300 h-full ">
+    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300 h-full">
       {renderVisual()}
       <h3 className="text-2xl font-semibold text-black mb-3">{title}</h3>
 
@@ -102,7 +108,7 @@ const ServiceCard = ({ title, description, iconId, iconClass, imageName, iconsMa
 
       {isLongDescription && (
         <button
-          onClick={toggleExpand}
+          onClick={() => setIsExpanded(!isExpanded)}
           className="mt-2 text-primary text-sm font-medium self-start"
         >
           {isExpanded ? 'Show Less' : 'Read More'}
@@ -112,30 +118,29 @@ const ServiceCard = ({ title, description, iconId, iconClass, imageName, iconsMa
   );
 };
 
-
 // ServicesPage
 const ServicesPage = () => {
   const { siteSettings } = useSiteSettings();
-  const services = siteSettings?.services || [];
+  // Use featured_services instead of services
+  const services = siteSettings?.featured_services || [];
   const practiceId = siteSettings?.practiceId;
   const [iconsMap, setIconsMap] = useState({});
 
   useEffect(() => {
-  const fetchIcons = async () => {
-    if (!practiceId) return;
-    try {
-      const res = await fetch(`/api/website/${practiceId}/icons`);
-      if (!res.ok) throw new Error(`API returned status ${res.status}`);
-      const data = await res.json();
-      setIconsMap(data.iconsMap || {});
-    } catch (err) {
-      console.error("Failed to fetch icons:", err);
-      setIconsMap({}); // fallback
-    }
-  };
-  fetchIcons();
-}, [practiceId]);
-
+    const fetchIcons = async () => {
+      if (!practiceId) return;
+      try {
+        const res = await fetch(`/api/website/${practiceId}/icons`);
+        if (!res.ok) throw new Error(`API returned status ${res.status}`);
+        const data = await res.json();
+        setIconsMap(data.iconsMap || {});
+      } catch (err) {
+        console.error("Failed to fetch icons:", err);
+        setIconsMap({});
+      }
+    };
+    fetchIcons();
+  }, [practiceId]);
 
   return (
     <>
@@ -154,11 +159,8 @@ const ServicesPage = () => {
                 key={service.id}
                 title={service.service_title || service.title}
                 description={service.long_description || service.short_description || service.description}
-                iconId={service.icon_id}
+                icon_id={service.icon_id}
                 iconClass={service.icon_desc || service.iconDescription}
-                imageName={service.image_name || service.imageName || 'Arch'}
-                categoryId={service.category_id}
-                serviceKey={service.service_key}
                 iconsMap={iconsMap}
               />
             ))}
