@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useSiteSettings } from '../context/SiteSettingsContext';
+import { getServiceImage } from '../../utils/imagePaths';
 
 // IcoMoon font
 const IcomoonStyles = () => (
@@ -28,53 +29,71 @@ const IcomoonStyles = () => (
       line-height: 1;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      
     }
 
-    .icon-comprehensiveeyeexams:before { content: "\\e935"; }
-    .icon-visualacuity:before { content: "\\e934"; }
-    .icon-lens-holder:before { content: "\\e919"; }
-    .icon-lens-holder-1:before { content: "\\e938"; }
-    .icon-repairing-service:before { content: "\\e92c"; }
-    .icon-repair_1:before { content: "\\e92b"; }
-    .icon-eyeglasses:before { content: "\\e902"; }
-    .icon-eyeglasses-of-thin-shape:before { content: "\\e903"; }
-    .icon-contactlens:before { content: "\\e900"; }
-    .icon-driverlicense:before { content: "\\e901"; }
-    .icon-filters:before { content: "\\e904"; }
-    .icon-filters-1:before { content: "\\e904"; }
-    .icon-foroptero:before { content: "\\e906"; }
-    .icon-glaucoma:before { content: "\\e907"; }
-    .icon-ophthalmology:before { content: "\\e91a"; }
-    .icon-optometry:before { content: "\\e91b"; }
-    .icon-paediatric_1:before { content: "\\e928"; }
-    .icon-paediatric_2:before { content: "\\e929"; }
-    .icon-paediatric_3:before { content: "\\e92a"; }
-    .icon-skippers:before { content: "\\e92d"; }
-    .icon-view:before { content: "\\e92e"; }
+    .icon-comprehensiveeyeexams:before { content: "\e935"; }
+    .icon-visualacuity:before { content: "\e934"; }
+    .icon-lens-holder:before { content: "\e919"; }
+    .icon-lens-holder-1:before { content: "\e938"; }
+    .icon-repairing-service:before { content: "\e92c"; }
+    .icon-repair_1:before { content: "\e92b"; }
+    .icon-eyeglasses:before { content: "\e902"; }
+    .icon-eyeglasses-of-thin-shape:before { content: "\e903"; }
+    .icon-contactlens:before { content: "\e900"; }
+    .icon-driverlicense:before { content: "\e901"; }
+    .icon-filters:before { content: "\e904"; }
+    .icon-filters-1:before { content: "\e904"; }
+    .icon-foroptero:before { content: "\e906"; }
+    .icon-glaucoma:before { content: "\e907"; }
+    .icon-ophthalmology:before { content: "\e91a"; }
+    .icon-optometry:before { content: "\e91b"; }
+    .icon-paediatric_1:before { content: "\e928"; }
+    .icon-paediatric_2:before { content: "\e929"; }
+    .icon-paediatric_3:before { content: "\e92a"; }
+    .icon-skippers:before { content: "\e92d"; }
+    .icon-view:before { content: "\e92e"; }
   `}</style>
 );
 
-const ServiceCard = ({ title, description, icon_id, iconClass, iconsMap }) => {
+// ServiceCard
+const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsMap }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  const numericIconId = icon_id;
+    const numericIconId = icon_id;
+
   const resolvedIcon = numericIconId && iconsMap ? iconsMap[numericIconId] : iconClass || 'icon-eye';
 
-  // Dictionary
-  const imageMapping = {
-    100: '/Batman.jpg',
-    99: '/CustomPanelImage.webp',
-    94: 'https://raw.githubusercontent.com/sim0n-sk8/emailAssets/main/reportRedo/assets/Arch.png',
-    80: '/Batman.jpg',
-    96: '/CustomPanelImage.webp',
-    82: '/CustomPanelImage.webp'
+    const imageMapping = {
+    100: "/ComprehensiveEyeExams.png",
+    99: "/VisualAcuity.png",
+    97: "/Skippers.png",
+    96: "/RepairingService.png",
+    95: "/Repair1.png",
+    94: "/Paediatric3.png",
+    93: "/Paediatric2.png",
+    92: "/Paediatric1.png",
+    90: "/visual.png",
+    89: "/LensHolder1.png",
+    87: "/Glaucoma.png",
+    86: "/Foroptero.png",
+    85: "/Ophthalmology.png",
+    84: "Filters.png",
+    83: "/EyeglassesThinShape.png",
+    82: "/Eyeglasses.png",
+    81: "/DriversLicense.png",
+    80: "/LensHolder.png",
   };
-  
+
+
+
+  const toggleExpand = () => setIsExpanded(!isExpanded);
+
   const renderVisual = () => {
-    const imagePath = numericIconId ? (imageMapping[numericIconId] || icon_id) : icon_id;
-    
-    return (
+          const imagePath = numericIconId ? imageMapping[numericIconId] : null;
+
+return (
       <div className="w-full h-40 mb-4 relative rounded-lg overflow-hidden bg-gray-100">
         <img
           src={imagePath}
@@ -98,7 +117,7 @@ const ServiceCard = ({ title, description, icon_id, iconClass, iconsMap }) => {
   const isLongDescription = description && description.length > 100;
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300 h-full">
+    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300 h-full ">
       {renderVisual()}
       <h3 className="text-2xl font-semibold text-black mb-3">{title}</h3>
 
@@ -108,7 +127,7 @@ const ServiceCard = ({ title, description, icon_id, iconClass, iconsMap }) => {
 
       {isLongDescription && (
         <button
-          onClick={() => setIsExpanded(!isExpanded)}
+          onClick={toggleExpand}
           className="mt-2 text-primary text-sm font-medium self-start"
         >
           {isExpanded ? 'Show Less' : 'Read More'}
@@ -118,29 +137,30 @@ const ServiceCard = ({ title, description, icon_id, iconClass, iconsMap }) => {
   );
 };
 
+
 // ServicesPage
 const ServicesPage = () => {
   const { siteSettings } = useSiteSettings();
-  // Use featured_services instead of services
   const services = siteSettings?.featured_services || [];
   const practiceId = siteSettings?.practiceId;
   const [iconsMap, setIconsMap] = useState({});
 
   useEffect(() => {
-    const fetchIcons = async () => {
-      if (!practiceId) return;
-      try {
-        const res = await fetch(`/api/website/${practiceId}/icons`);
-        if (!res.ok) throw new Error(`API returned status ${res.status}`);
-        const data = await res.json();
-        setIconsMap(data.iconsMap || {});
-      } catch (err) {
-        console.error("Failed to fetch icons:", err);
-        setIconsMap({});
-      }
-    };
-    fetchIcons();
-  }, [practiceId]);
+  const fetchIcons = async () => {
+    if (!practiceId) return;
+    try {
+      const res = await fetch(`/api/website/${practiceId}/icons`);
+      if (!res.ok) throw new Error(`API returned status ${res.status}`);
+      const data = await res.json();
+      setIconsMap(data.iconsMap || {});
+    } catch (err) {
+      console.error("Failed to fetch icons:", err);
+      setIconsMap({}); // fallback
+    }
+  };
+  fetchIcons();
+}, [practiceId]);
+
 
   return (
     <>
@@ -153,7 +173,7 @@ const ServicesPage = () => {
           <p className="text-lg text-center mb-12 text-gray-600 max-w-5xl mx-auto">
             {siteSettings.service_description?.welcome_text || 'Professional eye care services tailored to your needs'}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8">
             {services.map((service) => (
               <ServiceCard
                 key={service.id}
