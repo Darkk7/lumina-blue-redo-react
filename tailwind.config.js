@@ -7,6 +7,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens:{
+        navfix1: '1060px', // first crunch point
+        navfix2:'1208px', // navbar breakpoint
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
