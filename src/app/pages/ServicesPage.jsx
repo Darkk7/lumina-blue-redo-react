@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useSiteSettings } from '../context/SiteSettingsContext';
 import { getServiceImage } from '../../utils/imagePaths';
 
@@ -79,10 +79,10 @@ const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsM
     87: "/Glaucoma.png",
     86: "/Foroptero.png",
     85: "/Ophthalmology.png",
-    84: "Filters.png",
+    84: "/Filters.png",
     83: "/EyeglassesThinShape.png",
     82: "/Eyeglasses.png",
-    81: "/DriversLicense.png",
+    81: "/DriverLicense.png",  
     80: "/LensHolder.png",
   };
 
@@ -91,19 +91,34 @@ const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsM
   const toggleExpand = () => setIsExpanded(!isExpanded);
 
   const renderVisual = () => {
-          const imagePath = numericIconId ? imageMapping[numericIconId] : null;
+    // Convert icon_id to a number before looking it up
+    const numericId = Number(numericIconId);
+    const imagePath = !isNaN(numericId) ? imageMapping[numericId] : null;
 
-return (
+    // Debug logging
+    console.log('Service:', title, 'icon_id:', icon_id, 'numericId:', numericId, 'imagePath:', imagePath);
+
+    return (
       <div className="w-full h-40 mb-4 relative rounded-lg overflow-hidden bg-gray-100">
-        <img
-          src={imagePath}
-          alt={title}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            console.error('Image failed to load:', imagePath, 'Error:', e);
-            setImageError(true);
-          }}
-        />
+        {imagePath ? (
+          <>
+            <img
+              src={imagePath}
+              alt={title}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                console.error('Image failed to load:', imagePath, 'for service:', title, 'Error:', e);
+                setImageError(true);
+              }}
+              onLoad={() => console.log('Image loaded successfully:', imagePath, 'for service:', title)}
+            />
+            {!imageError && <div className="absolute inset-0 border-2 border-transparent hover:border-blue-500 transition-all duration-200"></div>}
+          </>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+            <span className={`icon text-primary text-5xl ${resolvedIcon}`} />
+          </div>
+        )}
         {imageError && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
             <span className={`icon text-primary text-5xl ${resolvedIcon}`} />
@@ -141,26 +156,34 @@ return (
 // ServicesPage
 const ServicesPage = () => {
   const { siteSettings } = useSiteSettings();
-  const services = siteSettings?.featured_services || [];
   const practiceId = siteSettings?.practiceId;
   const [iconsMap, setIconsMap] = useState({});
 
-  useEffect(() => {
-  const fetchIcons = async () => {
-    if (!practiceId) return;
-    try {
-      const res = await fetch(`/api/website/${practiceId}/icons`);
-      if (!res.ok) throw new Error(`API returned status ${res.status}`);
-      const data = await res.json();
-      setIconsMap(data.iconsMap || {});
-    } catch (err) {
-      console.error("Failed to fetch icons:", err);
-      setIconsMap({}); // fallback
-    }
-  };
-  fetchIcons();
-}, [practiceId]);
+  // Combine featured_services and services, removing duplicates by id
+  const allServices = useMemo(() => {
+    const featuredIds = new Set((siteSettings?.featured_services || []).map(s => s.id));
+    const additionalServices = (siteSettings?.services || []).filter(service => !featuredIds.has(service.id));
+    return [
+      ...(siteSettings?.featured_services || []),
+      ...additionalServices
+    ];
+  }, [siteSettings?.featured_services, siteSettings?.services]);
 
+  useEffect(() => {
+    const fetchIcons = async () => {
+      if (!practiceId) return;
+      try {
+        const res = await fetch(`/api/website/${practiceId}/icons`);
+        if (!res.ok) throw new Error(`API returned status ${res.status}`);
+        const data = await res.json();
+        setIconsMap(data.iconsMap || {});
+      } catch (err) {
+        console.error("Failed to fetch icons:", err);
+        setIconsMap({}); // fallback
+      }
+    };
+    fetchIcons();
+  }, [practiceId]);
 
   return (
     <>
@@ -173,8 +196,8 @@ const ServicesPage = () => {
           <p className="text-lg text-center mb-12 text-gray-600 max-w-5xl mx-auto">
             {siteSettings.service_description?.welcome_text || 'Professional eye care services tailored to your needs'}
           </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8">
-            {services.map((service) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8">
+            {allServices.map((service) => (
               <ServiceCard
                 key={service.id}
                 title={service.service_title || service.title}
