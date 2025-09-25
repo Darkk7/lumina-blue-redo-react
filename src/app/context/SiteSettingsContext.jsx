@@ -149,6 +149,7 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
             title: service.service_title,
             description: service.long_description,
             iconDescription: service.icon_desc,
+            icon_id: service.icon_id,
             image_name: service.image_name
           })) || [],
           banners: data.banners?.map(banner => ({
@@ -191,7 +192,16 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
           whatsapp_tel: data3.whatsapp_tel || [],
           tiktok_url: data3.tiktok_url || [],
           google_business_profile_url: data3.google_business_profile_url || [],
-          featured_services: data.featured_services || [],
+          featured_services: data.featured_services && data.featured_services.length > 0 
+            ? data.featured_services 
+            : data.services?.map(service => ({
+                id: service.id,
+                service_title: service.service_title || service.title,
+                long_description: service.long_description || service.description,
+                icon_desc: service.icon_desc,
+                icon_id: service.icon_id,
+                image_name: service.image_name
+              })) || [],
         };
 
         setSiteSettings(settings);
