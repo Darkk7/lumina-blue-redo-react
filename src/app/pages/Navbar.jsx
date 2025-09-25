@@ -112,8 +112,14 @@ const handleMenuToggle = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2 font-medium ml-8">
-          <ul className="flex items-center space-x-4 xl:space-x-6">
+<nav className="hidden navfix1:flex items-center font-medium ml-2 sm:ml-4 md:ml-6 lg:ml-8">
+        <ul className="flex items-center 
+        space-x-4 
+        lg:space-x-1 lg:text-sm 
+        navfix2:space-x-4 navfix2:text-base"
+        >
+
+
             <li>
               <Link href={getLink("/")} className="hover:text-primary whitespace-nowrap px-2">
                 <b>HOME</b>
@@ -167,7 +173,7 @@ const handleMenuToggle = () => {
         </nav>
 
         {/* Mobile Menu Button */}
-        <div className="lg:hidden">
+        <div className="navfix1:hidden">
           <button className="text-3xl focus:outline-none" onClick={handleMenuToggle} aria-label="Toggle menu">
             {isMenuOpen ? "✕" : "☰"}
           </button>
