@@ -67,7 +67,7 @@ const YouTubePanelPage = () => {
             <h2 className="text-4xl font-bold text-black">
               {siteSettings.service_description?.media_header_text}
             </h2>
-            <p className="font-['Roboto'] text-[#333] text-base leading-[1.7]">
+            <p className="greyText text-left mb-12 max-w-5xl mx-auto">
               {siteSettings.service_description?.media_body_text}
             </p>
             <div>
