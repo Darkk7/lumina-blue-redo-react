@@ -13,3 +13,12 @@
     --foreground: #ededed;
   }
 }
+
+.greyText {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  color: #333;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+

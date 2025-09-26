@@ -44,7 +44,7 @@ const AboutPage = () => {
           <div className="w-full md:w-1/2 space-y-6">
             <h2 className="text-4xl font-bold text-black">About Our Practice</h2>
             <div
-              className="font-['Roboto'] text-[#333] text-base leading-[1.7]"
+              className="greyText text-start mb-12 max-w-5xl mx-auto"
               dangerouslySetInnerHTML={{ __html: siteSettings.aboutText }}
             />
           </div>

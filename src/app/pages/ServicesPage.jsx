@@ -53,6 +53,8 @@ const IcomoonStyles = () => (
     .icon-paediatric_3:before { content: "\e92a"; }
     .icon-skippers:before { content: "\e92d"; }
     .icon-view:before { content: "\e92e"; }
+
+    
   `}</style>
 );
 
@@ -105,14 +107,14 @@ const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsM
             <img
               src={imagePath}
               alt={title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-lg"
               onError={(e) => {
                 console.error('Image failed to load:', imagePath, 'for service:', title, 'Error:', e);
                 setImageError(true);
               }}
               onLoad={() => console.log('Image loaded successfully:', imagePath, 'for service:', title)}
             />
-            {!imageError && <div className="absolute inset-0 border-2 border-transparent hover:border-blue-500 transition-all duration-200"></div>}
+            {!imageError && <div className="absolute inset-0 border-4 rounded-lg border-transparent hover:border-primary transition-all duration-200"></div>}
           </>
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-100">
@@ -132,7 +134,7 @@ const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsM
   const isLongDescription = description && description.length > 100;
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300 h-full">
+    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center hover:shadow-xl  transition-shadow border-primary duration-300 h-full">
       {renderVisual()}
       <div className="flex flex-col flex-grow w-full">
         <h3 className="text-2xl font-semibold text-black mb-3">{title}</h3>
@@ -196,8 +198,7 @@ const ServicesPage = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-900 pt-8" style={{ textTransform: 'capitalize' }}>
             {siteSettings.service_description?.welcome_title || 'Our Services'}
           </h2>
-          <div className="w-10 h-1 bg-primary mx-auto"></div>
-          <p className="font-['Roboto'] text-[#333] text-base leading-[1.7] text-center mb-12 max-w-5xl mx-auto">
+          <p className="greyText text-center mb-12 max-w-5xl mx-auto">
             {siteSettings.service_description?.welcome_text || 'Professional eye care services tailored to your needs'}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8">
@@ -209,7 +210,7 @@ const ServicesPage = () => {
                 icon_id={service.icon_id}
                 iconClass={service.icon_desc || service.iconDescription}
                 iconsMap={iconsMap}
-                className="font-['Roboto'] text-[#333] text-base leading-[1.7]"
+                className="greyText text-center mb-12 max-w-5xl mx-auto"
               />
             ))}
           </div>
