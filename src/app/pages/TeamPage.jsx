@@ -90,9 +90,10 @@ const TeamPage = () => {
   return (
     <section className="w-full bg-white py-16 relative" id="team">
       <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-3xl text-black font-bold text-center mb-8 pt-8">
+        <h1 className="text-3xl text-black font-bold text-center mb-5 pt-8">
           {siteSettings.team?.team_title || "Our Team"}
         </h1>
+        <div className="w-10 h-1 bg-primary mx-auto mb-5"></div>
         <p className="text-lg text-center mb-12 text-gray-600 max-w-5xl mx-auto">
           {siteSettings.team?.description}
         </p>

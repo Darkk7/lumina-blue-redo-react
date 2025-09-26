@@ -534,6 +534,7 @@ const BookingPage = () => {
               <h3 id="book_appointment" className="text-3xl lg:text-4xl mb-6 font-bold text-center text-gray-800">
                 <span className="text-primary">Book</span> Your Appointment
               </h3>
+              <div className="w-10 h-1 bg-primary mx-auto"></div>
               <form 
                 onSubmit={handleSubmit}
                 className="bg-white rounded-lg shadow-md p-6 w-full max-w-2xl mx-auto"

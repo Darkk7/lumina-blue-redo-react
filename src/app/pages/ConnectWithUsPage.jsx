@@ -33,6 +33,7 @@ const ConnectWithUsPage = ({ practiceId }) => {
       <h2 className="text-4xl font-bold mb-8 text-white relative z-10 pt-8">
         Connect With Us
       </h2>
+      <div className="w-10 h-1 bg-primary mx-auto"></div>
       <p className="text-lg mb-8 text-white relative z-10 px-4">
         Immerse yourself in our vibrant online community by following us on platforms such as Facebook, Instagram, LinkedIn, WhatsApp, Pinterest, and more.
       </p>

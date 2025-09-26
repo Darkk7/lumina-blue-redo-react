@@ -196,6 +196,7 @@ const ServicesPage = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-900 pt-8" style={{ textTransform: 'capitalize' }}>
             {siteSettings.service_description?.welcome_title || 'Our Services'}
           </h2>
+          <div className="w-10 h-1 bg-primary mx-auto"></div>
           <p className="font-['Roboto'] text-[#333] text-base leading-[1.7] text-center mb-12 max-w-5xl mx-auto">
             {siteSettings.service_description?.welcome_text || 'Professional eye care services tailored to your needs'}
           </p>
