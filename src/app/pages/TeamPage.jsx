@@ -93,7 +93,7 @@ const TeamPage = () => {
         <h1 className="text-3xl text-black font-bold text-center mb-8 pt-8">
           {siteSettings.team?.team_title || "Our Team"}
         </h1>
-        <p className="text-lg text-center mb-12 text-gray-600 max-w-5xl mx-auto">
+        <p className="greyText text-center mb-12 max-w-5xl mx-auto">
           {siteSettings.team?.description}
         </p>
         <Slider {...settings}>
@@ -180,7 +180,7 @@ const TeamPage = () => {
               {/* Scrollable content */}
               <div className="flex-1 overflow-y-auto p-6">
                 <div className="prose max-w-none">
-                  <p className="text-gray-700 whitespace-pre-line">
+                  <p className="greyText  mb-12 max-w-5xl mx-auto">
                     {selectedMember.description || 'No bio available for this team member.'}
                   </p>
                 </div>
