@@ -15,7 +15,9 @@ module.exports = {
         background: "var(--background)",
         foreground: "var(--foreground)",
          primary: "var(--primary-color)",
-        light: "color-mix(in srgb, var(--primary-color) 10%, white)",
+         secondary: "var(--secondary-color)",
+        //  HERE LIES A BRIGHT IDEA LOST DUE TO PINK
+        // light: "color-mix(in srgb, var(--primary-color) 10%, white)",
         gray:{
           400: "#f3f4f6"
         },
