@@ -14,6 +14,7 @@ import YouTubePanelPage from "./YouTubePanelPage";
 import AboutPage from "./AboutPage";
 import ServicesPage from "./ServicesPage";
 import TeamPage from "./TeamPage";
+import RecentBlogs from "./RecentBlogs";
 import BrandsPage from "./BrandsPage";
 import BookingPage from "./BookingPage";
 import TestimonialsPage from "./TestimonialsPage";
@@ -69,6 +70,7 @@ export default function HomePage({ customerCode }) {
       <ServicesPage />
       {siteSettings.show_socials_panel && <ConnectWithUsPage />}
       {siteSettings.show_teams_panel && <TeamPage />}
+      <RecentBlogs />
       <BrandsPage />
       <TestimonialsPage />
       <BookingPage />

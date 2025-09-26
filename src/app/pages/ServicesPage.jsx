@@ -57,7 +57,7 @@ const IcomoonStyles = () => (
 );
 
 // ServiceCard
-const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsMap }) => {
+const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsMap, className }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -132,21 +132,24 @@ const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsM
   const isLongDescription = description && description.length > 100;
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300 h-full ">
+    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300 h-full">
       {renderVisual()}
-      <h3 className="text-2xl font-semibold text-black mb-3">{title}</h3>
-
-      <div className={`text-gray-600 text-left w-full transition-all duration-200 ${!isExpanded && isLongDescription ? 'line-clamp-3' : ''}`}>
-        {description}
+      <div className="flex flex-col flex-grow w-full">
+        <h3 className="text-2xl font-semibold text-black mb-3">{title}</h3>
+        <div className={`w-full transition-all duration-200 flex-grow ${!isExpanded && isLongDescription ? 'line-clamp-3' : ''} ${className}`}>
+          {description}
+        </div>
       </div>
 
       {isLongDescription && (
-        <button
-          onClick={toggleExpand}
-          className="mt-2 text-primary text-sm font-medium self-start"
-        >
-          {isExpanded ? 'Show Less' : 'Read More'}
-        </button>
+        <div className="w-full mt-4 pt-4 border-t border-gray-100">
+          <button
+            onClick={toggleExpand}
+            className="w-auto px-8 py-2 bg-primary text-white font-medium rounded-md hover:bg-white hover:text-primary border-2 border-primary transition-colors duration-200"
+          >
+            {isExpanded ? 'Show Less' : 'Read More'}
+          </button>
+        </div>
       )}
     </div>
   );
@@ -193,7 +196,7 @@ const ServicesPage = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-900 pt-8" style={{ textTransform: 'capitalize' }}>
             {siteSettings.service_description?.welcome_title || 'Our Services'}
           </h2>
-          <p className="text-lg text-center mb-12 text-gray-600 max-w-5xl mx-auto">
+          <p className="font-['Roboto'] text-[#333] text-base leading-[1.7] text-center mb-12 max-w-5xl mx-auto">
             {siteSettings.service_description?.welcome_text || 'Professional eye care services tailored to your needs'}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8">
@@ -205,6 +208,7 @@ const ServicesPage = () => {
                 icon_id={service.icon_id}
                 iconClass={service.icon_desc || service.iconDescription}
                 iconsMap={iconsMap}
+                className="font-['Roboto'] text-[#333] text-base leading-[1.7]"
               />
             ))}
           </div>

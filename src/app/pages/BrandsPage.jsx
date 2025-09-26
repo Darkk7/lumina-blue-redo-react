@@ -21,13 +21,13 @@ const BrandsPage = () => {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 1000,
-    slidesToShow: 5,
-    slidesToScroll: 5,
+    speed: 5000,
+    slidesToShow: 7,
+    slidesToScroll: 7,
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 6500,
     pauseOnHover: true,
-    rows: 2,
+    rows: 1,
     slidesPerRow: 1,
     responsive: [
       {
@@ -50,11 +50,13 @@ const BrandsPage = () => {
   };
 
   return (
-    <section id="brands" className="w-full bg-gray-100 py-16 px-4 sm:px-8 lg:px-16 text-center">
-      <h2 className="text-3xl font-bold text-black mb-12">Our Brands</h2>
-      <p className="text-lg text-center mb-12 text-gray-600 max-w-5xl mx-auto">The brands we stock reflect what matters to us—quality, reliability, and the confidence to recommend them to our patients every day.</p>
-      <div className="max-w-7xl mx-auto px-4">
-        <Slider {...settings} className="[&_.slick-slide]:px-3">
+    <section id="brands" className="w-full bg-gray-100 py-16">
+      <div className="text-center mb-12 px-4 sm:px-8 lg:px-16">
+        <h2 className="text-3xl font-bold text-black mb-4">Our Brands</h2>
+        <p className="text-lg text-gray-600 max-w-5xl mx-auto">The brands we stock reflect what matters to us—quality, reliability, and the confidence to recommend them to our patients every day.</p>
+      </div>
+      <div className="w-full overflow-hidden">
+        <Slider {...settings} className="[&_.slick-slide]:px-6">
           {siteSettings && siteSettings.brands && siteSettings.brands
             .filter(brand => brand.show)
             .map(brand => (

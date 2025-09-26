@@ -12,7 +12,7 @@ const ConnectWithUsPage = ({ practiceId }) => {
   }, []);
 
   return (
-    <section className="relative w-full overflow-hidden py-16 text-center">
+    <section className="relative w-full overflow-hidden py-24 text-center">
       {/* Background Image */}
       <div className="absolute inset-0 overflow-hidden">
         <div 
@@ -42,7 +42,7 @@ const ConnectWithUsPage = ({ practiceId }) => {
           href={siteSettings.facebook_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-4xl text-primary hover:text-primary transition"
+          className="text-5xl text-primary hover:text-primary transition-transform duration-200 hover:scale-110"
         >
           <FaFacebook />
         </a>
@@ -53,7 +53,7 @@ const ConnectWithUsPage = ({ practiceId }) => {
           href={siteSettings.instagram_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-4xl text-primary hover:text-primary transition"
+          className="text-5xl text-primary hover:text-primary transition-transform duration-200 hover:scale-110"
         >
           <FaInstagram />
         </a>
@@ -64,7 +64,7 @@ const ConnectWithUsPage = ({ practiceId }) => {
           href={siteSettings.linkedin_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-4xl text-primary hover:text-primary transition"
+          className="text-5xl text-primary hover:text-primary transition-transform duration-200 hover:scale-110"
         >
           <FaLinkedin />
         </a>
@@ -75,7 +75,7 @@ const ConnectWithUsPage = ({ practiceId }) => {
           href={siteSettings.whatsapp_tel}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-4xl text-primary hover:text-primary transition"
+          className="text-5xl text-primary hover:text-primary transition-transform duration-200 hover:scale-110"
         >
           <FaWhatsapp />
         </a>
@@ -86,7 +86,7 @@ const ConnectWithUsPage = ({ practiceId }) => {
           href={siteSettings.pinterest_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-4xl text-primary hover:text-primary transition"
+          className="text-5xl text-primary hover:text-primary transition-transform duration-200 hover:scale-110"
         >
           <FaPinterest />
         </a>
@@ -97,7 +97,7 @@ const ConnectWithUsPage = ({ practiceId }) => {
           href={siteSettings.tiktok_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-4xl text-primary hover:text-primary transition"
+          className="text-5xl text-primary hover:text-primary transition-transform duration-200 hover:scale-110"
         >
           <FaTiktok />
         </a>
@@ -108,7 +108,7 @@ const ConnectWithUsPage = ({ practiceId }) => {
           href={siteSettings.google_business_profile_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-4xl text-primary hover:text-primary transition"
+          className="text-5xl text-primary hover:text-primary transition-transform duration-200 hover:scale-110"
         >
           <FaGoogle />
         </a>

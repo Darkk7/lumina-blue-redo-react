@@ -55,9 +55,9 @@ const FooterPage = () => {
   return (
     <footer className="w-full py-12" style={{ backgroundColor: "#363636" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-2 gap-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-2 gap-y-8">
           {/* Column 1: Logo with text */}
-          <div className="space-y-4">
+          <div className="lg:col-span-3 space-y-4">
             <div className="flex items-center">
               <img src={siteSettings.about.logo_light} alt="Logo" className="h-12 w-auto" />
             </div>
@@ -107,7 +107,7 @@ const FooterPage = () => {
           </div>
 
           {/* Column 2: Quick Links */}
-          <div>
+          <div className="lg:col-span-2 lg:col-start-5">
             <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li><Link href={getLink("/")} className="text-white hover:text-primary">Home</Link></li>
@@ -120,20 +120,12 @@ const FooterPage = () => {
 
           {/* Column 3: Latest Blog Posts */}
           {showNewsColumn && (
-          <div>
+          <div className="lg:col-span-4 lg:col-start-7">
             <h3 className="text-lg font-semibold text-white mb-4">Recent News</h3>
             <div className="space-y-4">
               {blogs.map(blog => (
                 <div key={blog.id} className="border-b border-gray-700 pb-4 mb-4">
                   <div className="flex gap-4">
-                    <div className="flex-1">
-                      <Link href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}>
-                        <div className="text-[var(--primary-color)] hover:text-white font-medium line-clamp-2 mb-1">
-                          {blog.title}
-                        </div>
-                      </Link>
-                      <div className="text-sm text-gray-400">{blog.date}</div>
-                    </div>
                     {(blog.thumbnail_image?.url || blog.header_image?.url) && (
                       <Link 
                         href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}
@@ -150,15 +142,23 @@ const FooterPage = () => {
                         />
                       </Link>
                     )}
+                    <div className="flex-1">
+                      <Link href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}>
+                        <div className="text-[var(--primary-color)] hover:text-white font-medium line-clamp-2 mb-1">
+                          {blog.title}
+                        </div>
+                      </Link>
+                      <div className="text-sm text-gray-400">{blog.date}</div>
+                    </div>
                   </div>
                 </div>
-          ))}
+              ))}
             </div>
           </div>
           )}
 
           {/* Column 4: Get In Touch */}
-          <div>
+          <div className="lg:col-span-3 lg:col-start-11">
             <h3 className="text-lg font-semibold text-white mb-4">Get In Touch</h3>
             <div className="space-y-3">
               <div className="flex items-start">
@@ -170,7 +170,10 @@ const FooterPage = () => {
                 <a href={`tel:${siteSettings.tel}`} className="text-white hover:text-primary">{siteSettings.tel}</a>
               </div>
               <div className="flex items-center">
-                <FaEnvelope className="h-5 w-5 text-primary mr-3" />
+                <FaEnvelope 
+                  className="h-5 w-5 text-red-500 mr-3" 
+                  
+                />
                 <a href={`mailto:${siteSettings.email}`} className="text-white hover:text-primary">{siteSettings.email}</a>
               </div>              
             </div>
@@ -184,10 +187,10 @@ const FooterPage = () => {
               &copy; {new Date().getFullYear()}. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href={getLink("/privacy")} className="hover:text-primary whitespace-nowrap px-2">
+            <Link href={getLink("/privacy")} className="text-white hover:text-primary whitespace-nowrap px-2">
               Privacy Policy
             </Link>
-            <Link href={getLink("/paia")} className="hover:text-primary whitespace-nowrap px-2">
+            <Link href={getLink("/paia")} className="text-white hover:text-primary whitespace-nowrap px-2">
               PAIA Manual
             </Link>
 

@@ -38,11 +38,11 @@ const YouTubePanelPage = () => {
   }
 
   return (
-    <section id="about" className="w-full overflow-hidden bg-white py-6 md:py-8 flex items-center justify-center min-h-[400px] relative">
+    <section id="about" className="w-full overflow-hidden bg-white py-6 md:py-8 flex items-center justify-center min-h-[500px] relative">
       <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          {/* Left-side content */}
-          <div className="w-full aspect-video">
+        <div className="grid grid-cols-1 lg:grid-cols-8 gap-8 items-center">
+          {/* Left-side content - Media (5/8 width) */}
+          <div className="lg:col-span-5 w-full aspect-video">
             {siteSettings.service_description?.media_type === 'video' ? (
               <iframe
                 className="w-full h-full rounded-lg shadow-lg"
@@ -55,20 +55,19 @@ const YouTubePanelPage = () => {
               <div className="w-full h-full relative">
                 <Image
                   src={siteSettings.service_description?.media_url || '/placeholder-image.jpg'}
-                  alt={siteSettings.service_description?.media_header_text || 'Media content'}
+                  alt="Featured content"
                   fill
-                  className="object-cover rounded-lg"
+                  className="object-cover rounded-lg shadow-lg"
                 />
               </div>
             )}
           </div>
-          
-          {/* Right-side content */}
-          <div className="flex flex-col space-y-6">
+          {/* Right-side content (3/8 width) */}
+          <div className="lg:col-span-3 flex flex-col space-y-6">
             <h2 className="text-4xl font-bold text-black">
               {siteSettings.service_description?.media_header_text}
             </h2>
-            <p className="text-gray-500">
+            <p className="font-['Roboto'] text-[#333] text-base leading-[1.7]">
               {siteSettings.service_description?.media_body_text}
             </p>
             <div>

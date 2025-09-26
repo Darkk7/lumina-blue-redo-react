@@ -261,14 +261,14 @@ export default function SubcategoryPage() {
                 href={`/website/${practiceId}/info_centre`}
                 className="text-primary underline hover:text-primary-dark transition-colors duration-200"
               >
-                Info Centre
+                Back To Info Centre
               </Link>
               <span className="text-primary mx-3">›</span>
               <Link
                 href={`/website/${practiceId}/info_centre/${category}`}
                 className="text-primary underline hover:text-primary-dark transition-colors duration-200"
               >
-                {categoryDetails?.name || category}
+                Back To {categoryDetails?.name || category}
               </Link>
               <span className="text-primary mx-3">›</span>
               <span className="text-gray-700">{content?.name || subcategory}</span>

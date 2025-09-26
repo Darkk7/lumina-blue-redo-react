@@ -110,7 +110,7 @@ const InfoCentreListPage = () => {
                   href={`/website/${siteSettings.practiceId}/info_centre`}
                   className="text-primary underline hover:text-primary-dark transition-colors duration-200"
                 >
-                  Info Centre
+                  Back To Info Centre
                 </Link>                
               </div>
             </div>

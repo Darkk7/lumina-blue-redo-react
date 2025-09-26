@@ -44,7 +44,7 @@ const CustomPanelPage = () => {
   const backgroundImage = siteSettings.service_description?.custom_background_image || 'https://via.placeholder.com/1920x1080';
 
   return (
-    <section id="about" className="w-full overflow-hidden bg-gray-100 py-6 md:py-8 flex items-center justify-center min-h-[400px] relative">
+    <section id="about" className="w-full overflow-hidden bg-gray-100 py-6 md:py-8 flex items-center justify-center min-h-[600px] relative">
       {/* Static Background Image */}
       <div className="absolute inset-0 overflow-hidden">
         <div 

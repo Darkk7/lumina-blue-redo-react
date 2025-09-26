@@ -2,70 +2,135 @@
 
 import Image from "next/image";
 import { useSiteSettings } from "../context/SiteSettingsContext";
-import { useState } from "react";
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 
-const ReviewCard = ({ image, title, comments }) => (
-  <div className="bg-white p-6 rounded-lg flex flex-col items-center mx-2 h-[300px]">
-    <div className="relative w-16 h-12 mb-4">
-      <Image
-        src={image}
-        alt={title}
-        fill
-        className="object-contain"
-        sizes="64px"
-      />
+const ReviewCard = ({ image, title, comments, className = "" }) => (
+  <div className={`h-full ${className}`}>
+    <div className="bg-white p-6 rounded-lg shadow-md h-full flex flex-col transition-all duration-300 hover:shadow-lg">
+      {/* Testimonial Text at the top */}
+      <p className="text-gray-600 text-center mb-6 flex-1">
+        "{comments}"
+      </p>
+      
+      {/* Image in the middle */}
+      <div className="relative w-20 h-20 mx-auto mb-4">
+        <Image
+          src={image || '/placeholder-avatar.png'}
+          alt={title}
+          fill
+          className="object-cover rounded-full"
+          sizes="80px"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = '/placeholder-avatar.png';
+          }}
+        />
+      </div>
+      
+      {/* Name and title at the bottom */}
+      <div className="text-center">
+        <h3 className="text-lg font-semibold text-primary">{title}</h3>
+      </div>
     </div>
-    <h3 className="text-2xl font-semibold text-primary mb-4">{title}</h3>
-    <p className="text-gray-600 overflow-y-auto flex-1 w-full text-center">{comments}</p>
   </div>
 );
 
 const TestimonialsPage = () => {
   const { siteSettings, isLoading, error } = useSiteSettings();
+  const [currentReviews, setCurrentReviews] = useState([]);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const timeoutRef = useRef(null);
+  
+  // Get all available reviews
+  const allReviews = useMemo(() => {
+    return siteSettings?.reviews?.review || [];
+  }, [siteSettings]);
 
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 8000,
-  };
+  // Function to get 3 random reviews
+  const getRandomReviews = useCallback(() => {
+    if (allReviews.length <= 3) return allReviews;
+    const shuffled = [...allReviews].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 3);
+  }, [allReviews]);
+
+  // Set up the interval to cycle through reviews
+  useEffect(() => {
+    if (allReviews.length === 0) return;
+
+    const cycleReviews = () => {
+      setIsAnimating(true);
+      timeoutRef.current = setTimeout(() => {
+        setCurrentReviews(getRandomReviews());
+        setIsAnimating(false);
+      }, 500); // Half a second for the fade out animation
+    };
+
+    // Initial set of reviews
+    setCurrentReviews(getRandomReviews());
+    
+    // Set up interval for cycling (every 7 seconds)
+    const interval = setInterval(cycleReviews, 7000);
+    
+    // Clean up
+    return () => {
+      clearInterval(interval);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [allReviews, getRandomReviews]);
 
   return (
-    <section id="testimonials" className="w-full py-16 text-center px-4">
-      <h1 className="text-3xl font-bold mb-8 text-black">Clients' Reviews</h1>
-      <p className="text-lg text-center mb-12 text-gray-600 max-w-5xl mx-auto">
-        Some of the recent feedback from our customers. Please rate your
-        experience with us via Google.
-      </p>
-      <div className="max-w-6xl mx-auto bg-">
-        {isLoading ? (
-          <p>Loading reviews...</p>
-        ) : error ? (
-          <p>Error loading reviews: {error}</p>
-        ) : siteSettings?.reviews?.review?.length > 0 ? (
-          <Slider {...sliderSettings}>
-            {siteSettings.reviews.review.map((review, index) => (
-              <div key={index} className="flex flex-col items-center mx-2">
-                <ReviewCard
-                  image={review.img}
-                  title={review.patient_name}
-                  comments={review.review_comments}
-                />
-              </div>
-            ))}
-          </Slider>
-        ) : (
-          <p>No reviews available.</p>
-        )}
+    <div className="w-full">
+      {/* Primary Color Panel */}
+      <div className="w-full bg-primary py-16">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <h1 className="text-4xl font-bold text-white mb-4">What do our patients say?</h1>
+          <div className="w-20 h-1 bg-white mx-auto mb-6"></div>
+          <p className="text-lg text-white/90 max-w-3xl mx-auto">
+            Some of the recent feedback from our patients. Please rate your
+            experience with us via Google.
+          </p>
+        </div>
       </div>
-    </section>
+      
+      {/* Testimonials Section */}
+      <section className="w-full py-20 px-4 bg-gray-50 -mt-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[300px]">
+              {isLoading ? (
+                <div className="col-span-3 text-center py-12">Loading reviews...</div>
+              ) : error ? (
+                <div className="col-span-3 text-center py-12 text-red-500">Error loading reviews: {error}</div>
+              ) : currentReviews.length > 0 ? (
+                currentReviews.map((review) => (
+                  <div key={review.id} className={`transition-opacity duration-500 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
+                    <ReviewCard
+                      image={review.img}
+                      title={review.patient_name}
+                      comments={review.review_comments}
+                      className="animate-fadeIn"
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-3 text-center py-12 text-gray-500">No reviews available.</div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 };
 
 export default TestimonialsPage;
+
+<style jsx global>{`
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+`}</style>
