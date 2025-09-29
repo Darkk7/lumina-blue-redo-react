@@ -114,7 +114,7 @@ const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsM
               }}
               onLoad={() => console.log('Image loaded successfully:', imagePath, 'for service:', title)}
             />
-            {!imageError && <div className="absolute inset-0 border-4 rounded-lg border-transparent hover:border-primary transition-all duration-200"></div>}
+            {!imageError && <div className="absolute inset-0 border-4 rounded-lg border-transparent"></div>}
           </>
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-100">
@@ -134,26 +134,36 @@ const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsM
   const isLongDescription = description && description.length > 100;
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center hover:shadow-xl  transition-shadow border-primary duration-300 h-full">
-      {renderVisual()}
-      <div className="flex flex-col flex-grow w-full">
-        <h3 className="text-2xl font-semibold text-black mb-3">{title}</h3>
-        <div className={`w-full transition-all duration-200 flex-grow ${!isExpanded && isLongDescription ? 'line-clamp-3' : ''} ${className}`}>
-          {description}
-        </div>
-      </div>
+<div className="group relative bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-shadow border-primary duration-300 h-full overflow-hidden">
 
-      {isLongDescription && (
-        <div className="w-full mt-4 pt-4 border-t border-gray-100">
-          <button
-            onClick={toggleExpand}
-            className="w-auto px-8 py-2 bg-primary text-white font-medium rounded-md hover:bg-white hover:text-primary border-2 border-primary transition-colors duration-200"
-          >
-            {isExpanded ? 'Show Less' : 'Read More'}
-          </button>
-        </div>
-      )}
+  {/* Animated border */}
+  <div className="absolute inset-0 rounded-lg border-2 border-transparent group-hover:border-primary transition-all duration-300 pointer-events-none"></div>
+
+  {renderVisual()}
+  <div className="flex flex-col flex-grow w-full">
+    <h3 className="text-2xl font-semibold text-black mb-3">{title}</h3>
+    <div className={`w-full transition-all duration-200 flex-grow ${!isExpanded && isLongDescription ? 'line-clamp-3' : ''} ${className}`}>
+      {description}
     </div>
+  </div>
+
+  {isLongDescription && (
+    <div className="w-full mt-4 pt-4 border-t border-gray-100">
+      <button
+        onClick={toggleExpand}
+        className="w-auto px-8 py-2 bg-primary text-white font-medium rounded-md hover:bg-white hover:text-primary border-2 border-primary transition-colors duration-200"
+      >
+        {isExpanded ? 'Show Less' : 'Read More'}
+      </button>
+    </div>
+  )}
+</div>
+
+
+
+
+
+
   );
 };
 

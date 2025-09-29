@@ -181,7 +181,7 @@ const TeamPage = () => {
               {/* Scrollable content */}
               <div className="flex-1 overflow-y-auto p-6">
                 <div className="prose max-w-none">
-                  <p className="text-gray-700 whitespace-pre-line">
+                  <p className="greyText  mb-12 max-w-5xl mx-auto">
                     {selectedMember.description || 'No bio available for this team member.'}
                   </p>
                 </div>
