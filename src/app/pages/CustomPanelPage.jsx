@@ -65,12 +65,12 @@ const CustomPanelPage = () => {
       <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
         <div className="flex flex-col items-center">
           <div className="w-full space-y-6">
-            <h2 className="text-4xl text-center font-bold text-white">
+            <h2 className="text-4xl text-center font-bold text-white mb-5">
               {siteSettings.service_description?.custom_heading_text}
             </h2>
           </div>
           <div className="w-full space-y-6">
-            <p className="text-lg text-center text-white mt-5">
+            <p className="text-white font-roboto text-[#333] leading-[1.7] text-center mb-12 max-w-5xl mx-auto">
               {siteSettings.service_description?.custom_body_text}
             </p>
           </div>

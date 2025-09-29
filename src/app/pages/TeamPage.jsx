@@ -93,8 +93,8 @@ const TeamPage = () => {
         <h1 className="text-3xl text-black font-bold text-center mb-5 pt-8">
           {siteSettings.team?.team_title || "Our Team"}
         </h1>
-        <div className="w-10 h-1 bg-primary mx-auto mb-5"></div>
-        <p className="text-lg text-center mb-12 text-gray-600 max-w-5xl mx-auto">
+        <div className="w-20 h-1 bg-primary mx-auto mb-5"></div>
+        <p className="font-roboto text-base text-[#333] leading-[1.7] text-center mb-12 max-w-5xl mx-auto">
           {siteSettings.team?.description}
         </p>
         <Slider {...settings}>

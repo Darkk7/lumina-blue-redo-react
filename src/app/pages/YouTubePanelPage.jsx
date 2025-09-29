@@ -40,7 +40,7 @@ const YouTubePanelPage = () => {
   return (
     <section id="about" className="w-full overflow-hidden bg-white py-6 md:py-8 flex items-center justify-center min-h-[500px] relative">
       <div className="w-full max-w-6xl mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-8 gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-8 gap-12 items-center">
           {/* Left-side content - Media (5/8 width) */}
           <div className="lg:col-span-5 w-full aspect-video">
             {siteSettings.service_description?.media_type === 'video' ? (

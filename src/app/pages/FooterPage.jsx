@@ -169,12 +169,15 @@ const FooterPage = () => {
                 <FaPhone className="h-5 w-5 text-primary mr-3" />
                 <a href={`tel:${siteSettings.tel}`} className="text-white hover:text-primary">{siteSettings.tel}</a>
               </div>
-              <div className="flex items-center">
-                <FaEnvelope 
-                  className="h-5 w-5 text-red-500 mr-3" 
-                  
-                />
-                <a href={`mailto:${siteSettings.email}`} className="text-white hover:text-primary">{siteSettings.email}</a>
+              <div className="flex items-center min-w-0">
+                <FaEnvelope className="h-5 w-5 text-primary mr-3 flex-shrink-0" />
+                <a 
+                  href={`mailto:${siteSettings.email}`} 
+                  className="text-white hover:text-primary whitespace-nowrap overflow-hidden text-ellipsis block"
+                  title={siteSettings.email}
+                >
+                  {siteSettings.email}
+                </a>
               </div>              
             </div>
           </div>

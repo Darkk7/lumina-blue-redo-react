@@ -53,8 +53,8 @@ const BrandsPage = () => {
     <section id="brands" className="w-full bg-gray-100 py-16">
       <div className="text-center mb-12 px-4 sm:px-8 lg:px-16">
         <h2 className="text-3xl font-bold text-black mb-5">Our Brands</h2>
-        <div className="w-10 h-1 bg-primary mx-auto mb-5"></div>
-        <p className="text-lg text-gray-600 max-w-5xl mx-auto">The brands we stock reflect what matters to us—quality, reliability, and the confidence to recommend them to our patients every day.</p>
+        <div className="w-20 h-1 bg-primary mx-auto mb-5"></div>
+        <p className="font-roboto text-[#333] leading-[1.7] text-center mb-12 max-w-5xl mx-auto">The brands we stock reflect what matters to us—quality, reliability, and the confidence to recommend them to our patients every day.</p>
       </div>
       <div className="w-full overflow-hidden">
         <Slider {...settings} className="[&_.slick-slide]:px-6">

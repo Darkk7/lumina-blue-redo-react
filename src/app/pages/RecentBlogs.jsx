@@ -74,9 +74,9 @@ export default function RecentBlogs() {
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">News Feed</h2>
-          <div className="w-10 h-1 bg-primary mx-auto"></div>
-          <p className="font-roboto text-base text-[#333] leading-[1.7] max-w-3xl mx-auto">
+          <h2 className="text-4xl font-bold text-gray-900 mb-5">News Feed</h2>
+          <div className="w-20 h-1 bg-primary mx-auto mb-5"></div>
+          <p className="font-roboto text-base text-[#333] leading-[1.7] text-center mb-12 max-w-5xl mx-auto">
             Stay updated with our latest news, articles, and insights from the world of web development and digital marketing.
           </p>
         </div>

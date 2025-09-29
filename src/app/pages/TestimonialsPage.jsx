@@ -80,13 +80,13 @@ const TestimonialsPage = () => {
         <div className="absolute top-0 left-0 right-0 pt-12">
           <div className="max-w-7xl mx-auto px-4 text-center">
             <h1 className="text-4xl font-bold text-white mb-4">What do our patients say?</h1>
-            <div className="w-10 h-1 bg-white mx-auto"></div>
+            <div className="w-20 h-1 bg-white mx-auto"></div>
           </div>
         </div>
       </div>
       
       {/* Testimonials Section */}
-      <section className="w-full py-20 px-4 bg-gray-50 -mt-40">
+      <section className="w-full py-20 px-4 bg-gray-50 -mt-52">
         <div className="max-w-7xl mx-auto">
           <div className="relative">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[400px]">

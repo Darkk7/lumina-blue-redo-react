@@ -195,10 +195,11 @@ const ServicesPage = () => {
       <IcomoonStyles />
       <section className="w-full bg-gray-50 py-16 px-4" id="services">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-900 pt-8" style={{ textTransform: 'capitalize' }}>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-5 text-gray-900 pt-8" style={{ textTransform: 'capitalize' }}>
             {siteSettings.service_description?.welcome_title || 'Our Services'}
           </h2>
-          <p className="greyText text-center mb-12 max-w-5xl mx-auto">
+          <div className="w-20 h-1 bg-primary mx-auto mb-5"></div>
+          <p className="font-roboto text-[#333] leading-[1.7] text-center mb-12 max-w-5xl mx-auto">
             {siteSettings.service_description?.welcome_text || 'Professional eye care services tailored to your needs'}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-8">

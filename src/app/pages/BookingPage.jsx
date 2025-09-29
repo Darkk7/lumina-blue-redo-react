@@ -461,7 +461,22 @@ const BookingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen relative bg-primary">
+      {/* Background Image */}
+      <div className="absolute inset-0 -z-10">
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1586767003407-8fb8ba84b5df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')",
+            backgroundAttachment: 'fixed',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            opacity: 0.4
+          }}
+        ></div>
+        <div className="absolute inset-0 bg-white/60"></div>
+      </div>
       <div className="container mx-auto py-8" id="booking">
         {/* Success Modal */}
         {showSuccessModal && (
@@ -530,11 +545,25 @@ const BookingPage = () => {
             </div>
             
             {/* Booking Form - Full width on mobile, right side on desktop */}
-            <div className="lg:order-2 order-1 lg:w-1/2 p-6 lg:p-8 bg-gray-50">
+            <div className="lg:order-2 order-1 lg:w-1/2 p-6 lg:p-8 relative overflow-hidden">
+              {/* Background Image with Overlay */}
+              <div className="absolute inset-0 -z-10">
+                <div 
+                  className="absolute inset-0 bg-cover bg-center"
+                  style={{
+                    backgroundImage: "url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')",
+                    backgroundAttachment: 'fixed',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    opacity: 0.15
+                  }}
+                ></div>
+                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm"></div>
+              </div>
               <h3 id="book_appointment" className="text-3xl lg:text-4xl mb-6 font-bold text-center text-gray-800">
                 <span className="text-primary">Book</span> Your Appointment
               </h3>
-              <div className="w-10 h-1 bg-primary mx-auto"></div>
+              <div className="w-20 h-1 bg-primary mx-auto mb-5"></div>
               <form 
                 onSubmit={handleSubmit}
                 className="bg-white rounded-lg shadow-md p-6 w-full max-w-2xl mx-auto"
