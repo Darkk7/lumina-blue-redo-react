@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { getProxiedImageUrl } from "@/utils/imageProxy";
 
 const BlogHomePage = () => {
   const [blogs, setBlogs] = useState([]);
@@ -74,11 +75,15 @@ const BlogHomePage = () => {
               <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition hover:scale-105 h-full max-w-[360px] mx-auto">
                 <div className="relative w-full aspect-[1/1]">
                   <Image
-                    src={blog.header_image || blog.thumbnail_image || '/default-blog-image.jpg'}
+                    src={getProxiedImageUrl(blog.header_image || blog.thumbnail_image) || '/default-blog-image.jpg'}
                     alt={blog.title}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    onError={(e) => {
+                      // Fallback to default image if the proxied image fails to load
+                      e.target.src = '/default-blog-image.jpg';
+                    }}
                   />
                 </div>
                 <div className="p-4">
