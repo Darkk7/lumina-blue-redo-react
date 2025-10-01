@@ -87,7 +87,7 @@ const InfoCentreHomePage = () => {
         <div className="max-w-7xl mx-auto space-y-20">
           {categories.map((category, index) => (
             <Link
-              href={`/website/${siteSettings?.practiceId}/info_centre/${category.id}`}
+              href={`/${siteSettings?.practiceId}/info_centre/${category.id}`}
               className={`flex flex-col md:flex-row ${
                 index % 2 !== 0 ? "md:flex-row-reverse" : ""
               } items-center gap-8 p-6 rounded-lg shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl ${index % 2 === 1 ? "bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400" : "bg-gradient-to-r from-white via-white to-white"}`}

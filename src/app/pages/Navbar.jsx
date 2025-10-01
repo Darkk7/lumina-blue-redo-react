@@ -20,7 +20,7 @@ const Navbar = () => {
       if (!siteSettings?.practiceId) return;
 
       try {
-        const res = await fetch(`/api/website/${siteSettings.practiceId}/check_licence`);
+        const res = await fetch(`/api/${siteSettings.practiceId}/check_licence`);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
         const data = await res.json();
@@ -80,7 +80,7 @@ const handleMenuToggle = () => {
 
   const getLink = (path) => {
     if (!siteSettings?.practiceId) return path;
-    return `/website/${siteSettings.practiceId}${path}`;
+    return `/${siteSettings.practiceId}${path}`;
   };
 
   // Decide whether to show NEWS FEED

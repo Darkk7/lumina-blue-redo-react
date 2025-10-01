@@ -188,7 +188,7 @@ const ServicesPage = () => {
     const fetchIcons = async () => {
       if (!practiceId) return;
       try {
-        const res = await fetch(`/api/website/${practiceId}/icons`);
+        const res = await fetch(`/api/${practiceId}/icons`);
         if (!res.ok) throw new Error(`API returned status ${res.status}`);
         const data = await res.json();
         setIconsMap(data.iconsMap || {});

@@ -107,7 +107,7 @@ const InfoCentreListPage = () => {
             <div className="text-center">
               <div className="text-xl font-medium">
                 <Link
-                  href={`/website/${siteSettings.practiceId}/info_centre`}
+                  href={`/${siteSettings.practiceId}/info_centre`}
                   className="text-primary underline hover:text-primary-dark transition-colors duration-200"
                 >
                   Back To Info Centre
@@ -124,7 +124,7 @@ const InfoCentreListPage = () => {
             {sectionItems.map((item) => (
               <Link
                 key={item.id}
-                href={`/website/${siteSettings?.practiceId}/info_centre/${category}/${item.id}`}
+                href={`/${siteSettings?.practiceId}/info_centre/${category}/${item.id}`}
                 className="bg-white rounded-lg shadow-md p-6 block hover:shadow-lg transition-shadow duration-300"
               >
                 <div className="relative h-[200px] w-full mb-4 rounded-lg overflow-hidden">

@@ -1,0 +1,16 @@
+{
+  "app/[practiceId]/page.js -> ./PracticePageClient": {
+    "id": "app/[practiceId]/page.js -> ./PracticePageClient",
+    "files": [
+      "static/css/_app-pages-browser_src_app_practiceId_PracticePageClient_jsx.css",
+      "static/chunks/_app-pages-browser_src_app_practiceId_PracticePageClient_jsx.js"
+    ]
+  },
+  "app/website/[practiceId]/page.js -> ./PracticePageClient": {
+    "id": "app/website/[practiceId]/page.js -> ./PracticePageClient",
+    "files": [
+      "static/css/_app-pages-browser_src_app_website_practiceId_PracticePageClient_jsx.css",
+      "static/chunks/_app-pages-browser_src_app_website_practiceId_PracticePageClient_jsx.js"
+    ]
+  }
+}

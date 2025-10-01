@@ -17,7 +17,7 @@ export default function RecentBlogs() {
     async function fetchLicense() {
       if (!siteSettings?.practiceId) return;
       try {
-        const res = await fetch(`/api/website/${siteSettings.practiceId}/check_licence`);
+        const res = await fetch(`/api/${siteSettings.practiceId}/check_licence`);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
         setLicenseType(data.product_type || null);
@@ -40,7 +40,7 @@ export default function RecentBlogs() {
       if (!siteSettings?.practiceId) return;
       
       try {
-        const response = await fetch(`/api/website/${siteSettings.practiceId}/blogs`);
+        const response = await fetch(`/api/${siteSettings.practiceId}/blogs`);
         if (!response.ok) throw new Error('Failed to fetch blogs');
         const data = await response.json();
         const sortedBlogs = data.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4);
@@ -89,7 +89,7 @@ export default function RecentBlogs() {
               {blogs.map((blog) => (
                 <Link 
                   key={blog.id} 
-                  href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}
+                  href={`/${siteSettings?.practiceId}/blog/${blog.id}`}
                   className="block bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 group w-full max-w-[260px] mx-auto"
                 >
                   <div className="relative h-52 bg-gray-200">

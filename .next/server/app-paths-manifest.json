@@ -1,0 +1,7 @@
+{
+  "/api/[practiceId]/check_licence/route": "app/api/[practiceId]/check_licence/route.js",
+  "/api/[practiceId]/blogs/route": "app/api/[practiceId]/blogs/route.js",
+  "/api/[practiceId]/icons/route": "app/api/[practiceId]/icons/route.js",
+  "/website/[practiceId]/page": "app/website/[practiceId]/page.js",
+  "/[practiceId]/page": "app/[practiceId]/page.js"
+}

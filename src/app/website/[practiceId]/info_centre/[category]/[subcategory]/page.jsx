@@ -258,14 +258,14 @@ export default function SubcategoryPage() {
           <div className="mb-8 flex justify-center">
             <div className="text-xl font-medium">
               <Link
-                href={`/website/${practiceId}/info_centre`}
+                href={`/${practiceId}/info_centre`}
                 className="text-primary underline hover:text-primary-dark transition-colors duration-200"
               >
                 Back To Info Centre
               </Link>
               <span className="text-primary mx-3">›</span>
               <Link
-                href={`/website/${practiceId}/info_centre/${category}`}
+                href={`/${practiceId}/info_centre/${category}`}
                 className="text-primary underline hover:text-primary-dark transition-colors duration-200"
               >
                 Back To {categoryDetails?.name || category}

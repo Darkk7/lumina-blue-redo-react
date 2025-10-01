@@ -15,7 +15,7 @@ const FooterPage = () => {
     async function fetchLicense() {
       if (!siteSettings?.practiceId) return;
       try {
-        const res = await fetch(`/api/website/${siteSettings.practiceId}/check_licence`);
+        const res = await fetch(`/api/${siteSettings.practiceId}/check_licence`);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
         setLicenseType(data.product_type || null);
@@ -32,7 +32,7 @@ const FooterPage = () => {
 
     const fetchBlogs = async () => {
       try {
-        const response = await fetch(`/api/website/${siteSettings.practiceId}/blogs`);
+        const response = await fetch(`/api/${siteSettings.practiceId}/blogs`);
         if (!response.ok) throw new Error('Failed to fetch blogs');
         const data = await response.json();
         const sortedBlogs = data.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 2);
@@ -46,7 +46,7 @@ const FooterPage = () => {
 
   const getLink = (path) => {
     if (!siteSettings?.practiceId) return path;
-    return `/website/${siteSettings.practiceId}${path}`;
+    return `/${siteSettings.practiceId}${path}`;
   };
 
   // Determine whether to show the News column
@@ -128,7 +128,7 @@ const FooterPage = () => {
                   <div className="flex gap-4">
                     {(blog.thumbnail_image?.url || blog.header_image?.url) && (
                       <Link 
-                        href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}
+                        href={`/${siteSettings?.practiceId}/blog/${blog.id}`}
                         className="flex-shrink-0 w-20 h-20 rounded overflow-hidden"
                       >
                         <img
@@ -143,7 +143,7 @@ const FooterPage = () => {
                       </Link>
                     )}
                     <div className="flex-1">
-                      <Link href={`/website/${siteSettings?.practiceId}/blog/${blog.id}`}>
+                      <Link href={`/${siteSettings?.practiceId}/blog/${blog.id}`}>
                         <div className="text-[var(--primary-color)] hover:text-white font-medium line-clamp-2 mb-1">
                           {blog.title}
                         </div>

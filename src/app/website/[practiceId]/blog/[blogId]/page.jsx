@@ -31,8 +31,8 @@ const BlogDetail = () => {
         
         // Fetch blog post and recent posts in parallel
         const [blogResponse, recentResponse] = await Promise.all([
-          fetch(`/api/website/${practiceId}/blogs/${blogId}`),
-          fetch(`/api/website/${practiceId}/blogs?limit=5`)
+          fetch(`/api/${practiceId}/blogs/${blogId}`),
+          fetch(`/api/${practiceId}/blogs?limit=5`)
         ]);
         
         if (!blogResponse.ok) {
@@ -91,7 +91,7 @@ const BlogDetail = () => {
           <h2 className="text-2xl font-bold text-red-500 mb-4">Error Loading Blog Post</h2>
           <p className="mb-6">{error}</p>
           <button
-            onClick={() => router.push(`/website/${practiceId}/blog`)}
+            onClick={() => router.push(`/${practiceId}/blog`)}
             className="px-6 py-2 rounded text-white hover:opacity-90 transition-opacity"
             style={{ backgroundColor: primaryColor }}
           >
@@ -109,7 +109,7 @@ const BlogDetail = () => {
           <h2 className="text-2xl font-bold mb-4">Blog Post Not Found</h2>
           <p className="mb-6">The requested blog post could not be found.</p>
           <Link 
-            href={`/website/${practiceId}/blog`}
+            href={`/${practiceId}/blog`}
             className="px-6 py-2 rounded text-white hover:opacity-90 transition-opacity inline-block"
             style={{ backgroundColor: primaryColor }}
           >
@@ -184,7 +184,7 @@ const BlogDetail = () => {
                     {recentPosts.map((post) => (
                       <li key={post.id} className="pb-4 last:pb-0">
                         <Link 
-                          href={`/website/${practiceId}/blog/${post.id}`}
+                          href={`/${practiceId}/blog/${post.id}`}
                           className="group block"
                         >
                           <div className="space-y-2">
@@ -224,7 +224,7 @@ const BlogDetail = () => {
                 
                 <div className="mt-6">
                   <Link 
-                    href={`/website/${practiceId}/blog`}
+                    href={`/${practiceId}/blog`}
                     className="inline-flex items-center font-medium hover:underline"
                     style={{ color: primaryColor }}
                   >

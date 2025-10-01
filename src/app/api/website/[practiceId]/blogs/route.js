@@ -42,7 +42,7 @@ export async function GET(request, { params }) {
     // Add URLs to all blogs
     const blogsWithUrls = filteredBlogs.map(blog => ({
       ...blog,
-      url: `/website/${practiceId}/blog/${blog.id}`
+      url: `/${practiceId}/blog/${blog.id}`
     }));
 
     // Sort by date (newest first)

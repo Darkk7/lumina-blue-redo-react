@@ -28,7 +28,7 @@ const BlogHomePage = () => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`/api/website/${practiceId}/blogs`);
+        const response = await fetch(`/api/${practiceId}/blogs`);
         
         if (!response.ok) {
           const errorData = await response.json();
@@ -142,7 +142,7 @@ const BlogHomePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             {sortedBlogs.map((blog) => (
               <div key={blog.id} className="h-full">
-                <Link href={`/website/${practiceId}/blog/${blog.id}`}>
+                <Link href={`/${practiceId}/blog/${blog.id}`}>
                   <div className="bg-white rounded-lg shadow-lg overflow-hidden h-full flex flex-col hover:shadow-xl transition-shadow duration-300">
                     <div className="relative w-full aspect-[4/3] bg-gray-100">
                       <Image

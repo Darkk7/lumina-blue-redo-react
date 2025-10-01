@@ -12,8 +12,8 @@ module.exports = {
   async rewrites() {
     return [
       {
-        source: '/api/website/:path*',
-        destination: '/api/website/:path*',
+        source: '/api/:path*',
+        destination: '/api/:path*',
       },
       {
         source: '/api/proxy/available_slots',
