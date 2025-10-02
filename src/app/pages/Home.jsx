@@ -75,8 +75,6 @@ export default function HomePage({ customerCode }) {
       <TestimonialsPage />
       <BookingPage />
 
-      
-
     </div>
   );
 }

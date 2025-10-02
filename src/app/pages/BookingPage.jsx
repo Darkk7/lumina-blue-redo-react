@@ -69,18 +69,15 @@ const BookingPage = () => {
           };
 
           if (opt.calendar_time_slots_unavailable) {
-            // Split by semicolon to handle multiple rules
             const rules = opt.calendar_time_slots_unavailable.split(';');
             
             rules.forEach(rule => {
-              // Handle closed days (e.g., "2-Closed" means Wednesday is closed)
               if (rule.endsWith('-Closed')) {
                 const day = parseInt(rule.split('-')[0]);
                 if (!isNaN(day)) {
                   availability.closedDays.push(day);
                 }
               }
-              // Handle time slots (e.g., "0|1|2|3|4-13:00-14:00" means Mon-Fri 13:00-14:00 is unavailable)
               else if (rule.includes('-') && rule.includes('|')) {
                 const [days, times] = rule.split('-');
                 const [startTime, endTime] = times.split('-');
@@ -566,7 +563,7 @@ const BookingPage = () => {
               <div className="w-20 h-1 bg-primary mx-auto mb-5"></div>
               <form 
                 onSubmit={handleSubmit}
-                className="bg-white rounded-lg shadow-md p-6 w-full max-w-2xl mx-auto"
+                className="bg-white rounded-lg p-6 w-full max-w-2xl mx-auto"
                 id="booking_form" 
                 name="booking_form"
               >
@@ -676,7 +673,6 @@ const BookingPage = () => {
                         required
                       />
                       
-                      {/* Time Slots */}
                       {formData.date && formData.practitioner && (
                         <div className="mt-5">
                           <h4 className="text-gray-700 font-medium mb-3 text-lg">Available Time Slots</h4>

@@ -11,6 +11,9 @@ module.exports = {
         navfix1: '1066px', // first crunch point
         navfix2:'1212px', // navbar breakpoint
       },
+      borderRadius: {
+        'lg': '2.0rem',
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",

@@ -57,7 +57,7 @@ const YouTubePanelPage = () => {
                   src={siteSettings.service_description?.media_url || '/placeholder-image.jpg'}
                   alt="Featured content"
                   fill
-                  className="object-cover rounded-lg shadow-lg"
+                  className="object-cover rounded-lg"
                 />
               </div>
             )}
