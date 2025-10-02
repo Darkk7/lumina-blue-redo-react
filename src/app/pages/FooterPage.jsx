@@ -10,38 +10,85 @@ const FooterPage = () => {
   const [blogs, setBlogs] = useState([]);
   const [licenseType, setLicenseType] = useState(null);
 
-  // Fetch license info
+  // Fetch license info with better error handling
   useEffect(() => {
+    let isMounted = true;
+    
     async function fetchLicense() {
       if (!siteSettings?.practiceId) return;
+      
       try {
         const res = await fetch(`/api/${siteSettings.practiceId}/check_licence`);
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        
+        // Handle non-OK responses gracefully
+        if (!res.ok) {
+          console.warn(`License API returned ${res.status}: ${res.statusText}`);
+          if (isMounted) setLicenseType(null);
+          return;
+        }
+        
         const data = await res.json();
-        setLicenseType(data.product_type || null);
+        
+        // Only update state if component is still mounted
+        if (isMounted) {
+          setLicenseType(data?.product_type || null);
+        }
       } catch (err) {
-        console.error("License fetch error:", err);
+        console.error("Error checking license:", err);
+        if (isMounted) setLicenseType(null);
       }
     }
+    
     fetchLicense();
+    
+    // Cleanup function to prevent state updates after unmount
+    return () => {
+      isMounted = false;
+    };
   }, [siteSettings?.practiceId]);
 
   // Fetch blogs only if license is NOT Comprehensive
   useEffect(() => {
     if (licenseType === "Comprehensive") return;
-
+    if (!siteSettings?.practiceId) return;
+    
+    let isMounted = true;
+    
     const fetchBlogs = async () => {
       try {
         const response = await fetch(`/api/${siteSettings.practiceId}/blogs`);
-        if (!response.ok) throw new Error('Failed to fetch blogs');
+        
+        // Handle non-OK responses gracefully
+        if (!response.ok) {
+          console.warn(`Blogs API returned ${response.status}: ${response.statusText}`);
+          if (isMounted) setBlogs([]);
+          return;
+        }
+        
         const data = await response.json();
-        const sortedBlogs = data.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 2);
-        setBlogs(sortedBlogs);
+        
+        // Only update state if component is still mounted
+        if (isMounted) {
+          // Ensure data is an array before processing
+          const blogsArray = Array.isArray(data) ? data : [];
+          const sortedBlogs = blogsArray
+            .filter(blog => blog?.date) // Safely filter out invalid entries
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .slice(0, 2);
+          setBlogs(sortedBlogs);
+        }
       } catch (error) {
         console.error('Error fetching blogs:', error);
+        if (isMounted) setBlogs([]);
       }
     };
+    
     fetchBlogs();
+    
+    // Cleanup function to prevent state updates after unmount
+    return () => {
+      isMounted = false;
+    };
   }, [siteSettings?.practiceId, licenseType]);
 
   const getLink = (path) => {
@@ -59,18 +106,32 @@ const FooterPage = () => {
           {/* Column 1: Logo with text */}
           <div className="lg:col-span-3 space-y-4">
             <div className="flex items-center">
-              <img src={siteSettings.about.logo_light} alt="Logo" className="h-12 w-auto" />
+              <img 
+                src={siteSettings?.about?.logo_light || "https://via.placeholder.com/200x50?text=Logo"} 
+                alt={siteSettings?.name || 'Practice Logo'} 
+                className="h-12 w-auto" 
+                onError={(e) => {
+                  e.target.src = "https://via.placeholder.com/200x50?text=Logo+Not+Found";
+                  e.target.onerror = null; // Prevent infinite loop if placeholder also fails
+                }}
+              />
             </div>
             <p className="text-white">
-            Stay connected to our practice via our social platforms.
+              Stay connected to our practice via our social platforms.
             </p>
             <div className="flex space-x-4">
-              {typeof siteSettings.facebook_url === 'string' && siteSettings.facebook_url.trim() !== "" && (
-                <a href={siteSettings.facebook_url} className="text-primary hover:text-white">
+              {siteSettings?.facebook_url?.trim() && (
+                <a 
+                  href={siteSettings.facebook_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary hover:text-white transition-colors"
+                  aria-label="Facebook"
+                >
                   <FaFacebook className="h-6 w-6" />
                 </a>
               )}
-              {typeof siteSettings.instagram_url === 'string' && siteSettings.instagram_url.trim() !== "" && (
+              {siteSettings?.instagram_url?.trim() && (
                 <a href={siteSettings.instagram_url} className="text-primary hover:text-white">
                   <FaInstagram className="h-6 w-6" />
                 </a>

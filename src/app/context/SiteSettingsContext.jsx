@@ -3,7 +3,15 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import crypto from 'crypto';
 
-const SiteSettingsContext = createContext();
+// Define the shape of our context value
+const SiteSettingsContext = createContext({
+  siteSettings: null,
+  error: null,
+  isLoading: true,
+  practiceId: null,
+  isCustomerCode: false,
+  customerCode: null
+});
 
 const getSettings = (practiceId) => ({
   practiceId,
@@ -44,11 +52,12 @@ function getDailyKey() {
   return dailyKey;
 }
 
-export function SiteSettingsProvider({ children, initialPracticeId }) {
-  const [siteSettings, setSiteSettings] = useState(getSettings(initialPracticeId));
+export function SiteSettingsProvider({ children, initialPracticeId, customerCode }) {
+  const [siteSettings, setSiteSettings] = useState(getSettings(initialPracticeId || ''));
   const [practiceId, setPracticeId] = useState(initialPracticeId);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCustomerCode, setIsCustomerCode] = useState(!!customerCode);
 
   useEffect(() => {
     let isMounted = true;
@@ -59,7 +68,7 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
         'Authorization': `Bearer ${apiKey}`
       };
 
-      if (!practiceId) {
+      if (!practiceId && !customerCode) {
         setIsLoading(false);
         return;
       }
@@ -68,62 +77,139 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
         setIsLoading(true);
         setError(null);
 
-        const practiceResponse = await fetch(`https://passport.nevadacloud.com/api/v1/public/practices/${practiceId}`);
-        const response = await fetch(`https://www.eyecareportal.com/api/website/${practiceId}/0`, { headers });
+        let practiceData;
+        
+        // If we have a customer code, look up the practice ID first
+        if (customerCode) {
+          const practiceLookupResponse = await fetch(`/api/practice/by-code/${customerCode}`);
+          if (!practiceLookupResponse.ok) {
+            throw new Error('Practice not found for the provided customer code');
+          }
+          practiceData = await practiceLookupResponse.json();
+          setPracticeId(practiceData.id);
+        }
+
+        const effectivePracticeId = practiceData?.id || practiceId;
+        const practiceResponse = await fetch(`https://passport.nevadacloud.com/api/v1/public/practices/${effectivePracticeId}`);
+        const response = await fetch(`https://www.eyecareportal.com/api/website/${effectivePracticeId}/0`, { headers });
 
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || `Failed to fetch practice data: ${response.status}`);
         }
 
-        const response2 = await fetch(`https://www.ocumail.com/api/settings?setting_object_id=${practiceId}&setting_object_type=Practice`, { headers });
+        const response2 = await fetch(`https://www.ocumail.com/api/settings?setting_object_id=${effectivePracticeId}&setting_object_type=Practice`, { headers });
 
         if (!response2.ok) {
           const errorData2 = await response2.json();
           throw new Error(errorData2.error || `Failed to fetch practice data: ${response2.status}`);
         }
 
-        const data = await response.json();
-        const data2 = await response2.json();
-        const data3 = await practiceResponse.json();
+        const [data, data2, data3] = await Promise.all([
+          response.json().catch(() => ({})),
+          response2.json().catch(() => []),
+          practiceResponse.json().catch(() => ({}))
+        ]);
 
-        const primaryColorSetting = data2.find(setting => setting.setting_name === "PrimaryColor");
-        const primaryColor = primaryColorSetting ? primaryColorSetting.setting_value : 'orange';
+        // Safely get primary color with fallback
+        const primaryColorSetting = Array.isArray(data2) 
+          ? data2.find(setting => setting?.setting_name === "PrimaryColor")
+          : null;
+        const primaryColor = primaryColorSetting?.setting_value || 'orange';
 
-        const addressObject = data2.find(obj => obj.setting_name === "Address1");
+        // Safely get address object
+        const addressObject = Array.isArray(data2)
+          ? data2.find(obj => obj?.setting_name === "Address1")
+          : null;
 
         document.documentElement.style.setProperty('--primary-color', primaryColor);
 
         function parseWorkingHours(hoursString) {
+          // Return empty array if input is invalid
+          if (!hoursString || typeof hoursString !== 'string') {
+            return [];
+          }
+          
           const daysMap = {
-            '0': '0',
-            '1': '1',
-            '2': '2',
-            '3': '3',
-            '4': '4',
-            '5': '5',
-            '6': '6',
-            '7': '7'
+            '0': 'Sunday',
+            '1': 'Monday',
+            '2': 'Tuesday',
+            '3': 'Wednesday',
+            '4': 'Thursday',
+            '5': 'Friday',
+            '6': 'Saturday',
+            '7': 'Sunday'
           };
 
-          return hoursString.split(';').map(entry => {
-            const [days, start, end] = entry.split('-');
-            const dayNames = days.split('|').map(day => daysMap[day] || day).join(', ');
-            return {
-              days: dayNames,
-              start: start || '',
-              end: end || '',
-              open: start !== 'Closed'
-            };
-          });
+          try {
+            return hoursString
+              .split(';')
+              .filter(Boolean) // Remove empty entries
+              .map(entry => {
+                if (!entry) return null;
+                
+                const [days, start, end] = entry.split('-');
+                
+                // Skip if days are not defined
+                if (!days) return null;
+                
+                // Safely process day names
+                const dayNames = days
+                  .split('|')
+                  .map(day => daysMap[day] || day)
+                  .filter(Boolean) // Remove any undefined/null values
+                  .join(', ');
+                  
+                return {
+                  days: dayNames || 'Unknown',
+                  start: start || 'Closed',
+                  end: end || '',
+                  open: start && start !== 'Closed' && start !== 'closed'
+                };
+              })
+              .filter(Boolean); // Remove any null entries from the array
+          } catch (error) {
+            console.error('Error parsing working hours:', error);
+            return [];
+          }
         }
 
-        const workingHours = parseWorkingHours(data3.hours);
-
-        const settings = {
-          practiceId,
-          primaryColor,
+        // Safely handle missing or invalid data
+        const workingHours = data3?.hours ? parseWorkingHours(data3.hours) : [];
+        
+        // Default settings object with all required properties
+        const defaultSettings = {
+          practiceId: practiceId || '',
+          primaryColor: primaryColor || '#2196f3',
           working_hours: workingHours,
+          counterSettings: {
+            brands: 0,
+            frames: 0,
+            customers: 0,
+            experience: 0
+          },
+          show_counters_panel: true,
+          show_custom_panel: true,
+          show_socials_panel: true,
+          show_teams_panel: true,
+          show_youtube_panel: true,
+          aboutText: '',
+          about: {},
+          member: { member: [] },
+          services: [],
+          service_description: {},
+          brands: [],
+          banners: [],
+          reviews: { review: [] },
+          statitems: [],
+          name: '',
+          address_1: '',
+          featured_services: []
+        };
+
+        // Merge default settings with actual data
+        const settings = {
+          ...defaultSettings,
           counterSettings: {
             brands: Number(data.statstems?.find(s => s.label === "Number of Brands")?.value) || 0,
             frames: (data.featured_services?.length || 0) * 500,
@@ -180,18 +266,25 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
             member: data.member || []
           },
           statitems: data.statitems || [],
-          name: data3.name || [],
-          short_name: data3.short_name || [],
-          address_1: data3.address_1 || [],
-          tel: data3.tel || [],
-          email: data3.email || [],
-          facebook_url: data3.facebook_url || [],
-          instagram_url: data3.instagram_url || [],
-          linkedin_url: data3.linkedin_url || [],
-          pinterest_url: data3.pinterest_url || [],
-          whatsapp_tel: data3.whatsapp_tel || [],
-          tiktok_url: data3.tiktok_url || [],
-          google_business_profile_url: data3.google_business_profile_url || [],
+          // Safely access data3 properties with null checks
+          name: data3?.name || '',
+          short_name: data3?.short_name || '',
+          address_1: data3?.address_1 || '',
+          address_2: data3?.address_2 || '',
+          city: data3?.city || '',
+          state: data3?.state || '',
+          zip: data3?.zip || '',
+          tel: data3?.tel || '',
+          fax: data3?.fax || '',
+          email: data3?.email || '',
+          facebook_url: data3?.facebook_url || '',
+          instagram_url: data3?.instagram_url || '',
+          linkedin_url: data3?.linkedin_url || '',
+          pinterest_url: data3?.pinterest_url || '',
+          whatsapp_tel: data3?.whatsapp_tel || '',
+          tiktok_url: data3?.tiktok_url || '',
+          google_business_profile_url: data3?.google_business_profile_url || '',
+          hours: data3?.hours || '',
           featured_services: data.featured_services && data.featured_services.length > 0 
             ? data.featured_services 
             : data.services?.map(service => ({
@@ -233,16 +326,18 @@ export function SiteSettingsProvider({ children, initialPracticeId }) {
   useEffect(() => {
   }, [siteSettings]);
 
-  const value = {
+  // Ensure all required values are provided
+  const contextValue = {
     siteSettings,
     error,
     isLoading,
-    updateSettings: (newSettings) => setSiteSettings(newSettings),
-    setPracticeId
+    practiceId: practiceId || null,
+    isCustomerCode: isCustomerCode || false,
+    customerCode: customerCode || null
   };
 
   return (
-    <SiteSettingsContext.Provider value={value}>
+    <SiteSettingsContext.Provider value={contextValue}>
       {children}
     </SiteSettingsContext.Provider>
   );

@@ -14,23 +14,41 @@ const Navbar = () => {
   const { siteSettings } = useSiteSettings();
   const pathname = usePathname();
 
-  // Fetch license info
+  // Fetch license info with better error handling
   useEffect(() => {
+    let isMounted = true;
+    
     async function fetchLicense() {
       if (!siteSettings?.practiceId) return;
 
       try {
         const res = await fetch(`/api/${siteSettings.practiceId}/check_licence`);
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        
+        // Handle non-OK responses gracefully
+        if (!res.ok) {
+          console.warn(`License API returned ${res.status}: ${res.statusText}`);
+          if (isMounted) setLicenseType(null);
+          return;
+        }
 
         const data = await res.json();
-        setLicenseType(data.product_type || null);
+        
+        // Only update state if component is still mounted
+        if (isMounted) {
+          setLicenseType(data?.product_type || null);
+        }
       } catch (err) {
-        console.error("License fetch error:", err);
+        console.error("Error checking license:", err);
+        if (isMounted) setLicenseType(null);
       }
     }
 
     fetchLicense();
+    
+    // Cleanup function to prevent state updates after unmount
+    return () => {
+      isMounted = false;
+    };
   }, [siteSettings?.practiceId]);
 
   // Scroll handling
@@ -98,16 +116,20 @@ const handleMenuToggle = () => {
           <Image
             src={
               isSticky || isMenuOpen
-                ? siteSettings.about.logo_dark ||
+                ? siteSettings?.about?.logo_dark ||
                   "https://s3.eu-west-2.amazonaws.com/ocumailuserdata/1689179837_67_logo_dark_wide.png"
-                : siteSettings.about.logo_light ||
+                : siteSettings?.about?.logo_light ||
                   "https://s3.eu-west-2.amazonaws.com/ocumailuserdata/1689179856_67_logo_light_wide.png"
             }
-            alt="PracticeLogo"
+            alt={siteSettings?.name || 'Practice Logo'}
             width={160}
             height={45}
             className="h-auto max-h-12 w-auto"
             priority
+            onError={(e) => {
+              // Fallback to a default logo if the image fails to load
+              e.target.src = "https://via.placeholder.com/160x45?text=Logo+Not+Found";
+            }}
           />
         </Link>
 

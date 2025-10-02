@@ -1,35 +1,34 @@
 import { NextResponse } from 'next/server';
 
 export async function GET(request, { params }) {
-  // Await the params object before destructuring
-  const { practiceId } = await Promise.resolve(params);
-  
+  // Helper function to safely fetch and parse JSON
+  const safeFetch = async (url) => {
+    try {
+      const response = await fetch(url, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      
+      if (!response.ok) {
+        console.warn(`API request failed: ${url} - ${response.status}`);
+        return [];
+      }
+      
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error(`Error in safeFetch for ${url}:`, error);
+      return [];
+    }
+  };
+
   try {
-    // First, fetch global blogs (where practice_id is null)
-    const globalBlogsResponse = await fetch('https://www.eyecareportal.com/api/blogs', {
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    if (!globalBlogsResponse.ok) {
-      throw new Error(`Failed to fetch global blogs: ${globalBlogsResponse.statusText}`);
-    }
+    const { practiceId } = await Promise.resolve(params);
     
-    let globalBlogs = await globalBlogsResponse.json();
-    globalBlogs = Array.isArray(globalBlogs) ? globalBlogs : [];
-
-    // Then fetch practice-specific blogs
-    const practiceBlogsResponse = await fetch(`https://www.eyecareportal.com/api/blogs?practice_id=${practiceId}`, {
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    let practiceBlogs = [];
-    if (practiceBlogsResponse.ok) {
-      const data = await practiceBlogsResponse.json();
-      practiceBlogs = Array.isArray(data) ? data : [];
-    } else if (practiceBlogsResponse.status !== 404) {
-      // Only throw error if it's not a 404 (which might mean no blogs for this practice)
-      throw new Error(`Failed to fetch practice blogs: ${practiceBlogsResponse.statusText}`);
-    }
+    // Fetch both global and practice blogs in parallel
+    const [globalBlogs, practiceBlogs] = await Promise.all([
+      safeFetch('https://www.eyecareportal.com/api/blogs'),
+      practiceId ? safeFetch(`https://www.eyecareportal.com/api/blogs?practice_id=${practiceId}`) : []
+    ]);
 
     // Combine both global and practice-specific blogs
     const allBlogs = [...globalBlogs, ...practiceBlogs];
@@ -53,14 +52,9 @@ export async function GET(request, { params }) {
 
     return NextResponse.json(sortedBlogs);
   } catch (error) {
-    console.error('[Blogs API] Unhandled error:', error);
-    return NextResponse.json(
-      { 
-        error: 'Internal server error', 
-        message: error.message,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-      },
-      { status: 500 }
-    );
+    console.error('[Blogs API] Error:', error);
+    // Always return an empty array instead of an error object
+    // This ensures the UI won't break if the API fails
+    return NextResponse.json([], { status: 200 });
   }
 }

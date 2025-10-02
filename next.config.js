@@ -1,5 +1,12 @@
 module.exports = {
   images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
+    // Keep the old domains temporarily for backward compatibility
     domains: [
       'www.imageeyecareoptometrists.com',
       's3.eu-west-2.amazonaws.com',

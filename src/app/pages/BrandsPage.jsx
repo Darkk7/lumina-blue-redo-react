@@ -50,7 +50,7 @@ const BrandsPage = () => {
   };
 
   return (
-    <section id="brands" className="w-full bg-gray-100 py-16">
+    <section id="brands" className="w-full bg-white py-16">
       <div className="text-center mb-12 px-4 sm:px-8 lg:px-16">
         <h2 className="text-3xl font-bold text-black mb-5">Our Brands</h2>
         <div className="w-20 h-1 bg-primary mx-auto mb-5"></div>
