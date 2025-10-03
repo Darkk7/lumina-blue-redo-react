@@ -92,8 +92,21 @@ const FooterPage = () => {
   }, [siteSettings?.practiceId, licenseType]);
 
   const getLink = (path) => {
-    if (!siteSettings?.practiceId) return path;
-    return `/${siteSettings.practiceId}${path}`;
+    // Get current path to check if we're in a customer code route
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    const isCustomerCodeRoute = pathSegments[0] && !/^\d+$/.test(pathSegments[0]);
+    
+    if (isCustomerCodeRoute) {
+      // For customer code routes, use the customer code from the URL
+      const customerCode = pathSegments[0];
+      return `/${customerCode}${path}`;
+    } else if (siteSettings?.practiceId) {
+      // For regular practiceId routes
+      return `/${siteSettings.practiceId}${path}`;
+    }
+    
+    // Fallback to the path as-is if we can't determine the route type
+    return path;
   };
 
   // Determine whether to show the News column
@@ -176,6 +189,8 @@ const FooterPage = () => {
               <li><Link href={getLink("/#services")} className="text-white hover:text-primary">Services</Link></li>
               <li><Link href={getLink("/#team")} className="text-white hover:text-primary">Team</Link></li>
               <li><Link href={getLink("/#testimonials")} className="text-white hover:text-primary">Feedback</Link></li>
+              <li><Link href={getLink("/privacy")} className="text-white hover:text-primary">Privacy Policy</Link></li>
+              <li><Link href={getLink("/paia")} className="text-white hover:text-primary">PAIA Manual</Link></li>
             </ul>
           </div>
 

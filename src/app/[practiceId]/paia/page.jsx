@@ -1,8 +1,8 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import { SiteSettingsProvider } from '../../../context/SiteSettingsContext';
-import PaiaManualPage from '../../../pages/PaiaManualPage';
+import { useParams, usePathname } from 'next/navigation';
+import { SiteSettingsProvider } from '../../context/SiteSettingsContext';
+import PaiaManualPage from '../../pages/PaiaManualPage';
 
 export default function PaiaPage() {
   const { practiceId } = useParams();

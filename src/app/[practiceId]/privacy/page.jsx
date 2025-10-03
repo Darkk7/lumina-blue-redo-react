@@ -1,8 +1,8 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import { SiteSettingsProvider } from '../../../context/SiteSettingsContext';
-import PrivacyPolicyPage from '../../../pages/PrivacyPolicyPage';
+import { useParams, usePathname } from 'next/navigation';
+import { SiteSettingsProvider } from '../../context/SiteSettingsContext';
+import PrivacyPolicyPage from '../../pages/PrivacyPolicyPage';
 
 export default function PrivacyPolicy() {
   const { practiceId } = useParams();
