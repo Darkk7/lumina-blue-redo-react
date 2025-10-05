@@ -85,41 +85,64 @@ const InfoCentreHomePage = () => {
       {/* Stacked Category Blocks */}
       <div className="py-16 px-4 bg-gray-100">
         <div className="max-w-7xl mx-auto space-y-20">
-          {categories.map((category, index) => (
-            <Link
-              href={`/${siteSettings?.practiceId}/info_centre/${category.id}`}
-              className={`flex flex-col md:flex-row ${
+          {categories.map((category, index) => {
+            // Get the current path segments
+            const pathSegments = typeof window !== 'undefined' 
+              ? window.location.pathname.split('/').filter(Boolean)
+              : [];
+            
+            // Check if we're in a customer code route (first segment is not a number)
+            const isCustomerCodeRoute = pathSegments[0] && !/^\d+$/.test(pathSegments[0]);
+            const basePath = isCustomerCodeRoute ? pathSegments[0] : siteSettings?.practiceId;
+            
+            return (
+              <div key={category.id} className={`flex flex-col md:flex-row ${
                 index % 2 !== 0 ? "md:flex-row-reverse" : ""
-              } items-center gap-8 p-6 rounded-lg shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl ${index % 2 === 1 ? "bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400" : "bg-gradient-to-r from-white via-white to-white"}`}
-              key={category.id}
-              onClick={() => handleCategoryClick(category.id)}
-            >
-              {/* Image Section */}
-              <div className="w-full md:w-1/2">
-                <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-md">
-                  {category.thumbnailImgUrl && (
-                    <Image
-                      src={category.thumbnailImgUrl}
-                      alt={category.name}
-                      layout="fill"
-                      className="object-cover transition-transform duration-300 transform hover:scale-110"
-                    />
-                  )}
+              } items-center gap-8 p-6 rounded-lg shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl ${
+                index % 2 === 1 ? "bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400" : "bg-gradient-to-r from-white via-white to-white"
+              }`}>
+                <div className="w-full flex flex-col md:flex-row items-center gap-8">
+                  {/* Image Section */}
+                  <div className="w-full md:w-1/2">
+                    <Link 
+                      href={`/${basePath}/info_centre/${category.id}`}
+                      onClick={() => handleCategoryClick(category.id)}
+                      className="block"
+                    >
+                      <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-md">
+                        {category.thumbnailImgUrl && (
+                          <Image
+                            src={category.thumbnailImgUrl}
+                            alt={category.name}
+                            layout="fill"
+                            className="object-cover transition-transform duration-300 transform hover:scale-110"
+                            priority
+                          />
+                        )}
+                      </div>
+                    </Link>
+                  </div>
+
+                  {/* Text Section */}
+                  <div className="w-full md:w-1/2 text-center md:text-left">
+                    <Link 
+                      href={`/${basePath}/info_centre/${category.id}`}
+                      onClick={() => handleCategoryClick(category.id)}
+                      className="block"
+                    >
+                      <h2 className="text-3xl font-bold text-gray-800 mb-4">{category.name}</h2>
+                      <p className="text-gray-600 mb-6 text-lg leading-relaxed">
+                        Learn more about {category.name}.
+                      </p>
+                      <span className="inline-block bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform transform hover:scale-105">
+                        Explore {category.name}
+                      </span>
+                    </Link>
+                  </div>
                 </div>
               </div>
-
-              {/* Text Section */}
-              <div className="w-full md:w-1/2 text-center md:text-left">
-                <h2 className="text-3xl font-bold text-gray-800 mb-4">{category.name}</h2>
-                <p className="text-gray-600 mb-6 text-lg leading-relaxed">
-                  Learn more about {category.name}.
-                </p>
-                <span className="inline-block bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform transform hover:scale-105">
-                  Explore {category.name}
-                </span>
-              </div>
-            </Link>
-          ))}
+            );
+          })}
         </div>
       </div>
 

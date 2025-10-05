@@ -96,10 +96,31 @@ const handleMenuToggle = () => {
 
  
 
-  const getLink = (path) => {
-    if (!siteSettings?.practiceId) return path;
-    return `/${siteSettings.practiceId}${path}`;
-  };
+const getLink = (path) => {
+  if (!siteSettings?.practiceId) return path;
+  
+  // Get the current path segments
+  const pathSegments = typeof window !== 'undefined' 
+    ? window.location.pathname.split('/').filter(Boolean)
+    : [];
+  
+  // Check if we're in a customer code route (first segment is not a number)
+  const isCustomerCodeRoute = pathSegments[0] && !/^\d+$/.test(pathSegments[0]);
+  
+  // If we have a customer code in the URL, use it
+  if (isCustomerCodeRoute) {
+    const customerCode = pathSegments[0];
+    return `/${customerCode}${path}`;
+  }
+  
+  // If we have a customer code in siteSettings but not in URL (e.g., during SSR)
+  if (siteSettings.customerCode) {
+    return `/${siteSettings.customerCode}${path}`;
+  }
+  
+  // Default to practiceId if no customer code is found
+  return `/${siteSettings.practiceId}${path}`;
+};
 
   // Decide whether to show NEWS FEED
   const showNewsFeed = licenseType !== "Comprehensive";
@@ -113,24 +134,25 @@ const handleMenuToggle = () => {
       <div className="flex items-center justify-between w-full">
         {/* Logo */}
         <Link href={getLink("/")} className="flex-shrink-0">
-          <Image
-            src={
-              isSticky || isMenuOpen
-                ? siteSettings?.about?.logo_dark ||
-                  "https://s3.eu-west-2.amazonaws.com/ocumailuserdata/1689179837_67_logo_dark_wide.png"
-                : siteSettings?.about?.logo_light ||
-                  "https://s3.eu-west-2.amazonaws.com/ocumailuserdata/1689179856_67_logo_light_wide.png"
-            }
-            alt={siteSettings?.name || 'Practice Logo'}
-            width={160}
-            height={45}
-            className="h-auto max-h-12 w-auto"
-            priority
-            onError={(e) => {
-              // Fallback to a default logo if the image fails to load
-              e.target.src = "https://via.placeholder.com/160x45?text=Logo+Not+Found";
-            }}
-          />
+        <Image
+          src={
+            isSticky || isMenuOpen
+              ? siteSettings?.logo_dark || 
+                siteSettings?.about?.logo_dark || 
+                "https://s3.eu-west-2.amazonaws.com/ocumailuserdata/1689179837_67_logo_dark_wide.png"
+              : siteSettings?.logo_light || 
+                siteSettings?.about?.logo_light || 
+                "https://s3.eu-west-2.amazonaws.com/ocumailuserdata/1689179856_67_logo_light_wide.png"
+          }
+          alt={siteSettings?.name || 'Practice Logo'}
+          width={160}
+          height={45}
+          className="h-auto max-h-12 w-auto"
+          priority
+          onError={(e) => {
+            e.target.src = "https://via.placeholder.com/160x45?text=Logo+Not+Found";
+          }}
+        />
         </Link>
 
         {/* Desktop Navigation */}

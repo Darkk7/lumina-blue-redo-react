@@ -1,23 +1,28 @@
 "use client";
-
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useParams } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
+import { useSiteSettings } from "../../context/SiteSettingsContext";
 import Navbar from "../../pages/Navbar";
 import FooterPage from "../../pages/FooterPage";
-import { useSiteSettings } from "../../context/SiteSettingsContext";
 
 const BlogHomePage = () => {
   const params = useParams();
-  const practiceId = params.practiceId;
+  const pathname = usePathname();
   const { siteSettings } = useSiteSettings();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Extract customer code from URL if present
+  const pathSegments = pathname ? pathname.split('/').filter(Boolean) : [];
+  const isCustomerCodeRoute = pathSegments[0] && !/^\d+$/.test(pathSegments[0]);
+  const customerCode = isCustomerCodeRoute ? pathSegments[0] : null;
+  const practiceId = isCustomerCodeRoute ? siteSettings?.practiceId : params.practiceId;
+
   // Use site settings to get practice-specific data
-  const practiceName = siteSettings?.practice_name || "Image Eye Care";
+  const practiceName = siteSettings?.practice_name || "";
   const primaryColor = siteSettings?.primary_color || "#000000";
 
   useEffect(() => {
@@ -27,22 +32,23 @@ const BlogHomePage = () => {
       try {
         setLoading(true);
         setError(null);
-
-        const response = await fetch(`/api/${practiceId}/blogs`);
+        
+        // Use the correct API endpoint for blogs
+        const response = await fetch(`/api/${customerCode || practiceId}/blogs`);
         
         if (!response.ok) {
-          const errorData = await response.json();
-          console.error('[Blog Page] Error response from API:', errorData);
-          throw new Error(errorData.error || 'Failed to fetch blogs');
+          throw new Error(`Failed to fetch blogs: ${response.statusText}`);
         }
         
-        const blogsData = await response.json();
+        const data = await response.json();
         
-        if (!Array.isArray(blogsData)) {
-          throw new Error('Invalid data format received from server');
+        // Check if the response has the expected format
+        if (!data || !Array.isArray(data)) {
+          console.error('Unexpected API response format:', data);
+          throw new Error('Unexpected response format from server');
         }
         
-        setBlogs(blogsData);
+        setBlogs(data);
       } catch (err) {
         console.error('[Blog Page] Error in fetchBlogs:', err);
         setError(err.message || 'An error occurred while fetching blogs');
