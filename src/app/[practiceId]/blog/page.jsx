@@ -11,7 +11,8 @@ const BlogHomePage = () => {
   const params = useParams();
   const pathname = usePathname();
   const { siteSettings } = useSiteSettings();
-  const [blogs, setBlogs] = useState([]);
+  const [allBlogs, setAllBlogs] = useState([]);
+  const [practiceBlogs, setPracticeBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -27,28 +28,41 @@ const BlogHomePage = () => {
 
   useEffect(() => {
     const fetchBlogs = async () => {
-      if (!practiceId) return;
-      
       try {
         setLoading(true);
         setError(null);
         
-        // Use the correct API endpoint for blogs
-        const response = await fetch(`/api/${customerCode || practiceId}/blogs`);
+        // Fetch all blogs
+        const [allBlogsRes, practiceBlogsRes] = await Promise.all([
+          fetch('https://www.eyecareportal.com/api/blogs'),
+          practiceId ? fetch(`https://www.eyecareportal.com/api/blogs?practice_id=${practiceId}`) : Promise.resolve(null)
+        ]);
         
-        if (!response.ok) {
-          throw new Error(`Failed to fetch blogs: ${response.statusText}`);
+        if (!allBlogsRes.ok) {
+          throw new Error(`Failed to fetch all blogs: ${allBlogsRes.statusText}`);
         }
         
-        const data = await response.json();
+        const allBlogsData = await allBlogsRes.json();
         
         // Check if the response has the expected format
-        if (!data || !Array.isArray(data)) {
-          console.error('Unexpected API response format:', data);
-          throw new Error('Unexpected response format from server');
+        if (!allBlogsData || !Array.isArray(allBlogsData)) {
+          console.error('Unexpected API response format for all blogs:', allBlogsData);
+          throw new Error('Unexpected response format from server for all blogs');
         }
         
-        setBlogs(data);
+        setAllBlogs(allBlogsData);
+        
+        // Process practice-specific blogs if practiceId is available
+        if (practiceId && practiceBlogsRes) {
+          if (!practiceBlogsRes.ok) {
+            console.warn(`Failed to fetch practice blogs: ${practiceBlogsRes.statusText}`);
+          } else {
+            const practiceBlogsData = await practiceBlogsRes.json();
+            if (practiceBlogsData && Array.isArray(practiceBlogsData)) {
+              setPracticeBlogs(practiceBlogsData);
+            }
+          }
+        }
       } catch (err) {
         console.error('[Blog Page] Error in fetchBlogs:', err);
         setError(err.message || 'An error occurred while fetching blogs');
@@ -59,33 +73,42 @@ const BlogHomePage = () => {
     };
 
     fetchBlogs();
-  }, [practiceId]);
+  }, [practiceId, customerCode]);
 
   // Sort blogs by date (newest first)
-  const sortedBlogs = useMemo(() => {
-    if (!Array.isArray(blogs) || blogs.length === 0) return [];
+  const sortedAllBlogs = useMemo(() => {
+    if (!Array.isArray(allBlogs) || allBlogs.length === 0) return [];
+    return [...allBlogs].sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [allBlogs]);
+  
+  const sortedPracticeBlogs = useMemo(() => {
+    if (!Array.isArray(practiceBlogs) || practiceBlogs.length === 0) return [];
+    return [...practiceBlogs].sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [practiceBlogs]);
+  
+  // Combine both blog lists, removing duplicates by ID
+  const allUniqueBlogs = useMemo(() => {
+    const blogMap = new Map();
     
-    // Make a copy of the blogs array to avoid mutating the original
-    const blogsToSort = [...blogs];
+    // First add practice blogs
+    sortedPracticeBlogs.forEach(blog => blog && blog.id && blogMap.set(blog.id, blog));
     
-    // Sort by date (newest first)
-    return blogsToSort.sort((a, b) => new Date(b.date) - new Date(a.date));
-  }, [blogs]);
+    // Then add all blogs (practice blogs will be overwritten if they exist in both)
+    sortedAllBlogs.forEach(blog => blog && blog.id && blogMap.set(blog.id, blog));
+    
+    return Array.from(blogMap.values());
+  }, [sortedPracticeBlogs, sortedAllBlogs]);
   
   // Log the blogs for debugging
   useEffect(() => {
     console.log('Blogs loaded:', {
-      count: sortedBlogs.length,
+      allBlogsCount: sortedAllBlogs.length,
+      practiceBlogsCount: sortedPracticeBlogs.length,
       practiceId,
-      blogs: sortedBlogs.map(b => ({
-        id: b.id,
-        title: b.title,
-        practice_id: b.practice_id,
-        date: b.date,
-        show: b.show
-      }))
+      hasPracticeBlogs: sortedPracticeBlogs.length > 0,
+      uniqueBlogsCount: allUniqueBlogs.length
     });
-  }, [sortedBlogs, practiceId]);
+  }, [sortedAllBlogs, sortedPracticeBlogs, practiceId, allUniqueBlogs.length]);
 
   if (loading) {
     return (
@@ -122,11 +145,62 @@ const BlogHomePage = () => {
     );
   }
 
-  if (sortedBlogs.length === 0) {
+  const renderBlogs = (blogs, title) => {
+    if (!blogs || blogs.length === 0) return null;
+    
+    return (
+      <div className="mb-16">
+        {title && <h2 className="text-3xl font-bold mb-8 text-center">{title}</h2>}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+          {blogs.map((blog) => (
+            <div key={blog.id} className="h-full">
+              <Link href={`/${isCustomerCodeRoute ? customerCode : practiceId}/blog/${blog.id}`}>
+                <div className="bg-white rounded-lg shadow-lg overflow-hidden h-full flex flex-col hover:shadow-xl transition-shadow duration-300">
+                  <div className="relative w-full aspect-[4/3] bg-gray-100">
+                    <Image
+                      src={blog.thumbnail_image?.url || '/placeholder-image.jpg'}
+                      alt={blog.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  </div>
+                  <div className="p-6 flex-1 flex flex-col">
+                    <div className="flex-1">
+                      <span className="text-sm text-gray-500">
+                        {new Date(blog.date).toLocaleDateString('en-GB', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric'
+                        })}
+                      </span>
+                      <h3 className="text-xl font-semibold text-gray-900 mt-2 mb-3">
+                        {blog.title}
+                      </h3>
+                    </div>
+                    <div className="mt-4">
+                      <span className="text-primary font-medium inline-flex items-center">
+                        Read more
+                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+  
+  if (allUniqueBlogs.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600">No blog posts found for {practiceName}.</p>
+          <p className="text-gray-600">No blog posts found.</p>
         </div>
       </div>
     );
@@ -145,47 +219,7 @@ const BlogHomePage = () => {
 
         {/* Blog Cards Section */}
         <div className="container mx-auto py-10 px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-            {sortedBlogs.map((blog) => (
-              <div key={blog.id} className="h-full">
-                <Link href={`/${isCustomerCodeRoute ? customerCode : practiceId}/blog/${blog.id}`}>
-                  <div className="bg-white rounded-lg shadow-lg overflow-hidden h-full flex flex-col hover:shadow-xl transition-shadow duration-300">
-                    <div className="relative w-full aspect-[4/3] bg-gray-100">
-                      <Image
-                        src={blog.thumbnail_image?.url || '/placeholder-image.jpg'}
-                        alt={blog.title}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
-                    </div>
-                    <div className="p-6 flex-1 flex flex-col">
-                      <div className="flex-1">
-                        <span className="text-sm text-gray-500">
-                          {new Date(blog.date).toLocaleDateString('en-GB', {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric'
-                          })}
-                        </span>
-                        <h3 className="text-xl font-semibold text-gray-900 mt-2 mb-3">
-                          {blog.title}
-                        </h3>
-                      </div>
-                      <div className="mt-4">
-                        <span className="text-primary font-medium inline-flex items-center">
-                          Read more
-                          <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                          </svg>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            ))}
-          </div>
+          {renderBlogs(allUniqueBlogs, '')}
         </div>
       </div>
     </>

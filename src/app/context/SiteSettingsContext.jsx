@@ -81,12 +81,32 @@ export function SiteSettingsProvider({ children, initialPracticeId, customerCode
         
         // If we have a customer code, look up the practice ID first
         if (customerCode) {
-          const practiceLookupResponse = await fetch(`/api/practice/by-code/${customerCode}`);
-          if (!practiceLookupResponse.ok) {
-            throw new Error('Practice not found for the provided customer code');
+          try {
+            const practiceLookupResponse = await fetch(`/api/practice/by-code/${customerCode}`);
+            if (!practiceLookupResponse.ok) {
+              console.warn(`Practice not found for customer code: ${customerCode}, using default settings`);
+              // Don't throw error, just use default settings
+              if (isMounted) {
+                setSiteSettings(getSettings(''));
+                setIsLoading(false);
+              }
+              return;
+            }
+            practiceData = await practiceLookupResponse.json();
+            if (practiceData?.id) {
+              setPracticeId(practiceData.id);
+            } else {
+              throw new Error('Invalid practice data received');
+            }
+          } catch (err) {
+            console.error('Error fetching practice data:', err);
+            if (isMounted) {
+              setError('Failed to load practice information. Using default settings.');
+              setSiteSettings(getSettings(''));
+              setIsLoading(false);
+            }
+            return;
           }
-          practiceData = await practiceLookupResponse.json();
-          setPracticeId(practiceData.id);
         }
 
         const effectivePracticeId = practiceData?.id || practiceId;
