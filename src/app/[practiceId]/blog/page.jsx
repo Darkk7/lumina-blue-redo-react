@@ -22,8 +22,8 @@ const BlogHomePage = () => {
   const practiceId = isCustomerCodeRoute ? siteSettings?.practiceId : params.practiceId;
 
   // Use site settings to get practice-specific data
-  const practiceName = siteSettings?.practice_name || "";
-  const primaryColor = siteSettings?.primary_color || "#000000";
+  const practiceName = siteSettings?.name || siteSettings?.practice_name || "";
+  const primaryColor = siteSettings?.primaryColor || "#000000";
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -139,7 +139,7 @@ const BlogHomePage = () => {
         {/* Background Image Section */}
         <div className="w-full h-[500px] bg-[url('https://www.imageeyecareoptometrists.com/assets/info_centre_banner-4940284541b3ff321b2a3d735fc5ef1caa0f4c66de9804905118656edf31c88d.jpg')] bg-cover bg-center text-center text-white">
           <div className="bg-black bg-opacity-50 h-full flex flex-col items-center justify-center p-4">
-            <h1 className="text-5xl font-bold text-white">{practiceName} News Feed</h1>
+            <h1 className="text-5xl font-bold text-white">{practiceName} News Feeds</h1>
           </div>
         </div>
 
@@ -148,7 +148,7 @@ const BlogHomePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             {sortedBlogs.map((blog) => (
               <div key={blog.id} className="h-full">
-                <Link href={`/${practiceId}/blog/${blog.id}`}>
+                <Link href={`/${isCustomerCodeRoute ? customerCode : practiceId}/blog/${blog.id}`}>
                   <div className="bg-white rounded-lg shadow-lg overflow-hidden h-full flex flex-col hover:shadow-xl transition-shadow duration-300">
                     <div className="relative w-full aspect-[4/3] bg-gray-100">
                       <Image
@@ -188,7 +188,6 @@ const BlogHomePage = () => {
           </div>
         </div>
       </div>
-      <FooterPage practiceId={practiceId} />
     </>
   );
 };

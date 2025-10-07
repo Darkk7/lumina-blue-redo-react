@@ -42,8 +42,26 @@ export default function RecentBlogs() {
       try {
         const response = await fetch(`/api/${siteSettings.practiceId}/blogs`);
         if (!response.ok) throw new Error('Failed to fetch blogs');
-        const data = await response.json();
-        const sortedBlogs = data.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4);
+        
+        const responseData = await response.json();
+        
+        // Handle both response formats: { blogs: [...] } or direct array
+        const blogsArray = Array.isArray(responseData) 
+          ? responseData 
+          : (Array.isArray(responseData?.blogs) ? responseData.blogs : []);
+        
+        // Sort by date (newest first) and limit to 4 posts
+        const sortedBlogs = blogsArray
+          .filter(blog => blog?.date) // Ensure blog has a date
+          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .slice(0, 4);
+          
+        console.log('RecentBlogs:', {
+          response: responseData,
+          processed: sortedBlogs,
+          hasBlogsProperty: !!responseData?.blogs
+        });
+        
         setBlogs(sortedBlogs);
       } catch (error) {
         console.error('Error fetching blogs:', error);

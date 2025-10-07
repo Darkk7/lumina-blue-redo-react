@@ -96,40 +96,45 @@ const handleMenuToggle = () => {
 
  
 
-const getLink = (path) => {
-  if (!siteSettings?.practiceId) return path;
-  
-  // Get the current path segments
-  const pathSegments = typeof window !== 'undefined' 
-    ? window.location.pathname.split('/').filter(Boolean)
-    : [];
-  
-  // Check if we're in a customer code route (first segment is not a number)
-  const isCustomerCodeRoute = pathSegments[0] && !/^\d+$/.test(pathSegments[0]);
-  
-  // If we have a customer code in the URL, use it
-  if (isCustomerCodeRoute) {
-    const customerCode = pathSegments[0];
-    return `/${customerCode}${path}`;
-  }
-  
-  // If we have a customer code in siteSettings but not in URL (e.g., during SSR)
-  if (siteSettings.customerCode) {
-    return `/${siteSettings.customerCode}${path}`;
-  }
-  
-  // Default to practiceId if no customer code is found
-  return `/${siteSettings.practiceId}${path}`;
-};
+  const getLink = (path) => {
+    // If we don't have a practice ID, return the path as-is
+    if (!siteSettings?.practiceId) return path;
+    
+    // Get the current path from Next.js router
+    const currentPath = pathname || '';
+    const pathSegments = currentPath.split('/').filter(Boolean);
+    
+    // Check if we're in a customer code route (first segment is not a number)
+    const isCustomerCodeRoute = pathSegments[0] && !/^\d+$/.test(pathSegments[0]);
+    
+    // If we have a customer code in the URL, use it
+    if (isCustomerCodeRoute) {
+      const customerCode = pathSegments[0];
+      return `/${customerCode}${path}`;
+    }
+    
+    // If we have a customer code in siteSettings but not in URL (e.g., during SSR)
+    if (siteSettings.customerCode) {
+      return `/${siteSettings.customerCode}${path}`;
+    }
+    
+    // Default to practiceId if no customer code is found
+    return `/${siteSettings.practiceId}${path}`;
+  };
 
   // Decide whether to show NEWS FEED
   const showNewsFeed = licenseType !== "Comprehensive";
+
+  // Get the primary color from siteSettings or use a default
+  const primaryColor = siteSettings?.primaryColor || 'orange';
+  const textHoverStyle = { '--primary-color': primaryColor };
 
   return (
     <header
       className={`w-full fixed top-0 left-0 z-50 flex justify-between items-center py-4 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 transition-all ${
         isSticky ? "bg-white shadow-lg text-black" : "bg-transparent text-white"
       }`}
+      style={textHoverStyle}
     >
       <div className="flex items-center justify-between w-full">
         {/* Logo */}
@@ -165,39 +170,39 @@ const getLink = (path) => {
 
 
             <li>
-              <Link href={getLink("/")} className="hover:text-primary whitespace-nowrap px-2">
+              <Link href={getLink("/")} className="hover:text-[var(--primary-color)] hover:opacity-80 transition-colors whitespace-nowrap px-2">
                 <b>HOME</b>
               </Link>
             </li>
             <li>
-              <Link href={getLink("/#about")} className="hover:text-primary whitespace-nowrap px-2">
+              <Link href={getLink("/#about")} className="hover:text-[var(--primary-color)] hover:opacity-80 transition-colors whitespace-nowrap px-2">
                 <b>ABOUT</b>
               </Link>
             </li>
             <li>
-              <Link href={getLink("/#services")} className="hover:text-primary whitespace-nowrap px-2">
+              <Link href={getLink("/#services")} className="hover:text-[var(--primary-color)] hover:opacity-80 transition-colors whitespace-nowrap px-2">
                 <b>SERVICES</b>
               </Link>
             </li>
             <li>
-              <Link href={getLink("/#team")} className="hover:text-primary whitespace-nowrap px-2">
+              <Link href={getLink("/#team")} className="hover:text-[var(--primary-color)] hover:opacity-80 transition-colors whitespace-nowrap px-2">
                 <b>TEAM</b>
               </Link>
             </li>
             <li>
-              <Link href={getLink("/#testimonials")} className="hover:text-primary whitespace-nowrap px-2">
+              <Link href={getLink("/#testimonials")} className="hover:text-[var(--primary-color)] hover:opacity-80 transition-colors whitespace-nowrap px-2">
                 <b>FEEDBACK</b>
               </Link>
             </li>
             <li>
-              <Link href={getLink("/info_centre")} className="hover:text-primary whitespace-nowrap px-2">
+              <Link href={getLink("/info_centre")} className="hover:text-[var(--primary-color)] hover:opacity-80 transition-colors whitespace-nowrap px-2">
                 <b>INFO CENTRE</b>
               </Link>
             </li>
 
             {showNewsFeed && (
               <li>
-                <Link href={getLink("/blog")} className="hover:text-primary whitespace-nowrap px-2">
+                <Link href={getLink("/blog")} className="hover:text-[var(--primary-color)] hover:opacity-80 transition-colors whitespace-nowrap px-2">
                   <b>NEWS FEED</b>
                 </Link>
               </li>
@@ -208,7 +213,8 @@ const getLink = (path) => {
             <div className="ml-4">
               <Link
                 href={siteSettings?.booking_url || "#booking"}
-                className="px-4 py-2 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all whitespace-nowrap"
+                className="px-4 py-2 bg-[var(--primary-color)] text-white font-semibold rounded-md hover:bg-white hover:text-[var(--primary-color)] hover:border-[var(--primary-color)] border-2 border-transparent transition-all whitespace-nowrap"
+                style={{ '--primary-color': primaryColor }}
               >
                 MAKE A BOOKING
               </Link>
@@ -233,39 +239,39 @@ const getLink = (path) => {
         <div className="p-6">
           <ul className="flex flex-col space-y-6 text-lg font-medium items-center">
             <li>
-              <Link href={getLink("/")} className="block py-2 hover:text-primary " onClick={handleMenuToggle}>
+              <Link href={getLink("/")} className="block py-2 hover:text-[var(--primary-color)] hover:opacity-80 transition-colors" onClick={handleMenuToggle} style={textHoverStyle}>
                 <b>HOME</b>
               </Link>
             </li>
             <li>
-              <Link href={getLink("/#about")} className="block py-2 hover:text-primary " onClick={handleMenuToggle}>
+              <Link href={getLink("/#about")} className="block py-2 hover:text-[var(--primary-color)] hover:opacity-80 transition-colors" onClick={handleMenuToggle} style={textHoverStyle}>
                 <b>ABOUT</b>
               </Link>
             </li>
             <li>
-              <Link href={getLink("/#services")} className="block py-2 hover:text-primary" onClick={handleMenuToggle}>
+              <Link href={getLink("/#services")} className="block py-2 hover:text-[var(--primary-color)] hover:opacity-80 transition-colors" onClick={handleMenuToggle} style={textHoverStyle}>
                 <b>SERVICES</b>
               </Link>
             </li>
             <li>
-              <Link href={getLink("/#team")} className="block py-2 hover:text-primary" onClick={handleMenuToggle}>
+              <Link href={getLink("/#team")} className="block py-2 hover:text-[var(--primary-color)] hover:opacity-80 transition-colors" onClick={handleMenuToggle} style={textHoverStyle}>
                 <b>TEAM</b>
               </Link>
             </li>
             <li>
-              <Link href={getLink("/#testimonials")} className="block py-2 hover:text-primary" onClick={handleMenuToggle}>
+              <Link href={getLink("/#testimonials")} className="block py-2 hover:text-[var(--primary-color)] hover:opacity-80 transition-colors" onClick={handleMenuToggle} style={textHoverStyle}>
                 <b>FEEDBACK</b>
               </Link>
             </li>
             <li>
-              <Link href={getLink("/info_centre")} className="block py-2 hover:text-primary" onClick={handleMenuToggle}>
+              <Link href={getLink("/info_centre")} className="block py-2 hover:text-[var(--primary-color)] hover:opacity-80 transition-colors" onClick={handleMenuToggle} style={textHoverStyle}>
                 <b>INFO CENTRE</b>
               </Link>
             </li>
 
             {showNewsFeed && (
               <li>
-                <Link href={getLink("/blog")} className="block py-2 hover:text-primary" onClick={handleMenuToggle}>
+                <Link href={getLink("/blog")} className="block py-2 hover:text-[var(--primary-color)] hover:opacity-80 transition-colors" onClick={handleMenuToggle} style={textHoverStyle}>
                   <b>NEWS FEED</b>
                 </Link>
               </li>
@@ -275,7 +281,8 @@ const getLink = (path) => {
               <li className="mt-6">
                 <Link
                   href={siteSettings?.booking_url || "#"}
-                  className="inline-block px-6 py-3 bg-primary text-white font-semibold rounded-md hover:bg-white hover:text-primary hover:border-primary border-2 border-transparent transition-all"
+                  className="inline-block px-6 py-3 bg-[var(--primary-color)] text-white font-semibold rounded-md hover:bg-white hover:text-[var(--primary-color)] hover:border-[var(--primary-color)] border-2 border-transparent transition-all"
+                  style={{ '--primary-color': primaryColor }}
                   onClick={handleMenuToggle}
                 >
                   <b>MAKE A BOOKING</b>

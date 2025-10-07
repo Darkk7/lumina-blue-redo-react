@@ -5,7 +5,6 @@ import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from "../../../pages/Navbar";
-import FooterPage from "../../../pages/FooterPage";
 import { useSiteSettings } from "../../../context/SiteSettingsContext";
 
 const BlogDetail = () => {
@@ -49,11 +48,21 @@ const BlogDetail = () => {
         let recentPostsData = [];
         if (recentResponse.ok) {
           const data = await recentResponse.json();
-          recentPostsData = Array.isArray(data) ? data : (data.posts || []);
+          // Handle both the new format ({ blogs: [...] }) and old format (direct array)
+          const posts = Array.isArray(data) 
+            ? data 
+            : (Array.isArray(data.blogs) ? data.blogs : []);
+          
           // Filter out current post and limit to 4
-          recentPostsData = recentPostsData
-            .filter(post => post.id && post.id.toString() !== blogId.toString())
+          recentPostsData = posts
+            .filter(post => post && post.id && post.id.toString() !== blogId.toString())
             .slice(0, 4);
+            
+          console.log('Recent posts:', {
+            response: data,
+            processed: recentPostsData,
+            blogId
+          });
         }
         
         setBlog(blogData);
@@ -140,8 +149,8 @@ const BlogDetail = () => {
         <div className="container mx-auto pt-0 pb-10 px-4">
           <div className="flex flex-col lg:flex-row gap-8 items-start">
             {/* Main Content */}
-            <div className="lg:w-2/3">              
-              <article className="bg-transparent">
+            <div className="lg:w-2/3 w-full">              
+              <article className="bg-transparent w-full">
                 {/* Blog Header Image */}
                 {blog.header_image?.url && (
                   <div className="relative w-full aspect-video rounded-lg overflow-hidden mb-6">
@@ -238,8 +247,6 @@ const BlogDetail = () => {
           </div>
         </div>
       </main>
-      
-      <FooterPage practiceId={practiceId} />
     </>
   );
 };

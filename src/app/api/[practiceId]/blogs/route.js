@@ -24,33 +24,115 @@ export async function GET(request, { params }) {
   try {
     const { practiceId } = await Promise.resolve(params);
     
-    // Fetch both global and practice blogs in parallel
-    const [globalBlogs, practiceBlogs] = await Promise.all([
-      safeFetch('https://www.eyecareportal.com/api/blogs'),
-      practiceId ? safeFetch(`https://www.eyecareportal.com/api/blogs?practice_id=${practiceId}`) : []
+    // If no practiceId provided, return empty array
+    if (!practiceId) {
+      return NextResponse.json([]);
+    }
+    
+    // Check if practiceId is a number (traditional ID) or a string (customer code)
+    const isNumericId = /^\d+$/.test(practiceId);
+    let effectivePracticeId = practiceId;
+    
+    // Handle customer code lookup if not a numeric ID
+    if (!isNumericId) {
+      const cleanCode = practiceId.replace(/^-+|-+$/g, '').toUpperCase(); // Remove leading/trailing dashes and convert to uppercase
+      
+      try {
+        // Try to fetch practice by customer code from the API
+        const practiceResponse = await fetch(`https://www.eyecareportal.com/api/practices?customer_code=${cleanCode}`);
+        if (practiceResponse.ok) {
+          const practiceData = await practiceResponse.json();
+          if (practiceData && practiceData.length > 0) {
+            effectivePracticeId = practiceData[0].id;
+            console.log(`Resolved customer code ${cleanCode} to practice ID: ${effectivePracticeId}`);
+          } else {
+            console.warn(`No practice found for customer code: ${cleanCode}, will use global blogs only`);
+            // Set to null to skip practice-specific blogs
+            effectivePracticeId = null;
+          }
+        } else {
+          console.warn(`Failed to fetch practice data for code: ${cleanCode}, will use global blogs only`);
+          // Set to null to skip practice-specific blogs
+          effectivePracticeId = null;
+        }
+      } catch (error) {
+        console.error(`Error looking up practice for code ${cleanCode}, will use global blogs only:`, error);
+        // Set to null to skip practice-specific blogs
+        effectivePracticeId = null;
+      }
+    }
+    
+    // Fetch both practice-specific and global blogs in parallel
+    const [practiceBlogs, globalBlogs] = await Promise.all([
+      // Practice-specific blogs (only if we have a valid practice ID)
+      (async () => {
+        if (!effectivePracticeId) {
+          console.log('No valid practice ID, skipping practice-specific blogs');
+          return [];
+        }
+        
+        try {
+          const url = `https://www.eyecareportal.com/api/blogs?practice_id=${effectivePracticeId}`;
+          console.log(`Fetching practice blogs from: ${url}`);
+          const response = await fetch(url, { next: { revalidate: 60 } });
+          console.log(`Practice blog response status: ${response.status}`);
+          
+          if (!response.ok) {
+            console.error(`Failed to fetch practice blogs: ${response.status} ${response.statusText}`);
+            return [];
+          }
+          
+          const data = await response.json();
+          const blogs = Array.isArray(data) ? data : [];
+          console.log(`Found ${blogs.length} practice-specific blogs for practice ${effectivePracticeId}`);
+          return blogs;
+        } catch (e) {
+          console.error('Error fetching practice blogs:', e);
+          return [];
+        }
+      })(),
+      // Global blogs (no practice_id parameter)
+      (async () => {
+        const url = 'https://www.eyecareportal.com/api/blogs';
+        console.log(`Fetching global blogs from: ${url}`);
+        const blogs = await safeFetch(url);
+        console.log(`Found ${blogs.length} global blogs`);
+        return blogs;
+      })()
     ]);
 
-    // Combine both global and practice-specific blogs
-    const allBlogs = [...globalBlogs, ...practiceBlogs];
+    // Combine and deduplicate blogs by ID, keeping practice-specific versions when they exist
+    const blogMap = new Map();
     
-    // Filter out any non-visible blogs
-    const filteredBlogs = allBlogs.filter(blog => {
-      if (!blog) return false;
-      return blog.show === true;
+    // First add all global blogs
+    globalBlogs.forEach(blog => {
+      if (blog && blog.show === true) {
+        blogMap.set(blog.id, {
+          ...blog,
+          isGlobal: true,
+          url: `/${practiceId}/blog/${blog.id}`
+        });
+      }
     });
     
-    // Add URLs to all blogs
-    const blogsWithUrls = filteredBlogs.map(blog => ({
-      ...blog,
-      url: `/${practiceId}/blog/${blog.id}`
-    }));
-
-    // Sort by date (newest first)
-    const sortedBlogs = [...blogsWithUrls].sort((a, b) => {
+    // Then add/override with practice-specific blogs
+    practiceBlogs.forEach(blog => {
+      if (blog && blog.show === true) {
+        blogMap.set(blog.id, {
+          ...blog,
+          isGlobal: false,
+          url: `/${practiceId}/blog/${blog.id}`
+        });
+      }
+    });
+    
+    // Convert back to array and sort by date (newest first)
+    const allBlogs = Array.from(blogMap.values()).sort((a, b) => {
       return new Date(b.date) - new Date(a.date);
     });
-
-    return NextResponse.json(sortedBlogs);
+    
+    console.log(`Final blog count: ${allBlogs.length} (${practiceBlogs.length} practice-specific + ${globalBlogs.length} global)`);
+    return NextResponse.json(allBlogs);
   } catch (error) {
     console.error('[Blogs API] Error:', error);
     // Always return an empty array instead of an error object

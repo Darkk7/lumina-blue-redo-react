@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, usePathname } from 'next/navigation';
 import { useSiteSettings } from '../context/SiteSettingsContext';
 import Link from 'next/link';
+import Navbar from './Navbar';
 
 const InfoCentreListPage = () => {
   const router = useRouter();
@@ -56,8 +57,17 @@ const InfoCentreListPage = () => {
     }
   }, [category]);
 
+  // Function to get the base path (with customer code or practice ID)
+  const getBasePath = () => {
+    if (isCustomerCodeRoute && customerCode) {
+      return `/${customerCode}/info_centre`;
+    }
+    return `/${effectivePracticeId}/info_centre`;
+  };
+
   const handleExplore = (itemId, itemName) => {
-    router.push(`/info_centre/${category}/${itemId}`);
+    const basePath = getBasePath();
+    router.push(`${basePath}/${category}/${itemId}`);
   };
 
   if (loading) {
@@ -76,6 +86,13 @@ const InfoCentreListPage = () => {
     );
   }
 
+  // Get the current path segments to determine if we're using a customer code
+  const pathname = usePathname();
+  const pathSegments = pathname ? pathname.split('/').filter(Boolean) : [];
+  const isCustomerCodeRoute = pathSegments[0] && !/^\d+$/.test(pathSegments[0]);
+  const customerCode = isCustomerCodeRoute ? pathSegments[0] : null;
+  const effectivePracticeId = customerCode || siteSettings?.practiceId;
+
   if (!sectionItems.length && !categoryDetails) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -86,6 +103,7 @@ const InfoCentreListPage = () => {
 
   return (
     <main className="min-h-screen bg-gray-100">
+      <Navbar practiceId={siteSettings?.practiceId} />
       {/* Hero Banner */}
       <div 
         className="w-full h-[500px] bg-cover bg-center text-white"
@@ -107,8 +125,9 @@ const InfoCentreListPage = () => {
             <div className="text-center">
               <div className="text-xl font-medium">
                 <Link
-                  href={`/${siteSettings.practiceId}/info_centre`}
+                  href={getBasePath()}
                   className="text-primary underline hover:text-primary-dark transition-colors duration-200"
+                  style={{ color: siteSettings?.primary_color }}
                 >
                   Back To Info Centre
                 </Link>                
@@ -124,7 +143,7 @@ const InfoCentreListPage = () => {
             {sectionItems.map((item) => (
               <Link
                 key={item.id}
-                href={`/${siteSettings?.practiceId}/info_centre/${category}/${item.id}`}
+                href={`${getBasePath()}/${category}/${item.id}`}
                 className="bg-white rounded-lg shadow-md p-6 block hover:shadow-lg transition-shadow duration-300"
               >
                 <div className="relative h-[200px] w-full mb-4 rounded-lg overflow-hidden">

@@ -1,35 +1,145 @@
 import { NextResponse } from 'next/server';
 
+// Known customer code to practice ID mappings
+const CUSTOMER_CODE_MAP = {
+  'E007': '71',
+  'DEMO': '67',
+  'R003': '173',
+  'D020': '741'
+};
+
 export async function GET(request, { params }) {
-  const { practiceId, blogId } = params;
-  
   try {
-    // First, try to fetch the specific blog directly by ID
-    const response = await fetch(`https://www.eyecareportal.com/api/blogs/${blogId}`, {
+    const { practiceId, blogId } = await Promise.resolve(params);
+    
+    // If no practiceId or blogId provided, return 404
+    if (!practiceId || !blogId) {
+      return NextResponse.json({ error: 'Not Found' }, { status: 404 });
+    }
+    
+    // Check if practiceId is a number (traditional ID) or a string (customer code)
+    const isNumericId = /^\d+$/.test(practiceId);
+    let effectivePracticeId = practiceId;
+    
+    // Handle customer code lookup if not a numeric ID
+    if (!isNumericId) {
+      const cleanCode = practiceId.replace(/^-+|-+$/g, '').toUpperCase();
+      
+      // First check our known mappings
+      if (CUSTOMER_CODE_MAP[cleanCode]) {
+        effectivePracticeId = CUSTOMER_CODE_MAP[cleanCode];
+        console.log(`[Blog Detail] Mapped customer code ${cleanCode} to practice ID: ${effectivePracticeId}`);
+      } else {
+        // Fallback to API lookup for unknown codes
+        try {
+          const practiceResponse = await fetch(`https://www.eyecareportal.com/api/practices?customer_code=${cleanCode}`);
+          if (practiceResponse.ok) {
+            const practiceData = await practiceResponse.json();
+            if (practiceData && practiceData.length > 0) {
+              effectivePracticeId = practiceData[0].id;
+              console.log(`[Blog Detail] Resolved customer code ${cleanCode} to practice ID: ${effectivePracticeId}`);
+            }
+          }
+        } catch (error) {
+          console.error(`[Blog Detail] Error looking up practice for code ${cleanCode}:`, error);
+        }
+      }
+    }
+
+    // Helper function to fetch a blog post with error handling and proper caching
+    const fetchBlogPost = async (url, isPracticeSpecific = false) => {
+      try {
+        const response = await fetch(url, {
+          headers: { 
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300'
+          },
+          next: { revalidate: 60 } // Revalidate every 60 seconds
+        });
+        
+        if (!response.ok) {
+          console.log(`[Blog Detail] ${isPracticeSpecific ? 'Practice-specific' : 'Global'} fetch failed for ${url}: HTTP ${response.status}`);
+          return { success: false, error: `HTTP ${response.status}` };
+        }
+        
+        const data = await response.json();
+        
+        // Ensure we have valid blog data
+        if (!data || (isPracticeSpecific && !data.practice_id)) {
+          console.log(`[Blog Detail] ${isPracticeSpecific ? 'Practice-specific' : 'Global'} blog data is invalid for ${url}`);
+          return { success: false, error: 'Invalid blog data' };
+        }
+        
+        console.log(`[Blog Detail] Successfully fetched ${isPracticeSpecific ? 'practice-specific' : 'global'} blog:`, data.id);
+        return { success: true, data };
+      } catch (error) {
+        console.error(`[Blog Detail] Error fetching ${isPracticeSpecific ? 'practice-specific' : 'global'} blog from ${url}:`, error);
+        return { success: false, error: error.message };
+      }
+    };
+
+    let blog = null;
+    
+    // First, try to fetch practice-specific blog if we have a valid practice ID
+    if (effectivePracticeId && effectivePracticeId !== practiceId) {
+      const practiceBlogUrl = `https://www.eyecareportal.com/api/blogs/${blogId}?practice_id=${effectivePracticeId}`;
+      console.log(`[Blog Detail] Trying practice-specific fetch: ${practiceBlogUrl}`);
+      
+      const practiceResponse = await fetchBlogPost(practiceBlogUrl, true);
+      
+      if (practiceResponse.success && practiceResponse.data) {
+        blog = practiceResponse.data;
+        console.log(`[Blog Detail] Using practice-specific blog: ${blogId} for practice ${effectivePracticeId}`);
+      }
+    }
+    
+    // If no practice-specific blog found, try global
+    if (!blog) {
+      const globalBlogUrl = `https://www.eyecareportal.com/api/blogs/${blogId}`;
+      console.log(`[Blog Detail] No practice-specific blog found, trying global: ${globalBlogUrl}`);
+      
+      const globalResponse = await fetchBlogPost(globalBlogUrl, false);
+      
+      if (globalResponse.success && globalResponse.data) {
+        blog = globalResponse.data;
+        console.log(`[Blog Detail] Using global blog: ${blogId}`);
+      } else {
+        console.warn(`[Blog Detail] Blog ${blogId} not found in any location`);
+        return NextResponse.json(
+          { 
+            error: 'Blog post not found',
+            message: 'The requested blog post could not be found.',
+            status: 404
+          },
+          { 
+            status: 404,
+            headers: {
+              'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=60'
+            }
+          }
+        );
+      }
+    }
+    
+    // If we get here, we have a valid blog post
+    const responseData = {
+      ...blog,
+      // Ensure these fields always exist to prevent hydration mismatches
+      title: blog.title || 'Untitled Blog Post',
+      content: blog.content || '',
+      date: blog.date || new Date().toISOString().split('T')[0],
+      show: blog.show !== false // Default to true if not set
+    };
+
+    // Return the blog post with proper caching and content type headers
+    return NextResponse.json(responseData, {
+      status: 200,
       headers: {
         'Content-Type': 'application/json',
-      },
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        'Vary': 'Accept-Encoding'
+      }
     });
-
-    if (!response.ok) {
-      // If direct fetch fails, fall back to fetching all blogs
-      console.warn(`[Blog Detail API] Direct fetch failed for blog ${blogId}, falling back to full list`);
-      return fetchFromAllBlogs(practiceId, blogId);
-    }
-
-    const blog = await response.json();
-    
-    // Verify the blog is visible and belongs to this practice (or is global)
-    if (!blog || blog.show !== true || 
-        (blog.practice_id && blog.practice_id.toString() !== practiceId)) {
-      console.warn(`[Blog Detail API] Blog ${blogId} not found or not available for practice ${practiceId}`);
-      return NextResponse.json(
-        { error: 'Blog post not found or not available for this practice' },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(blog);
   } catch (error) {
     console.error('[Blog Detail API] Error:', error);
     return NextResponse.json(

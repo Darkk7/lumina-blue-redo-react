@@ -4,7 +4,8 @@ import { NextResponse } from 'next/server';
 const BACKEND_API_URL = 'https://passport.nevadacloud.com';
 
 export async function GET(request, { params }) {
-  const { customerCode } = params;
+  // Await params before destructuring to fix Next.js 13+ warning
+  const { customerCode } = await params;
 
   // Validate customer code format
   if (!customerCode || typeof customerCode !== 'string' || customerCode.trim() === '') {
