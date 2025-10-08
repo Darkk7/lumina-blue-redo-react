@@ -22,7 +22,11 @@ const BlogHomePage = () => {
         }
         
         const data = await response.json();
-        setBlogs(data);
+        // Sort blogs by date in descending order (newest first)
+        const sortedBlogs = Array.isArray(data) 
+          ? data.sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at))
+          : [];
+        setBlogs(sortedBlogs);
       } catch (err) {
         console.error('Error fetching blogs:', err);
         setError(err.message);

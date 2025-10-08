@@ -88,6 +88,21 @@ export default function RecentBlogs() {
     return null;
   }
 
+  // Get the current path segments
+  const pathSegments = typeof window !== 'undefined' 
+    ? window.location.pathname.split('/').filter(Boolean)
+    : [];
+    
+  // Check if we're in a customer code route (first segment is not a number)
+  const isCustomerCodeRoute = pathSegments[0] && !/^\d+$/.test(pathSegments[0]);
+  const customerCode = isCustomerCodeRoute ? pathSegments[0] : null;
+
+  // Determine the base path for links
+  const getBlogPath = (blogId) => {
+    const basePath = isCustomerCodeRoute ? customerCode : siteSettings?.practiceId;
+    return `/${basePath}/blog/${blogId}`;
+  };
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -107,7 +122,7 @@ export default function RecentBlogs() {
               {blogs.map((blog) => (
                 <Link 
                   key={blog.id} 
-                  href={`/${siteSettings?.practiceId}/blog/${blog.id}`}
+                  href={getBlogPath(blog.id)}
                   className="block bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 group w-full max-w-[260px] mx-auto"
                 >
                   <div className="relative h-52 bg-gray-200">
@@ -140,7 +155,7 @@ export default function RecentBlogs() {
 
             <div className="text-center mt-12">
               <Link
-                href="/blog"
+                href={isCustomerCodeRoute ? `/${customerCode}/blog` : `/${siteSettings?.practiceId}/blog`}
                 className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-white hover:text-primary hover:border-primary hover:border-2 md:py-4 md:text-lg md:px-10 transition-colors duration-200"
               >
                 Visit News Feed Page

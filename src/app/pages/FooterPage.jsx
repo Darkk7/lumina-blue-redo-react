@@ -91,15 +91,42 @@ const FooterPage = () => {
     };
   }, [siteSettings?.practiceId, licenseType]);
 
-  const getLink = (path) => {
-    // Get current path to check if we're in a customer code route
+  // State to manage path segments and routing
+  const [routing, setRouting] = useState({
+    isCustomerCodeRoute: false,
+    customerCode: null,
+    isClient: false
+  });
+
+  // Set up client-side routing after mount
+  useEffect(() => {
     const pathSegments = window.location.pathname.split('/').filter(Boolean);
     const isCustomerCodeRoute = pathSegments[0] && !/^\d+$/.test(pathSegments[0]);
     
-    if (isCustomerCodeRoute) {
+    setRouting({
+      isCustomerCodeRoute,
+      customerCode: isCustomerCodeRoute ? pathSegments[0] : null,
+      isClient: true
+    });
+  }, []);
+
+  // Helper function to get the correct blog path
+  const getBlogPath = (blogId) => {
+    if (!routing.isClient) return '#'; // Return a safe default during SSR
+    
+    const basePath = routing.isCustomerCodeRoute 
+      ? routing.customerCode 
+      : siteSettings?.practiceId;
+      
+    return `/${basePath}/blog/${blogId}`;
+  };
+
+  const getLink = (path) => {
+    if (!routing.isClient) return path; // Return path as-is during SSR
+    
+    if (routing.isCustomerCodeRoute && routing.customerCode) {
       // For customer code routes, use the customer code from the URL
-      const customerCode = pathSegments[0];
-      return `/${customerCode}${path}`;
+      return `/${routing.customerCode}${path}`;
     } else if (siteSettings?.practiceId) {
       // For regular practiceId routes
       return `/${siteSettings.practiceId}${path}`;
@@ -202,7 +229,7 @@ const FooterPage = () => {
                   <div className="flex gap-4">
                     {(blog.thumbnail_image?.url || blog.header_image?.url) && (
                       <Link 
-                        href={`/${siteSettings?.practiceId}/blog/${blog.id}`}
+                        href={getBlogPath(blog.id)}
                         className="flex-shrink-0 w-20 h-20 rounded overflow-hidden"
                       >
                         <img
@@ -217,7 +244,7 @@ const FooterPage = () => {
                       </Link>
                     )}
                     <div className="flex-1">
-                      <Link href={`/${siteSettings?.practiceId}/blog/${blog.id}`}>
+                      <Link href={getBlogPath(blog.id)}>
                         <div className="text-[var(--primary-color)] hover:text-white font-medium line-clamp-2 mb-1">
                           {blog.title}
                         </div>

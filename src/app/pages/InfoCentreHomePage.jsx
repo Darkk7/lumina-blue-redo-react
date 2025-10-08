@@ -97,14 +97,10 @@ const InfoCentreHomePage = () => {
             const basePath = isCustomerCodeRoute ? pathSegments[0] : siteSettings?.practiceId;
             
             return (
-              <div key={category.id} className={`flex flex-col md:flex-row ${
-                index % 2 !== 0 ? "md:flex-row-reverse" : ""
-              } items-center gap-8 p-6 rounded-lg shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl ${
-                index % 2 === 1 ? "bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400" : "bg-gradient-to-r from-white via-white to-white"
-              }`}>
-                <div className="w-full flex flex-col md:flex-row items-center gap-8">
-                  {/* Image Section */}
-                  <div className="w-full md:w-1/2">
+              <div key={category.id} className="w-full p-6 rounded-lg shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl">
+                <div className="w-full flex flex-col md:flex-row items-center">
+                  {/* Image Section - Order changes based on index */}
+                  <div className={`w-full md:w-1/2 ${index % 2 !== 0 ? 'md:order-2' : ''} p-4`}>
                     <Link 
                       href={`/${basePath}/info_centre/${category.id}`}
                       onClick={() => handleCategoryClick(category.id)}
@@ -124,8 +120,8 @@ const InfoCentreHomePage = () => {
                     </Link>
                   </div>
 
-                  {/* Text Section */}
-                  <div className="w-full md:w-1/2 text-center md:text-left">
+                  {/* Text Section - Order changes based on index */}
+                  <div className={`w-full md:w-1/2 p-4 text-center md:text-left ${index % 2 !== 0 ? 'md:order-1' : ''}`}>
                     <Link 
                       href={`/${basePath}/info_centre/${category.id}`}
                       onClick={() => handleCategoryClick(category.id)}
