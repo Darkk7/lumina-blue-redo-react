@@ -92,23 +92,16 @@ const FooterPage = () => {
   }, [siteSettings?.practiceId, licenseType]);
 
   const getLink = (path) => {
-    // Check if window is defined (client-side)
-    const isClient = typeof window !== 'undefined';
+    // Get current path to check if we're in a customer code route
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    const isCustomerCodeRoute = pathSegments[0] && !/^\d+$/.test(pathSegments[0]);
     
-    if (isClient) {
-      // Get current path to check if we're in a customer code route
-      const pathSegments = window.location.pathname.split('/').filter(Boolean);
-      const isCustomerCodeRoute = pathSegments[0] && !/^\d+$/.test(pathSegments[0]);
-      
-      if (isCustomerCodeRoute) {
-        // For customer code routes, use the customer code from the URL
-        const customerCode = pathSegments[0];
-        return `/${customerCode}${path}`;
-      }
-    }
-    
-    // Default to using practiceId from siteSettings if available
-    if (siteSettings?.practiceId) {
+    if (isCustomerCodeRoute) {
+      // For customer code routes, use the customer code from the URL
+      const customerCode = pathSegments[0];
+      return `/${customerCode}${path}`;
+    } else if (siteSettings?.practiceId) {
+      // For regular practiceId routes
       return `/${siteSettings.practiceId}${path}`;
     }
     

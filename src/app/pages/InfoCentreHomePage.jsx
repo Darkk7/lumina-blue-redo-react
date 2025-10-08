@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSiteSettings } from "../context/SiteSettingsContext";
 import Navbar from "./Navbar";
-import FooterPage from "./FooterPage";
 
 const InfoCentreHomePage = () => {
   const { siteSettings } = useSiteSettings();
@@ -148,7 +147,6 @@ const InfoCentreHomePage = () => {
         </div>
       </div>
 
-      <FooterPage />
     </div>
   );
 };

@@ -97,8 +97,10 @@ const handleMenuToggle = () => {
  
 
   const getLink = (path) => {
-    // If we don't have a practice ID, return the path as-is
-    if (!siteSettings?.practiceId) return path;
+    // During SSR or if no siteSettings, return path as-is to prevent hydration mismatch
+    if (typeof window === 'undefined' || !siteSettings?.practiceId) {
+      return path;
+    }
     
     // Get the current path from Next.js router
     const currentPath = pathname || '';
