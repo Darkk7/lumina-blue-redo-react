@@ -112,8 +112,7 @@ export default function SubcategoryPage() {
       <div className="space-y-12">
         {content.hasOverview ? (
           // Render Overview content if available
-          <div 
-            className="prose prose-lg max-w-6xl mx-auto text-gray-700 leading-relaxed"
+          <div
             dangerouslySetInnerHTML={{ __html: content.overview }}
           />
         ) : (
@@ -122,7 +121,6 @@ export default function SubcategoryPage() {
             {/* Overview text if available but not using full Overview content */}
             {content.overview && (
               <div
-                className="prose prose-lg max-w-3xl mx-auto text-gray-700 leading-relaxed text-justify"
                 dangerouslySetInnerHTML={{ __html: content.overview }}
               />
             )}
@@ -171,7 +169,6 @@ export default function SubcategoryPage() {
                   <div className="flex flex-col items-center space-y-6">
                     {bodyAttr && (
                       <div
-                        className="prose prose-lg max-w-10xl text-gray-700 leading-relaxed text-justify p-3"
                         dangerouslySetInnerHTML={{ __html: bodyAttr.data }}
                       />
                     )}
