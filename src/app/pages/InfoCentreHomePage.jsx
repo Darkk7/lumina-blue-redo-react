@@ -97,7 +97,7 @@ const InfoCentreHomePage = () => {
             const basePath = isCustomerCodeRoute ? pathSegments[0] : siteSettings?.practiceId;
             
             return (
-              <div key={category.id} className="w-full p-6 rounded-lg shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl">
+              <div key={category.id} className="w-full p-6 bg-white rounded-lg border border-gray-200 shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl">
                 <div className="w-full flex flex-col md:flex-row items-center">
                   {/* Image Section - Order changes based on index */}
                   <div className={`w-full md:w-1/2 ${index % 2 !== 0 ? 'md:order-2' : ''} p-4`}>

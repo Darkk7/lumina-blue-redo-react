@@ -23,7 +23,7 @@ export default function PracticePageClient({ initialData }) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-amber-600 mb-2">Please wait. Your practice website is loading...</h2>
+          <h2 className="text-2xl font-bold text-primary mb-2">Please wait. Your practice website is loading...</h2>
         </div>
       </div>
     );

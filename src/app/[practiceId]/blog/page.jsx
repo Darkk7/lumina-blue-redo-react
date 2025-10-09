@@ -213,7 +213,7 @@ const BlogHomePage = () => {
         {/* Background Image Section */}
         <div className="w-full h-[500px] bg-[url('https://www.imageeyecareoptometrists.com/assets/info_centre_banner-4940284541b3ff321b2a3d735fc5ef1caa0f4c66de9804905118656edf31c88d.jpg')] bg-cover bg-center text-center text-white">
           <div className="bg-black bg-opacity-50 h-full flex flex-col items-center justify-center p-4">
-            <h1 className="text-5xl font-bold text-white">{practiceName} News Feeds</h1>
+            <h1 className="text-5xl font-bold text-white">{practiceName} News Feed</h1>
           </div>
         </div>
 

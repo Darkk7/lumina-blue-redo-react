@@ -103,99 +103,158 @@ export default function SubcategoryPage() {
     fetchContent();
   }, [category, subcategory]);
 
+  const renderReferences = () => {
+    if (!content?.attributes?.some(attr => attr.name.startsWith('Reference.'))) {
+      return null;
+    }
+
+    return (
+      <div className="mt-12 pt-6 border-t border-gray-200">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">References</h3>
+        <ol className="list-decimal list-inside space-y-2 text-gray-700">
+          {content.attributes
+            .filter(attr => attr.name.startsWith('Reference.') && attr.name.endsWith('.Title'))
+            .sort((a, b) => {
+              const numA = parseInt(a.name.match(/Reference\.(\d+)/)[1]);
+              const numB = parseInt(b.name.match(/Reference\.(\d+)/)[1]);
+              return numA - numB;
+            })
+            .map((titleAttr) => {
+              const refNum = titleAttr.name.match(/Reference\.(\d+)/)[1];
+              const urlAttr = content.attributes.find(
+                attr => attr.name === `Reference.${refNum}.Url`
+              );
+              return (
+                <li key={titleAttr.id} className="ml-4 pl-2">
+                  {urlAttr ? (
+                    <a
+                      href={urlAttr.data}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      {titleAttr.data}
+                    </a>
+                  ) : (
+                    <span>{titleAttr.data}</span>
+                  )}
+                </li>
+              );
+            })}
+        </ol>
+      </div>
+    );
+  };
+
   const renderContent = () => {
     if (!content) return null;
     if (loading) return <div className="flex justify-center p-8"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>;
     if (error) return <p className="text-red-600 p-4">{error}</p>;
 
-    return (
-      <div className="space-y-12">
-        {content.hasOverview ? (
-          // Render Overview content if available - with reset-styles class
+    // If we have an overview, use that as the main content
+    if (content.overview) {
+      return (
+        <div className="space-y-12">
           <div 
             className="reset-styles max-w-6xl mx-auto"
             dangerouslySetInnerHTML={{ __html: content.overview }}
           />
-        ) : (
-          // Otherwise render section-based content
-          <>
-            {/* Overview text if available but not using full Overview content */}
-            {content.overview && (
-              <div
-                className="reset-styles max-w-3xl mx-auto text-justify"
-                dangerouslySetInnerHTML={{ __html: content.overview }}
-              />
-            )}
+          {renderReferences()}
+        </div>
+      );
+    }
 
-            {/* Sections */}
-            {content.attributes
-              .filter(attr => attr.name.includes('.') &&
-                            !attr.name.startsWith('Reference.') &&
-                            !['bannerImg', 'Overview'].includes(attr.name))
-              .sort((a, b) => {
-                const getSectionNumber = (name) => {
-                  const match = name.match(/\.(\d+)\./);
-                  return match ? parseInt(match[1]) : 0;
-                };
-                return getSectionNumber(a.name) - getSectionNumber(b.name);
-              })
-              .map((attr, idx, arr) => {
-            const sectionNumber = parseInt(attr.name.split('.')[1]) || 0;
-            if (sectionNumber === 0) return null;
+    // Otherwise, try to find the main content in the attributes
+    const mainContent = content.attributes?.find(attr => 
+      attr.name === 'data' || attr.name === 'body' || attr.name === 'content'
+    );
 
-            const isNewSection = idx === 0 ||
-              (parseInt(arr[idx-1]?.name.split('.')[1]) || 0) !== sectionNumber;
+    if (mainContent?.data) {
+      return (
+        <div className="space-y-8">
+          <div 
+            className="reset-styles max-w-6xl mx-auto"
+            dangerouslySetInnerHTML={{ __html: mainContent.data }}
+          />
+          {renderReferences()}
+        </div>
+      );
+    }
 
-            if (isNewSection) {
-              // Find all attributes for this section
-              const sectionAttrs = content.attributes.filter(a =>
-                a.name.startsWith(`Section.${sectionNumber}.`)
-              );
+    // Fallback to rendering all attributes as a last resort
+    const hasReferences = content.attributes.some(attr => attr.name.startsWith('Reference.'));
+    
+    return (
+      <div className="space-y-12">
+        {/* Render sections */}
+        <div className="space-y-8">
+          {content.attributes
+            .filter(attr => attr.name.includes('.') &&
+                          !attr.name.startsWith('Reference.') &&
+                          !['bannerImg', 'Overview'].includes(attr.name))
+            .sort((a, b) => {
+              const getSectionNumber = (name) => {
+                const match = name.match(/\.(\d+)\./);
+                return match ? parseInt(match[1]) : 0;
+              };
+              return getSectionNumber(a.name) - getSectionNumber(b.name);
+            })
+            .map((attr, idx, arr) => {
+              const sectionNumber = parseInt(attr.name.split('.')[1]) || 0;
+              if (sectionNumber === 0) return null;
 
-              const titleAttr = sectionAttrs.find(a => a.name.endsWith('.Title'));
-              const bodyAttr = sectionAttrs.find(a => a.name.endsWith('.Body'));
-              const imageAttr = sectionAttrs.find(a => a.name.endsWith('.Image'));
+              const isNewSection = idx === 0 ||
+                (parseInt(arr[idx-1]?.name.split('.')[1]) || 0) !== sectionNumber;
 
-              return (
-                <div key={`section-${sectionNumber}`} className="space-y-8">
-                  {/* Section Title */}
-                  {titleAttr && (
-                    <div className="flex justify-center">
-                      <h3 className="inline-block px-1 text-3xl font-bold text-gray-900 pb-2 border-b-2 border-primary">
-                        {titleAttr.data}
-                      </h3>
-                    </div>
-                  )}
+              if (isNewSection) {
+                // Find all attributes for this section
+                const sectionAttrs = content.attributes.filter(a =>
+                  a.name.startsWith(`Section.${sectionNumber}.`)
+                );
 
-                  {/* Section Body + Image */}
-                  <div className="flex flex-col items-center space-y-6">
-                    {bodyAttr && (
-                      <div
-                        className="reset-styles max-w-full p-3"
-                        dangerouslySetInnerHTML={{ __html: bodyAttr.data }}
-                      />
-                    )}
+                const titleAttr = sectionAttrs.find(a => a.name.endsWith('.Title'));
+                const bodyAttr = sectionAttrs.find(a => a.name.endsWith('.Body'));
+                const imageAttr = sectionAttrs.find(a => a.name.endsWith('.Image'));
 
-                    {imageAttr && (
-                      <div className="my-4 flex justify-center">
-                        <img
-                          src={imageAttr.data}
-                          alt=""
-                          className="rounded-lg shadow-md max-w-2xl w-full h-auto object-contain"
-                        />
+                return (
+                  <div key={`section-${sectionNumber}`} className="space-y-8">
+                    {/* Section Title */}
+                    {titleAttr && (
+                      <div className="flex justify-center">
+                        <h3 className="inline-block px-1 text-3xl font-bold text-gray-900 pb-2 border-b-2 border-primary">
+                          {titleAttr.data}
+                        </h3>
                       </div>
                     )}
+
+                    {/* Section Body + Image */}
+                    <div className="flex flex-col items-center space-y-6">
+                      {bodyAttr && (
+                        <div
+                          className="reset-styles max-w-full p-3"
+                          dangerouslySetInnerHTML={{ __html: bodyAttr.data }}
+                        />
+                      )}
+
+                      {imageAttr && (
+                        <div className="my-4 flex justify-center">
+                          <img
+                            src={imageAttr.data}
+                            alt=""
+                            className="rounded-lg shadow-md max-w-2xl w-full h-auto object-contain"
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            }
+                );
+              }
               return null;
             })}
-          </>
-        )}
+        </div>
 
-        {/* References - Show only if not using Overview content or if explicitly included in Overview */}
-        {!content.hasOverview && content.attributes.some(attr => attr.name.startsWith('Reference.')) && (
+        {/* References Section */}
+        {hasReferences && (
           <div className="mt-12 pt-6 border-t border-gray-200">
             <h3 className="text-xl font-bold text-gray-900 mb-4">References</h3>
             <ol className="list-decimal list-inside space-y-2 text-gray-700">

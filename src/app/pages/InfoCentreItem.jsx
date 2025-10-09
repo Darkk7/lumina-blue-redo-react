@@ -87,32 +87,63 @@ const InfoCentreItem = () => {
   });
 
   return (
-    <main className="min-h-screen bg-gray-100">
+    <main style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
       {/* Banner Section */}
       {itemContent.banner && (
         <div 
-          className="w-full h-[400px] bg-cover bg-center text-center text-white relative"
-          style={{ backgroundImage: `url(${itemContent.banner})` }}
+          style={{
+            width: '100%',
+            height: '400px',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            textAlign: 'center',
+            color: 'white',
+            position: 'relative',
+            backgroundImage: `url(${itemContent.banner})`
+          }}
         >
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <h1 className="text-5xl font-bold">{itemContent.title}</h1>
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <h1 style={{ fontSize: '3rem', fontWeight: 'bold' }}>{itemContent.title}</h1>
           </div>
         </div>
       )}
 
       {/* Content Section */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto border-t border-2 border-primary">
+      <div style={{
+        width: '100%',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '3rem 1rem'
+      }}>
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '0.5rem',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          padding: '2rem',
+          margin: '0 auto',
+          borderTop: '2px solid #3b82f6',
+          maxWidth: '64rem'
+        }}>
           {/* Breadcrumb nav */}
-          <div className="mb-8">
-            <div className="text-sm">
-              <Link href="/pages/info_centre" className="text-primary hover:text-primary-dark underline">
+          <div style={{ marginBottom: '2rem' }}>
+            <div style={{ fontSize: '0.875rem' }}>
+              <Link href="/pages/info_centre" style={{ color: '#3b82f6', textDecoration: 'underline' }}>
                 Info Centre
               </Link>
-              <span className="text-primary mx-2">{'>'}</span>
+              <span style={{ color: '#3b82f6', margin: '0 0.5rem' }}>{'>'}</span>
               <Link 
                 href={`/info_centre/${category}`} 
-                className="text-primary hover:text-primary-dark underline"
+                style={{ color: '#3b82f6', textDecoration: 'underline' }}
               >
                 {categoryDetails?.name || 
                   (typeof category === 'string' ? 
@@ -120,30 +151,38 @@ const InfoCentreItem = () => {
                     : String(category)
                   )}
               </Link>
-              <span className="text-primary mx-2">{'>'}</span>
-              <span className="text-gray-600">{itemContent.titleawdaw || 'dwadawd'}</span>
+              <span style={{ color: '#3b82f6', margin: '0 0.5rem' }}>{'>'}</span>
+              <span style={{ color: '#4b5563' }}>{itemContent.title || 'Content'}</span>
             </div>
           </div>
 
           {/* Content Sections */}
-          <div className="space-y-8">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             {sortedAttributes.map(attr => {
               const sectionNumber = parseInt(attr.name.split('.')[1]) || 0;
               if (sectionNumber > 0) {
                 return (
                   <div key={attr.id}>
                     {attr.name.endsWith('.Title') && (
-                      <h2 className="text-2xl font-bold text-black mb-4">{attr.data}</h2>
+                      <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#000', marginBottom: '1rem' }}>
+                        {attr.data}
+                      </h2>
                     )}
                     {attr.name.endsWith('.Body') && (
-                      <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: attr.data }} />
+                      <div style={{ color: '#374151' }} dangerouslySetInnerHTML={{ __html: attr.data }} />
                     )}
                     {attr.name.endsWith('.Image') && (
-                      <div className="relative h-[300px] mb-8 rounded-lg overflow-hidden">
+                      <div style={{
+                        position: 'relative',
+                        height: '300px',
+                        marginBottom: '2rem',
+                        borderRadius: '0.5rem',
+                        overflow: 'hidden'
+                      }}>
                         <img
                           src={attr.data}
                           alt="Section Image"
-                          className="w-full h-full object-cover"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       </div>
                     )}
@@ -155,23 +194,24 @@ const InfoCentreItem = () => {
 
             {/* References */}
             {sortedAttributes.find(attr => attr.name === 'Reference.1.Title') && (
-              <div className="mt-8 border-t pt-8">
-                <h3 className="text-xl font-semibold mb-4">References</h3>
-                <div className="space-y-4">
+              <div style={{ marginTop: '2rem', borderTop: '1px solid #e5e7eb', paddingTop: '2rem' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>References</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   {sortedAttributes
                     .filter(attr => attr.name.startsWith('Reference.') && attr.name.endsWith('.Title'))
                     .map((titleAttr, index) => {
+                      const refNum = titleAttr.name.match(/Reference\.(\d+)/)[1];
                       const urlAttr = sortedAttributes.find(
-                        attr => attr.name === titleAttr.name.replace('.Title', '.Url')
+                        attr => attr.name === `Reference.${refNum}.Url`
                       );
                       return (
-                        <div key={titleAttr.id} className="flex items-center">
-                          <span className="text-gray-600">{index + 1}. </span>
+                        <div key={titleAttr.id} style={{ display: 'flex', alignItems: 'center' }}>
+                          <span style={{ color: '#4b5563' }}>{index + 1}. </span>
                           <a
                             href={urlAttr?.data}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 hover:text-blue-800 ml-2"
+                            style={{ color: '#2563eb', marginLeft: '0.5rem' }}
                           >
                             {titleAttr.data}
                           </a>

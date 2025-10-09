@@ -291,7 +291,7 @@ const handleMenuToggle = () => {
             )}
           </ul>
         </div>
-      </div>
+      </div> 
     </header>
   );
 };

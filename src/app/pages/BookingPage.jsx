@@ -507,23 +507,64 @@ const BookingPage = () => {
                     <h5 className="text-xl font-medium text-primary mb-2">Trading Hours</h5>
                     <ul className="space-y-1">
                       {siteSettings.working_hours.map((schedule, index) => {
-                        const days = schedule.days;
-                        let displayDays = '';
-
-                        if (days.includes(0) && days.includes(1) && days.includes(2) && days.includes(3) && days.includes(4)) {
-                          displayDays = 'Monday - Friday';
-                        } else if (days.includes(5)) {
-                          displayDays = 'Saturday';
-                        } else if (days.includes(6)) {
-                          displayDays = 'Sunday';
+                        
+                        const dayDisplayMap = {
+                          'Monday': 'Week Days',
+                          'Tuesday': 'Week Days',
+                          'Wednesday': 'Week Days',
+                          'Thursday': 'Week Days',
+                          'Friday': 'Friday',
+                          'Saturday': 'Saturday',
+                          'Sunday': 'Sunday',
+                          'Public Holidays': 'Public Holidays'
+                        };
+                        
+                        // Get the days string and split it into an array
+                        const daysString = schedule.days || '';
+                        const daysArray = daysString.split(',').map(day => day.trim());
+                        
+                        // Determine the display text based on the days
+                        let displayText = '';
+                        
+                        // Check for weekdays (Monday-Thursday)
+                        if (daysArray.includes('Monday') && 
+                            daysArray.includes('Tuesday') && 
+                            daysArray.includes('Wednesday') && 
+                            daysArray.includes('Thursday') && 
+                            !daysArray.includes('Friday') && 
+                            daysArray.length === 4) {
+                          displayText = 'Week Days';
+                        } 
+                        // Check for Monday-Friday
+                        else if (daysArray.includes('Monday') && 
+                               daysArray.includes('Tuesday') && 
+                               daysArray.includes('Wednesday') && 
+                               daysArray.includes('Thursday') && 
+                               daysArray.includes('Friday') && 
+                               daysArray.length === 5) {
+                          displayText = 'Week Days';
                         }
-                        else if (days.includes(7)) {
-                          displayDays = 'Public Holidays';
+                        // For single days
+                        else if (daysArray.length === 1) {
+                          displayText = daysArray[0];
                         }
-
+                        // For Friday only
+                        else if (daysArray.length === 1 && daysArray[0] === 'Friday') {
+                          displayText = 'Friday';
+                        }
+                        // For any other combination, join with commas
+                        else {
+                          displayText = daysArray.join(', ');
+                        }
+                        
+                        // Format the time range
+                        const timeRange = schedule.open !== false 
+                          ? `${schedule.start || '00:00'} - ${schedule.end || '00:00'}`
+                          : 'Closed';
+                        
                         return (
                           <li key={index} className="text-gray-600">
-                            {schedule.open ? `${displayDays}: ${schedule.start} - ${schedule.end}` : `${displayDays}: Closed`}
+                            {displayText ? `${displayText}: ` : ''}{timeRange}
                           </li>
                         );
                       })}

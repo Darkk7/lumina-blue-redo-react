@@ -67,15 +67,12 @@ export async function GET(request, { params }) {
       // Practice-specific blogs (only if we have a valid practice ID)
       (async () => {
         if (!effectivePracticeId) {
-          console.log('No valid practice ID, skipping practice-specific blogs');
           return [];
         }
         
         try {
           const url = `https://www.eyecareportal.com/api/blogs?practice_id=${effectivePracticeId}`;
-          console.log(`Fetching practice blogs from: ${url}`);
           const response = await fetch(url, { next: { revalidate: 60 } });
-          console.log(`Practice blog response status: ${response.status}`);
           
           if (!response.ok) {
             console.error(`Failed to fetch practice blogs: ${response.status} ${response.statusText}`);
@@ -84,7 +81,6 @@ export async function GET(request, { params }) {
           
           const data = await response.json();
           const blogs = Array.isArray(data) ? data : [];
-          console.log(`Found ${blogs.length} practice-specific blogs for practice ${effectivePracticeId}`);
           return blogs;
         } catch (e) {
           console.error('Error fetching practice blogs:', e);
@@ -94,9 +90,7 @@ export async function GET(request, { params }) {
       // Global blogs (no practice_id parameter)
       (async () => {
         const url = 'https://www.eyecareportal.com/api/blogs';
-        console.log(`Fetching global blogs from: ${url}`);
         const blogs = await safeFetch(url);
-        console.log(`Found ${blogs.length} global blogs`);
         return blogs;
       })()
     ]);
@@ -131,7 +125,6 @@ export async function GET(request, { params }) {
       return new Date(b.date) - new Date(a.date);
     });
     
-    console.log(`Final blog count: ${allBlogs.length} (${practiceBlogs.length} practice-specific + ${globalBlogs.length} global)`);
     return NextResponse.json(allBlogs);
   } catch (error) {
     console.error('[Blogs API] Error:', error);
