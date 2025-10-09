@@ -66,8 +66,14 @@ export default function SubcategoryPage() {
           
           if (attr.data && typeof attr.data === 'string') {
             let modifiedData = attr.data.replace(/src=["']([^"']+)["']/g, (match, src) => {
+              // If it's already a full URL, leave it as is
+              if (src.startsWith('http')) {
+                return match;
+              }
+              // Otherwise, use the full path from the API
+              const baseUrl = 'https://ocumail-content.s3.eu-west-2.amazonaws.com';
               const filename = src.split('/').pop().split('\\').pop();
-              return `src="/images/Body/${filename}"`;
+              return `src="${baseUrl}/${filename}"`;
             });
             return { ...attr, data: modifiedData };
           }
@@ -429,7 +435,7 @@ export default function SubcategoryPage() {
             </div>
 
             {/* Main Content with SimonPage styling */}
-            <div className="bg-white rounded-lg shadow-lg p-4 max-w-5xl mx-auto border-2 border-gray-500">
+            <div className="bg-white rounded-lg shadow-lg p-8 sm:p-10 max-w-5xl mx-auto border-2 border-gray-500">
               {loading ? (
                 <div className="flex justify-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>

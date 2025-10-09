@@ -73,7 +73,7 @@ const ConnectWithUsPage = ({ practiceId }) => {
 
       {typeof siteSettings.whatsapp_tel === 'string' && siteSettings.whatsapp_tel.trim() !== "" && (
         <a
-          href={siteSettings.whatsapp_tel}
+          href={`https://wa.me/${siteSettings.whatsapp_tel.replace(/[^0-9]/g, '')}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-5xl text-primary hover:text-primary transition-transform duration-200 hover:scale-110"

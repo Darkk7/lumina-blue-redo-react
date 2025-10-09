@@ -7,7 +7,6 @@ import FooterPage from '../../pages/FooterPage';
 export default function InfoCentreLayout({ children, params }) {
   const resolvedParams = use(params);
   
-  // Check if the practiceId is actually a customer code (contains letters)
   const isCustomerCode = /[a-zA-Z]/.test(resolvedParams.practiceId);
   
   return (

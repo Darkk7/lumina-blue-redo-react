@@ -89,7 +89,7 @@ export default function PaiaManualPage() {
             {/* 1. Introduction */}
             <section className="mb-12">
               <h2 className="text-2xl font-bold text-[var(--primary-color)] mb-4 border-b border-gray-300 pb-2">
-                1. Introduction
+                1. Introductionawd
               </h2>
               <p className="text-gray-800 leading-relaxed">
                 The Promotion of Access to Information Act, No. 2 of 2000 (PAIA)

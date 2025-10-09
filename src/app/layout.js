@@ -5,6 +5,7 @@ import "./globals.css";
 import { SiteSettingsProvider, useSiteSettings } from './context/SiteSettingsContext';
 import { useState, useEffect } from "react";
 import Head from "next/head";
+import WhatsAppButton from '../components/WhatsAppButton';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,8 +37,9 @@ function LayoutContent({ children }) {
       </Head>
       
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen w-full`}>
-        <main className="flex-grow w-full">
+        <main className="flex-grow w-full relative">
           {children}
+          <WhatsAppButton />
         </main>
       </body>
     </html>

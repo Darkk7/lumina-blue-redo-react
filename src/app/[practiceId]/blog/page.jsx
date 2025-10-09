@@ -86,7 +86,7 @@ const BlogHomePage = () => {
     return [...practiceBlogs].sort((a, b) => new Date(b.date) - new Date(a.date));
   }, [practiceBlogs]);
   
-  // Combine both blog lists, removing duplicates by ID
+  // Combine both blog lists, removing duplicates by ID and sort by date (newest first)
   const allUniqueBlogs = useMemo(() => {
     const blogMap = new Map();
     
@@ -96,7 +96,13 @@ const BlogHomePage = () => {
     // Then add all blogs (practice blogs will be overwritten if they exist in both)
     sortedAllBlogs.forEach(blog => blog && blog.id && blogMap.set(blog.id, blog));
     
-    return Array.from(blogMap.values());
+    // Convert to array and sort by date (newest first)
+    return Array.from(blogMap.values()).sort((a, b) => {
+      // Handle cases where date might be missing or invalid
+      const dateA = a.date ? new Date(a.date) : new Date(0);
+      const dateB = b.date ? new Date(b.date) : new Date(0);
+      return dateB - dateA; // Sort in descending order (newest first)
+    });
   }, [sortedPracticeBlogs, sortedAllBlogs]);
   
   // Log the blogs for debugging
