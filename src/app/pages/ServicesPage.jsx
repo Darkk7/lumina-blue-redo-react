@@ -142,7 +142,7 @@ const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsM
   {renderVisual()}
   <div className="flex flex-col flex-grow w-full">
     <h3 className="text-2xl font-semibold text-black mb-3">{title}</h3>
-    <div className={`w-full transition-all duration-200 flex-grow ${!isExpanded && isLongDescription ? 'line-clamp-3' : ''} ${className}`}>
+    <div className={`w-full transition-all duration-200 flex-grow ${!isExpanded && isLongDescription ? 'line-clamp-2' : ''} ${className}`}>
       {description}
     </div>
   </div>
