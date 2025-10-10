@@ -13,17 +13,11 @@ const PracticePageClient = dynamic(
   { ssr: false }
 );
 
-// Function to check if the identifier is a customer code
-// Could be in format -DEMO- or alphanumeric like E007
 function isCustomerCode(identifier) {
-  // Check if it's in the format -DEMO- (starts and ends with a dash)
   if (/^-.+-$/.test(identifier)) return true;
   
-  // Check if it's alphanumeric (letters and numbers only, no spaces or special chars)
   if (/^[a-zA-Z0-9]+$/.test(identifier)) {
-    // If it's all digits, it's more likely a practice ID
     if (/^\d+$/.test(identifier)) return false;
-    // Otherwise, treat it as a customer code
     return true;
   }
   

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from "../../../pages/Navbar";
 import { useSiteSettings } from "../../../context/SiteSettingsContext";
+import { getProxiedImageUrl } from '../../../../utils/imageProxy';
 
 const BlogDetail = () => {
   const params = useParams();
@@ -28,7 +29,6 @@ const BlogDetail = () => {
         setLoading(true);
         setError(null);
         
-        // Fetch blog post and recent posts in parallel
         const [blogResponse, recentResponse] = await Promise.all([
           fetch(`/api/${practiceId}/blogs/${blogId}`),
           fetch(`/api/${practiceId}/blogs?limit=5`)
@@ -44,25 +44,17 @@ const BlogDetail = () => {
           throw new Error('Blog post not found');
         }
         
-        // Get recent posts (excluding current post)
         let recentPostsData = [];
         if (recentResponse.ok) {
           const data = await recentResponse.json();
-          // Handle both the new format ({ blogs: [...] }) and old format (direct array)
           const posts = Array.isArray(data) 
             ? data 
             : (Array.isArray(data.blogs) ? data.blogs : []);
           
-          // Filter out current post and limit to 4
           recentPostsData = posts
             .filter(post => post && post.id && post.id.toString() !== blogId.toString())
-            .slice(0, 4);
-            
-          console.log('Recent posts:', {
-            response: data,
-            processed: recentPostsData,
-            blogId
-          });
+            .slice(0, 4);            
+          
         }
         
         setBlog(blogData);
@@ -84,7 +76,6 @@ const BlogDetail = () => {
         <div className="text-center">
           <div 
             className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 mx-auto mb-4"
-            style={{ borderColor: primaryColor }}
           ></div>
           <p className="text-gray-600">Loading blog post...</p>
         </div>
@@ -101,7 +92,6 @@ const BlogDetail = () => {
           <button
             onClick={() => router.push(`/${practiceId}/blog`)}
             className="px-6 py-2 rounded text-white hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: primaryColor }}
           >
             Back to Blog
           </button>
@@ -119,7 +109,6 @@ const BlogDetail = () => {
           <Link 
             href={`/${practiceId}/blog`}
             className="px-6 py-2 rounded text-white hover:opacity-90 transition-opacity inline-block"
-            style={{ backgroundColor: primaryColor }}
           >
             Back to Blog
           </Link>
@@ -155,10 +144,10 @@ const BlogDetail = () => {
                 {blog.header_image?.url && (
                   <div className="relative w-full aspect-video rounded-lg overflow-hidden mb-6">
                     <Image
-                      src={blog.header_image.url}
+                      src={getProxiedImageUrl(blog.header_image.url)}
                       alt={blog.title}
                       fill
-                      className="object-cover"
+                      className="object-contain"
                       priority
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 75vw"
                     />
@@ -185,7 +174,7 @@ const BlogDetail = () => {
             {/* Recent Posts Sidebar */}
             <div className="lg:w-64 mt-8 lg:mt-0 lg:ml-8 h-full">
               <div className="bg-white p-4 rounded-lg shadow-md border border-gray-200 h-full flex flex-col">
-                <h3 className="text-xl font-bold mb-6 text-gray-900 border-b pb-2">Recent Posts</h3>
+                <h3 className="text-xl text-center font-bold mb-6 text-gray-900 border-b pb-2">Recent Posts</h3>
                 
                 {recentPosts.length > 0 ? (
                   <ul className="space-y-8 flex-1">
@@ -199,10 +188,10 @@ const BlogDetail = () => {
                             {post.thumbnail_image?.url ? (
                               <div className="relative w-full h-32 rounded-lg overflow-hidden mb-2">
                                 <Image
-                                  src={post.thumbnail_image?.url || post.header_image?.url}
+                                  src={getProxiedImageUrl(post.thumbnail_image?.url || post.header_image?.url)}
                                   alt={post.title || 'Blog post thumbnail'}
                                   fill
-                                  className="object-cover group-hover:opacity-90 transition-opacity"
+                                  className="object-contain group-hover:opacity-90 transition-opacity"
                                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 />
                               </div>
@@ -213,12 +202,12 @@ const BlogDetail = () => {
                                 </svg>
                               </div>
                             )}
-                            <h4 className="text-sm font-medium text-gray-900 group-hover:text-primary transition-colors line-clamp-2"
+                            <h4 className="text-sm font-medium text-center text-gray-900 group-hover:text-primary transition-colors line-clamp-2"
                                 style={{ '--tw-text-opacity': 1, color: `${primaryColor} !important` }}
                             >
                               {post.title}
                             </h4>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-center text-gray-500">
                               {formatDate(post.date || post.created_at)}
                             </p>
                           </div>
@@ -228,20 +217,8 @@ const BlogDetail = () => {
                   </ul>
                 ) : (
                   <p className="text-gray-500 text-sm">No recent posts found.</p>
-                )}
+                )}                
                 
-                <div className="mt-6">
-                  <Link 
-                    href={`/${practiceId}/blog`}
-                    className="inline-flex items-center font-medium hover:underline"
-                    style={{ color: primaryColor }}
-                  >
-                    View All Posts
-                    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
               </div>
             </div>
           </div>

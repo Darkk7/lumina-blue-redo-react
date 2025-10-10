@@ -734,7 +734,7 @@ const BookingPage = () => {
                                       ? formData.timeSlot === slot.time
                                         ? 'bg-primary text-white border-primary hover:bg-primary-dark'
                                         : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-50 hover:border-primary'
-                                      : 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                                      : 'bg-gray-100 text-gray-700 border-gray-200 cursor-not-allowed opacity-70 hover:opacity-100'
                                   }`}
                                 >
                                   {slot.time}

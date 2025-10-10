@@ -89,7 +89,7 @@ export default function PaiaManualPage() {
             {/* 1. Introduction */}
             <section className="mb-12">
               <h2 className="text-2xl font-bold text-[var(--primary-color)] mb-4 border-b border-gray-300 pb-2">
-                1. Introductionawd
+                1. Introduction
               </h2>
               <p className="text-gray-800 leading-relaxed">
                 The Promotion of Access to Information Act, No. 2 of 2000 (PAIA)
@@ -124,47 +124,7 @@ export default function PaiaManualPage() {
                     <p className="text-gray-700">
                       <strong>Email:</strong> {siteSettings?.email}
                     </p>
-                  </div>
-
-                  {/* Right column */}
-                  <div className="space-y-1">
-                    
-                    <div>
-                      <p className="text-gray-700 font-semibold mb-1">
-                        Business Hours:
-                      </p>
-                      <ul className="space-y-1">
-                        {siteSettings.working_hours.map((schedule, index) => {
-                          const days = schedule.days;
-                          let displayDays = "";
-
-                          if (
-                            days.includes(0) &&
-                            days.includes(1) &&
-                            days.includes(2) &&
-                            days.includes(3) &&
-                            days.includes(4)
-                          ) {
-                            displayDays = "Monday - Friday";
-                          } else if (days.includes(5)) {
-                            displayDays = "Saturday";
-                          } else if (days.includes(6)) {
-                            displayDays = "Sunday";
-                          } else if (days.includes(7)) {
-                            displayDays = "Public Holidays";
-                          }
-
-                          return (
-                            <li key={index} className="text-gray-700">
-                              {schedule.open
-                                ? `${displayDays}: ${schedule.start} - ${schedule.end}`
-                                : `${displayDays}: Closed`}
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  </div>
+                  </div>                  
                 </div>
               </section>
             </section>

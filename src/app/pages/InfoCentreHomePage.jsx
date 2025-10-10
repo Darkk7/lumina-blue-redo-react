@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useSiteSettings } from "../context/SiteSettingsContext";
 import Navbar from "./Navbar";
 
+// Fallback image URL
+const FALLBACK_IMAGE = 'https://via.placeholder.com/800x500.png?text=Image+Not+Available';
+
 const InfoCentreHomePage = () => {
   const { siteSettings } = useSiteSettings();
   const [categories, setCategories] = useState([]);
@@ -109,11 +112,17 @@ const InfoCentreHomePage = () => {
                       <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-md">
                         {category.thumbnailImgUrl && (
                           <Image
-                            src={category.thumbnailImgUrl}
+                            src={category.thumbnailImgUrl || FALLBACK_IMAGE}
                             alt={category.name}
                             layout="fill"
                             className="object-cover transition-transform duration-300 transform hover:scale-110"
                             priority
+                            onError={(e) => {
+                              // Prevent infinite loop by setting a flag
+                              if (e.target.src !== FALLBACK_IMAGE) {
+                                e.target.src = FALLBACK_IMAGE;
+                              }
+                            }}
                           />
                         )}
                       </div>

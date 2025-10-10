@@ -8,8 +8,8 @@ module.exports = {
   theme: {
     extend: {
       screens:{
-        navfix1: '1066px', // first crunch point
-        navfix2:'1212px', // navbar breakpoint
+        navfix1: '1066px',
+        navfix2:'1212px',
       },
       borderRadius: {
         'lg': '2.0rem',

@@ -8,9 +8,11 @@ const ReviewCard = ({ image, title, comments, className = "" }) => (
   <div className={`h-full ${className}`}>
     <div className="bg-white p-8 rounded-xl shadow-md h-full flex flex-col transition-all duration-300 hover:shadow-lg">
       {/* Testimonial Text at the top */}
-      <p className="text-gray-600 text-center mb-10 flex-1 text-lg leading-relaxed flex items-center">
-        <span className="inline-block">"{comments}"</span>
-      </p>
+      <div className="min-h-[180px] mb-6 flex items-start">
+        <p className="text-gray-600 text-center text-lg leading-relaxed line-clamp-5 overflow-hidden text-ellipsis">
+          "{comments}"
+        </p>
+      </div>
       
       {/* Image in the middle */}
       <div className="relative w-28 h-28 mx-auto mb-8">
@@ -38,6 +40,9 @@ const ReviewCard = ({ image, title, comments, className = "" }) => (
 const TestimonialsPage = () => {
   const { siteSettings, isLoading, error } = useSiteSettings();
   const [currentReviews, setCurrentReviews] = useState([]);
+  const [isVisible, setIsVisible] = useState(true);
+  const intervalRef = useRef(null);
+  const containerRef = useRef(null);
   
   // Get all available reviews
   const allReviews = useMemo(() => {
@@ -50,6 +55,30 @@ const TestimonialsPage = () => {
     const shuffled = [...allReviews].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, 4);
   }, [allReviews]);
+
+  // Set up intersection observer to pause animation when not in view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+      }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, []);
 
   // Set up the interval to cycle through reviews
   useEffect(() => {
@@ -64,14 +93,27 @@ const TestimonialsPage = () => {
     };
 
     // Initial set of reviews
-    setCurrentReviews(getRandomReviews());
+    if (currentReviews.length === 0) {
+      setCurrentReviews(getRandomReviews());
+    }
     
-    // Set up interval for cycling (every 7 seconds)
-    const interval = setInterval(cycleReviews, 7000);
+    // Clear any existing interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    
+    // Only set interval if component is visible
+    if (isVisible) {
+      intervalRef.current = setInterval(cycleReviews, 7000);
+    }
     
     // Clean up
-    return () => clearInterval(interval);
-  }, [allReviews, getRandomReviews]);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [allReviews, getRandomReviews, isVisible]);
 
   return (
     <div className="w-full">
@@ -86,7 +128,7 @@ const TestimonialsPage = () => {
       </div>
       
       {/* Testimonials Section */}
-      <section className="w-full py-20 px-4 bg-gray-50 -mt-48">
+      <section ref={containerRef} className="w-full py-20 px-4 bg-gray-50 -mt-48">
         <div className="max-w-7xl mx-auto">
           <div className="relative">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[400px]">

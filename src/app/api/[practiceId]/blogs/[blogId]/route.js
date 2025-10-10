@@ -28,7 +28,6 @@ export async function GET(request, { params }) {
       // First check our known mappings
       if (CUSTOMER_CODE_MAP[cleanCode]) {
         effectivePracticeId = CUSTOMER_CODE_MAP[cleanCode];
-        console.log(`[Blog Detail] Mapped customer code ${cleanCode} to practice ID: ${effectivePracticeId}`);
       } else {
         // Fallback to API lookup for unknown codes
         try {
@@ -37,7 +36,6 @@ export async function GET(request, { params }) {
             const practiceData = await practiceResponse.json();
             if (practiceData && practiceData.length > 0) {
               effectivePracticeId = practiceData[0].id;
-              console.log(`[Blog Detail] Resolved customer code ${cleanCode} to practice ID: ${effectivePracticeId}`);
             }
           }
         } catch (error) {
@@ -58,7 +56,6 @@ export async function GET(request, { params }) {
         });
         
         if (!response.ok) {
-          console.log(`[Blog Detail] ${isPracticeSpecific ? 'Practice-specific' : 'Global'} fetch failed for ${url}: HTTP ${response.status}`);
           return { success: false, error: `HTTP ${response.status}` };
         }
         
@@ -66,11 +63,9 @@ export async function GET(request, { params }) {
         
         // Ensure we have valid blog data
         if (!data || (isPracticeSpecific && !data.practice_id)) {
-          console.log(`[Blog Detail] ${isPracticeSpecific ? 'Practice-specific' : 'Global'} blog data is invalid for ${url}`);
           return { success: false, error: 'Invalid blog data' };
         }
         
-        console.log(`[Blog Detail] Successfully fetched ${isPracticeSpecific ? 'practice-specific' : 'global'} blog:`, data.id);
         return { success: true, data };
       } catch (error) {
         console.error(`[Blog Detail] Error fetching ${isPracticeSpecific ? 'practice-specific' : 'global'} blog from ${url}:`, error);
@@ -83,28 +78,23 @@ export async function GET(request, { params }) {
     // First, try to fetch practice-specific blog if we have a valid practice ID
     if (effectivePracticeId && effectivePracticeId !== practiceId) {
       const practiceBlogUrl = `https://www.eyecareportal.com/api/blogs/${blogId}?practice_id=${effectivePracticeId}`;
-      console.log(`[Blog Detail] Trying practice-specific fetch: ${practiceBlogUrl}`);
       
       const practiceResponse = await fetchBlogPost(practiceBlogUrl, true);
       
       if (practiceResponse.success && practiceResponse.data) {
         blog = practiceResponse.data;
-        console.log(`[Blog Detail] Using practice-specific blog: ${blogId} for practice ${effectivePracticeId}`);
       }
     }
     
     // If no practice-specific blog found, try global
     if (!blog) {
       const globalBlogUrl = `https://www.eyecareportal.com/api/blogs/${blogId}`;
-      console.log(`[Blog Detail] No practice-specific blog found, trying global: ${globalBlogUrl}`);
       
       const globalResponse = await fetchBlogPost(globalBlogUrl, false);
       
       if (globalResponse.success && globalResponse.data) {
         blog = globalResponse.data;
-        console.log(`[Blog Detail] Using global blog: ${blogId}`);
       } else {
-        console.warn(`[Blog Detail] Blog ${blogId} not found in any location`);
         return NextResponse.json(
           { 
             error: 'Blog post not found',
