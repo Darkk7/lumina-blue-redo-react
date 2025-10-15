@@ -133,10 +133,9 @@ const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsM
   const isLongDescription = description && description.length > 100;
 
   return (
-  <div className="group relative bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-shadow border-primary duration-300 h-full overflow-hidden">
-
+<div className="group relative bg-white p-6 rounded-xl shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300 h-full overflow-hidden">
   {/* Animated border */}
-  <div className="absolute inset-0 rounded-lg border-2 border-transparent group-hover:border-primary transition-all duration-300 pointer-events-none"></div>
+  <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-primary transition-all duration-300 pointer-events-none"></div>
 
   {renderVisual()}
   <div className="flex flex-col flex-grow w-full">

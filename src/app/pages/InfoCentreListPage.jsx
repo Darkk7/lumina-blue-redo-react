@@ -168,14 +168,15 @@ const InfoCentreListPage = () => {
                 </div>
                 <h2 className="text-2xl font-bold text-black mb-4">{item.name}</h2>
                 <p
-                  className="text-gray-600 mb-4"
+                  className="text-gray-600 mb-4 line-clamp-2"
                   style={{
                     display: '-webkit-box',
-                    WebkitLineClamp: 3,
+                    WebkitLineClamp: 2,
                     WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'normal',
+                    lineClamp: '2',
                   }}
                 >
                   {item.body}

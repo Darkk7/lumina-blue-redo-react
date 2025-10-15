@@ -67,8 +67,8 @@ const InfoCentreHomePage = () => {
 
   const getCategoryDescription = (categoryName) => {
     const descriptions = {
-      'Refractive conditions': 'Unlock the mystery of blurry vision! Discover how nearsightedness, farsightedness, and astigmatism shape your world and the innovative solutions to see clearly again.',
-      'Rx lens options': 'Your vision, your way! Explore the perfect lens match for your lifestyle, from sleek single vision to versatile progressives - clarity has never looked so good!',
+      'Refractive conditions': 'Discover how nearsightedness, farsightedness, and astigmatism shape your world and the innovative solutions to see clearly again.',
+      'Rx lens options': 'Explore the perfect lens match for your lifestyle, from sleek single vision to versatile progressives - clarity has never looked so good!',
       'External & lid pathology': "Don't let eye irritation slow you down! Get the lowdown on common eyelid conditions and how to keep your eyes feeling fresh and comfortable.",
       'Anterior & corneal pathology': 'The window to your soul deserves the best care! Learn how to protect and treat the delicate front surface of your eyes for lasting comfort and vision.',
       'Posterior & retinal pathology': 'See the bigger picture of eye health! Explore essential insights about retinal conditions and how early detection can save your sight.',

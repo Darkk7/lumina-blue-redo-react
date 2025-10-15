@@ -13,6 +13,7 @@ module.exports = {
       },
       borderRadius: {
         'lg': '2.0rem',
+        'xl': '3.0rem',
       },
       colors: {
         background: "var(--background)",
