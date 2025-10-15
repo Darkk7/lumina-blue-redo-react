@@ -12,13 +12,20 @@ const InfoCentreHomePage = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [subcategories, setSubcategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const response = await fetch('https://www.ocumail.com/api/section_categories');
         if (!response.ok) {
-          console.error('Network response was not ok:', response.statusText);
+          const errorMessage = `Network response was not ok: ${response.statusText}`;
+          console.error(errorMessage);
+          setError(errorMessage);
+          setLoading(false);
           return;
         }
         let allCategories = await response.json();
@@ -49,11 +56,30 @@ const InfoCentreHomePage = () => {
         setCategories(fetchedCategories.filter(category => category !== null));
       } catch (error) {
         console.error('Error fetching categories:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchCategories();
   }, []);
+
+  const getCategoryDescription = (categoryName) => {
+    const descriptions = {
+      'Refractive conditions': 'Unlock the mystery of blurry vision! Discover how nearsightedness, farsightedness, and astigmatism shape your world and the innovative solutions to see clearly again.',
+      'Rx lens options': 'Your vision, your way! Explore the perfect lens match for your lifestyle, from sleek single vision to versatile progressives - clarity has never looked so good!',
+      'External & lid pathology': "Don't let eye irritation slow you down! Get the lowdown on common eyelid conditions and how to keep your eyes feeling fresh and comfortable.",
+      'Anterior & corneal pathology': 'The window to your soul deserves the best care! Learn how to protect and treat the delicate front surface of your eyes for lasting comfort and vision.',
+      'Posterior & retinal pathology': 'See the bigger picture of eye health! Explore essential insights about retinal conditions and how early detection can save your sight.',
+      'CooperVision': 'Experience vision freedom with CooperVision! Discover how their innovative contact lenses bring comfort and clarity to every blink.',
+      'General Eyecare': 'Bright eyes start here! Your go-to guide for keeping your vision sharp and your eyes healthy at every stage of life.',
+      'Pharmaceuticals': "Your eyes' best defense! Navigate the world of eye medications with confidence, knowing what works and why.",
+      'Contact Lenses': 'Freedom to see, freedom to be! Find your perfect contact lens match and embrace life without the frames.'
+    };
+
+    return descriptions[categoryName] || `Discover more about ${categoryName} and how it impacts your vision.`;
+  };
 
   const handleCategoryClick = async (id) => {
     setSelectedCategoryId(id);
@@ -75,6 +101,35 @@ const InfoCentreHomePage = () => {
       setTimeout(() => handleCategoryClick(id), 3000);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p className="text-gray-700 text-lg">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center p-6 max-w-md bg-white rounded-lg shadow-md">
+          <div className="text-red-500 text-4xl mb-4">⚠️</div>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">Something went wrong</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -138,7 +193,7 @@ const InfoCentreHomePage = () => {
                     >
                       <h2 className="text-3xl font-bold text-gray-800 mb-4">{category.name}</h2>
                       <p className="text-gray-600 mb-6 text-lg leading-relaxed">
-                        Learn more about {category.name}.
+                        {getCategoryDescription(category.name)}
                       </p>
                       <span className="inline-block bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform transform hover:scale-105">
                         Explore {category.name}

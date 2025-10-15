@@ -20,9 +20,21 @@ import BookingPage from "./BookingPage";
 import TestimonialsPage from "./TestimonialsPage";
 import ConnectWithUsPage from "./ConnectWithUsPage";
 import { useSiteSettings } from '../context/SiteSettingsContext';
+import { FaWhatsapp } from 'react-icons/fa';
 
 export default function HomePage({ customerCode }) {
   const { siteSettings, isLoading, error } = useSiteSettings();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p className="text-gray-700 text-lg">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!siteSettings?.banners || siteSettings.banners.length === 0) {
     return (
@@ -74,7 +86,25 @@ export default function HomePage({ customerCode }) {
       <BrandsPage />
       <TestimonialsPage />
       <BookingPage />
-
+      
+      {/* WhatsApp Button with Speech Bubble */}
+      {siteSettings.whatsapp_tel && (
+        <div className="fixed bottom-8 right-8 flex items-center gap-2 z-50 group">
+          <div className="bg-white text-green-600 text-sm font-medium px-3 py-1.5 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+            WhatsApp Us
+            <div className="absolute right-0 top-1/2 w-3 h-3 bg-white transform -translate-y-1/2 translate-x-1/2 rotate-45"></div>
+          </div>
+          <a 
+            href={`https://wa.me/${siteSettings.whatsapp_tel}?text=Hi%20there%2C%0A%0AI%20am%20sending%20you%20a%20request%20from%20the%20LuminaBlue%20website.%20My%20request%20as%20follows%3A%0A`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110 flex items-center justify-center"
+            aria-label="Chat on WhatsApp"
+          >
+            <FaWhatsapp className="text-3xl" />
+          </a>
+        </div>
+      )}
     </div>
   );
 }

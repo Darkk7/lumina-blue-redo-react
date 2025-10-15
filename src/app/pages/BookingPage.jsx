@@ -506,68 +506,88 @@ const BookingPage = () => {
                   <div>
                     <h5 className="text-xl font-medium text-primary mb-2">Trading Hours</h5>
                     <ul className="space-y-1">
-                      {siteSettings.working_hours.map((schedule, index) => {
-                        
-                        const dayDisplayMap = {
-                          'Monday': 'Week Days',
-                          'Tuesday': 'Week Days',
-                          'Wednesday': 'Week Days',
-                          'Thursday': 'Week Days',
-                          'Friday': 'Friday',
-                          'Saturday': 'Saturday',
-                          'Sunday': 'Sunday',
-                          'Public Holidays': 'Public Holidays'
-                        };
-                        
-                        // Get the days string and split it into an array
-                        const daysString = schedule.days || '';
-                        const daysArray = daysString.split(',').map(day => day.trim());
-                        
-                        // Determine the display text based on the days
-                        let displayText = '';
-                        
-                        // Check for weekdays (Monday-Thursday)
-                        if (daysArray.includes('Monday') && 
-                            daysArray.includes('Tuesday') && 
-                            daysArray.includes('Wednesday') && 
-                            daysArray.includes('Thursday') && 
-                            !daysArray.includes('Friday') && 
-                            daysArray.length === 4) {
-                          displayText = 'Week Days';
-                        } 
-                        // Check for Monday-Friday
-                        else if (daysArray.includes('Monday') && 
-                               daysArray.includes('Tuesday') && 
-                               daysArray.includes('Wednesday') && 
-                               daysArray.includes('Thursday') && 
-                               daysArray.includes('Friday') && 
-                               daysArray.length === 5) {
-                          displayText = 'Week Days';
+                      {(() => {
+                        if (!siteSettings.hours || typeof siteSettings.hours !== 'string') {
+                          return <li className="text-gray-600">No trading hours available</li>;
                         }
-                        // For single days
-                        else if (daysArray.length === 1) {
-                          displayText = daysArray[0];
+
+                        try {
+                          // Parse the hours string
+                          const hoursEntries = siteSettings.hours.split(';').filter(Boolean);
+                          const daysMap = {
+                            '0': 'Monday',
+                            '1': 'Tuesday',
+                            '2': 'Wednesday',
+                            '3': 'Thursday',
+                            '4': 'Friday',
+                            '5': 'Saturday',
+                            '6': 'Sunday',
+                            '7': 'Public Holidays'
+                          };
+
+                          // Group consecutive days with same hours
+                          const groupedHours = [];
+                          let currentGroup = null;
+
+                          hoursEntries.forEach(entry => {
+                            const [days, start, end] = entry.split('-');
+                            if (!days || !start || !end) return;
+
+                            const dayNumbers = days.split('|');
+                            const dayNames = dayNumbers.map(day => daysMap[day] || day);
+                            
+                            // Format time in 24-hour format
+                            const formatTime = (time24) => {
+                              // Just return the time as-is since it's already in 24h format
+                              return time24;
+                            };
+
+                            const timeString = `${start} - ${end}`;
+                            
+                            // Check if we can group with previous
+                            if (currentGroup && currentGroup.time === timeString) {
+                              currentGroup.days = [...currentGroup.days, ...dayNames];
+                            } else {
+                              if (currentGroup) groupedHours.push(currentGroup);
+                              currentGroup = {
+                                days: [...dayNames],
+                                time: timeString
+                              };
+                            }
+                          });
+
+                          // Add the last group
+                          if (currentGroup) {
+                            groupedHours.push(currentGroup);
+                          }
+
+                          // Format day ranges for display
+                          const formatDayRange = (days) => {
+                            // Check for weekdays (Mon-Fri)
+                            const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+                            if (days.every(day => weekdays.includes(day)) && days.length === 5) {
+                              return 'Monday - Friday';
+                            }
+                            // Check for Mon-Thu
+                            const weekdaysMinusFriday = ['Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+                            if (days.every(day => weekdaysMinusFriday.includes(day)) && days.length === 4) {
+                              return 'Monday - Thursday';
+                            }
+                            // For other cases, list all days
+                            return days.join(', ');
+                          };
+
+                          return groupedHours.map((group, index) => (
+                            <li key={index} className="flex justify-between">
+                              <span className="text-gray-600">{formatDayRange(group.days)}</span>
+                              <span className="text-gray-800 font-medium">{group.time}</span>
+                            </li>
+                          ));
+                        } catch (error) {
+                          console.error('Error parsing working hours:', error);
+                          return <li className="text-gray-600">Error loading trading hours</li>;
                         }
-                        // For Friday only
-                        else if (daysArray.length === 1 && daysArray[0] === 'Friday') {
-                          displayText = 'Friday';
-                        }
-                        // For any other combination, join with commas
-                        else {
-                          displayText = daysArray.join(', ');
-                        }
-                        
-                        // Format the time range
-                        const timeRange = schedule.open !== false 
-                          ? `${schedule.start || '00:00'} - ${schedule.end || '00:00'}`
-                          : 'Closed';
-                        
-                        return (
-                          <li key={index} className="text-gray-600">
-                            {displayText ? `${displayText}: ` : ''}{timeRange}
-                          </li>
-                        );
-                      })}
+                      })()}
                     </ul>
                   </div>
                   

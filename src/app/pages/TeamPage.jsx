@@ -12,14 +12,37 @@ const TeamPage = () => {
   const [selectedMember, setSelectedMember] = useState(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
+  // Get team members, remove duplicates, and ensure valid image sources
+  const teamMembers = Array.from(
+    new Map(
+      (siteSettings?.member?.member || [])
+        .filter(member => member) // Filter out any null/undefined members
+        .map(member => ({
+          ...member,
+          // Ensure img is either a valid non-empty string or null
+          img: member.img && typeof member.img === 'string' && member.img.trim() !== '' 
+            ? member.img.trim() 
+            : null
+        }))
+        .map(member => [member._id || member.name, member])
+    ).values()
+  );
+  const memberCount = teamMembers.length;
+  
+  // Center cards if there's only 1 member
+  const isSingleMember = memberCount === 1;
+
   const settings = {
-    dots: true,
-    infinite: true,
+    dots: false,
+    infinite: memberCount > 1,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: Math.min(3, Math.max(1, memberCount)),
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: memberCount > 1,
     autoplaySpeed: 3000,
+    centerMode: isSingleMember,
+    centerPadding: '0',
+    arrows: memberCount > 1,
     responsive: [
       {
         breakpoint: 1024,
@@ -90,32 +113,41 @@ const TeamPage = () => {
   return (
     <section className="w-full bg-white py-16 relative" id="team">
       <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-3xl text-black font-bold text-center mb-5 pt-8">
-          {siteSettings.team?.team_title || "Our Team"}
-        </h1>
-        <div className="w-20 h-1 bg-primary mx-auto mb-5"></div>
-        <p className="font-roboto text-base text-[#333] leading-[1.7] text-center mb-12 max-w-5xl mx-auto">
-          {siteSettings.team?.description}
-        </p>
-        <Slider {...settings}>
-          {(siteSettings.member?.member || []).map((member, index) => (
+        <div className={isSingleMember ? 'w-full max-w-md mx-auto' : 'w-full'}>
+          <h1 className="text-3xl text-black font-bold text-center mb-5 pt-8">
+            {siteSettings.team?.team_title || "Our Team"}
+          </h1>
+          <div className="w-20 h-1 bg-primary mx-auto mb-5"></div>
+          <p className="font-roboto text-base text-[#333] leading-[1.7] text-center mb-12">
+            {siteSettings.team?.description}
+          </p>
+        </div>
+        <div className={`relative ${isSingleMember ? 'w-full max-w-md mx-auto' : memberCount <= 2 ? 'max-w-2xl mx-auto' : ''}`}>
+          <Slider {...settings}>
+          {teamMembers.map((member, index) => (
             <div key={index} className="p-4">
               <div className="bg-white rounded-lg shadow-md overflow-hidden h-full flex flex-col">
                 <div className="relative h-64 flex-shrink-0">
-                  <Image
-                    src={member?.img || '/default-team-member.jpg'}
-                    alt={member?.name || 'Team Member'}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
+                  {member?.img ? (
+                    <Image
+                      src={member.img}
+                      alt={member?.name || 'Team Member'}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-500">No Image</span>
+                    </div>
+                  )}
                 </div>
                 <div className="p-6 flex flex-col flex-grow">
                   <h3 className="text-xl text-primary font-semibold mb-2">
                     {member?.name || 'Unknown'}
                   </h3>
-                  <p className="text-gray-600 mb-4">
-                    {member?.qualification || 'Position not specified'}
+                  <p className="text-gray-600 mb-4 min-h-[24px] leading-6">
+                    {member?.qualification || '\u00A0'}
                   </p>
                   <div className="mt-auto">
                     <button
@@ -129,7 +161,8 @@ const TeamPage = () => {
               </div>
             </div>
           ))}
-        </Slider>
+          </Slider>
+        </div>
       </div>
 
       {/* Bio Panel Overlay */}
@@ -148,14 +181,20 @@ const TeamPage = () => {
             <div className="relative w-full bg-gray-100" style={{ minHeight: '20rem' }}>
               <div className="absolute inset-0 flex items-center justify-center px-4">
                 <div className="relative w-full h-full max-w-4xl mx-auto">
-                  <Image
-                    src={selectedMember.img || '/default-team-member.jpg'}
-                    alt={selectedMember.name || 'Team Member'}
-                    fill
-                    className="object-contain"
-                    sizes="(max-width: 800px) 100vw, 50vw"
-                    priority
-                  />
+                  {selectedMember?.img ? (
+                    <Image
+                      src={selectedMember.img}
+                      alt={selectedMember.name || 'Team Member'}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 800px) 100vw, 50vw"
+                      priority
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-500">No Image Available</span>
+                    </div>
+                  )}
                 </div>
               </div>
               <button
@@ -195,3 +234,40 @@ const TeamPage = () => {
 };
 
 export default TeamPage;
+
+// Add custom styles for centered slides
+const styles = `
+  .center-slides .slick-slide {
+    display: flex !important;
+    justify-content: center;
+  }
+  
+  .center-slides .slick-track {
+    display: flex;
+    justify-content: center;
+    width: 100% !important;
+  }
+  
+  .center-slides .slick-slide > div {
+    width: 100%;
+    max-width: 320px; /* Match your card width */
+  }
+  
+  /* Ensure consistent card width */
+  .slick-slide > div {
+    padding: 0 8px; /* Add some spacing between cards */
+  }
+  
+  .slick-slide > div > div {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+`;
+
+// Inject styles into the head
+if (typeof document !== 'undefined') {
+  const styleElement = document.createElement('style');
+  styleElement.innerHTML = styles;
+  document.head.appendChild(styleElement);
+}

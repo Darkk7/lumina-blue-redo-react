@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import { useSiteSettings } from '../context/SiteSettingsContext';
-import { getServiceImage } from '../../utils/imagePaths';
 
 // IcoMoon font
 const IcomoonStyles = () => (
@@ -134,7 +133,7 @@ const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsM
   const isLongDescription = description && description.length > 100;
 
   return (
-<div className="group relative bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-shadow border-primary duration-300 h-full overflow-hidden">
+  <div className="group relative bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-shadow border-primary duration-300 h-full overflow-hidden">
 
   {/* Animated border */}
   <div className="absolute inset-0 rounded-lg border-2 border-transparent group-hover:border-primary transition-all duration-300 pointer-events-none"></div>
@@ -153,20 +152,14 @@ const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsM
         onClick={toggleExpand}
         className="w-auto px-8 py-2 bg-primary text-white font-medium rounded-md hover:bg-white hover:text-primary border-2 border-primary transition-colors duration-200"
       >
-        {isExpanded ? 'Show Less' : 'Read More'}
+        {isExpanded ? 'Show Less' : 'Show More'}
       </button>
     </div>
   )}
-</div>
-
-
-
-
-
+  </div>
 
   );
 };
-
 
 // ServicesPage
 const ServicesPage = () => {
@@ -174,7 +167,6 @@ const ServicesPage = () => {
   const practiceId = siteSettings?.practiceId;
   const [iconsMap, setIconsMap] = useState({});
 
-  // Combine featured_services and services, removing duplicates by id
   const allServices = useMemo(() => {
     const featuredIds = new Set((siteSettings?.featured_services || []).map(s => s.id));
     const additionalServices = (siteSettings?.services || []).filter(service => !featuredIds.has(service.id));
@@ -194,7 +186,7 @@ const ServicesPage = () => {
         setIconsMap(data.iconsMap || {});
       } catch (err) {
         console.error("Failed to fetch icons:", err);
-        setIconsMap({}); // fallback
+        setIconsMap({});
       }
     };
     fetchIcons();

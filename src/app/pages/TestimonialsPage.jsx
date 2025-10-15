@@ -115,6 +115,11 @@ const TestimonialsPage = () => {
     };
   }, [allReviews, getRandomReviews, isVisible]);
 
+  // Don't show anything if there are no reviews and not loading
+  if (!isLoading && !error && allReviews.length === 0) {
+    return null;
+  }
+
   return (
     <div className="w-full">
       {/* Primary Color Panel */}
@@ -127,17 +132,13 @@ const TestimonialsPage = () => {
         </div>
       </div>
       
-      {/* Testimonials Section */}
-      <section ref={containerRef} className="w-full py-20 px-4 bg-gray-50 -mt-48">
-        <div className="max-w-7xl mx-auto">
-          <div className="relative">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[400px]">
-              {isLoading ? (
-                <div className="col-span-4 text-center py-12">Loading reviews...</div>
-              ) : error ? (
-                <div className="col-span-4 text-center py-12 text-red-500">Error loading reviews: {error}</div>
-              ) : currentReviews.length > 0 ? (
-                currentReviews.map((review) => (
+      {/* Testimonials Section - Only show if there are reviews */}
+      {!isLoading && !error && allReviews.length > 0 && (
+        <section ref={containerRef} className="w-full py-20 px-4 bg-gray-50 -mt-48">
+          <div className="max-w-7xl mx-auto">
+            <div className="relative">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[400px]">
+                {currentReviews.map((review) => (
                   <div key={review.id} className="transition-all duration-500">
                     <ReviewCard
                       image={review.img}
@@ -145,14 +146,29 @@ const TestimonialsPage = () => {
                       comments={review.review_comments}
                     />
                   </div>
-                ))
-              ) : (
-                <div className="col-span-4 text-center py-12 text-gray-500">No reviews available.</div>
-              )}
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+      
+      {/* Show loading or error state */}
+      {isLoading && (
+        <section className="w-full py-20 px-4 bg-gray-50 -mt-48">
+          <div className="max-w-7xl mx-auto text-center py-12">
+            Loading reviews...
+          </div>
+        </section>
+      )}
+      
+      {error && (
+        <section className="w-full py-20 px-4 bg-gray-50 -mt-48">
+          <div className="max-w-7xl mx-auto text-center py-12 text-red-500">
+            Error loading reviews: {error}
+          </div>
+        </section>
+      )}
     </div>
   );
 };
