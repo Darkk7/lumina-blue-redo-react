@@ -57,32 +57,44 @@ export default function SubcategoryPage() {
         const attributesResponse = await axios.get(`https://www.ocumail.com/api/item_attributes/${item.id}`);
         let attributes = attributesResponse.data;
 
-        // Process attributes to modify image paths in the data field, but skip the Overview content
+        // Process attributes to handle image paths in the data field
         attributes = attributes.map(attr => {
-          if (attr.name === 'Overview') {
-            // Leave Overview content as-is since it contains full URLs
-            return attr;
-          }
+          if (!attr.data || typeof attr.data !== 'string') return attr;
           
-          if (attr.data && typeof attr.data === 'string') {
-            let modifiedData = attr.data.replace(/src=["']([^"']+)["']/g, (match, src) => {
-              // If it's already a full URL, leave it as is
-              if (src.startsWith('http')) {
-                return match;
-              }
-              // Otherwise, use the full path from the API
-              const baseUrl = 'https://ocumail-content.s3.eu-west-2.amazonaws.com';
-              const filename = src.split('/').pop().split('\\').pop();
-              return `src="${baseUrl}/${filename}"`;
-            });
-            return { ...attr, data: modifiedData };
-          }
-          return attr;
+          // Handle image paths in the content
+          let modifiedData = attr.data.replace(/src=["']([^"']+)["']/g, (match, src) => {
+            // If it's already a full URL, use it as is
+            if (src.startsWith('http')) {
+              return match;
+            }
+            // If it's a local image path (starts with images/Body/)
+            if (src.startsWith('images/Body/')) {
+              return `src="/${src}"`; // Add leading slash for public folder
+            }
+            // Otherwise, use the S3 URL
+            return `src="https://ocumail-content.s3.eu-west-2.amazonaws.com/${src.split('/').pop().split('\\').pop()}"`;
+          });
+          
+          return { ...attr, data: modifiedData };
         });
 
-        // Find banner image URL from attributes
+        // Handle banner image URL
         const bannerImgAttr = attributes.find(attr => attr.name === 'bannerImg');
-        const bannerUrl = bannerImgAttr?.data || '';
+        let bannerUrl = bannerImgAttr?.data?.trim() || '';  // Trim any whitespace
+        
+        // Process banner URL if it exists
+        if (bannerUrl) {
+          if (bannerUrl.startsWith('http')) {
+            // Already a full URL, use as is
+          } else if (bannerUrl.startsWith('/images/') || bannerUrl.startsWith('images/')) {
+            // Local image in public folder
+            bannerUrl = bannerUrl.startsWith('/') ? bannerUrl : `/${bannerUrl}`;
+          } else {
+            // Assume it's an S3 image
+            const filename = bannerUrl.split('/').pop().split('\\').pop();
+            bannerUrl = `https://ocumail-content.s3.eu-west-2.amazonaws.com/${filename}`;
+          }
+        }
         
         // Check if there's an Overview attribute
         const overviewAttr = attributes.find(attr => attr.name === 'Overview');
@@ -226,7 +238,7 @@ export default function SubcategoryPage() {
                   <div key={`section-${sectionNumber}`} className="space-y-8">
                     {/* Section Title */}
                     {titleAttr && (
-                      <div className="flex justify-center">
+                      <div className="flex justify-left">
                         <h3 className="inline-block px-1 text-3xl font-bold text-gray-900 pb-2 border-b-2 border-primary">
                           {titleAttr.data}
                         </h3>
