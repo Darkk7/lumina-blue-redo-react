@@ -67,7 +67,7 @@ const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsM
   const resolvedIcon = numericIconId && iconsMap ? iconsMap[numericIconId] : iconClass || 'icon-eye';
 
     const imageMapping = {
-    100: "/ComprehensiveEyeExams.png",
+    100: "/ComprehensiveEyeExam.1.png",
     99: "/VisualAcuity.png",
     97: "/Skippers.png",
     96: "/RepairingService.png",
@@ -113,7 +113,7 @@ const ServiceCard = ({ title, description, icon_id, iconClass, imagePath, iconsM
               }}
               onLoad={() => console.log('Image loaded successfully:', imagePath, 'for service:', title)}
             />
-            {!imageError && <div className="absolute inset-0 border-4 rounded-lg border-transparent"></div>}
+            {!imageError && <div className="absolute inset-0 border-lg rounded-lg border-transparent"></div>}
           </>
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-100">
