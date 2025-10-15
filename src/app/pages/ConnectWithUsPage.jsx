@@ -18,7 +18,7 @@ const ConnectWithUsPage = ({ practiceId }) => {
         <div 
           className="absolute inset-0 w-full h-full parallax-bg"
           style={{
-            backgroundImage: "url('/images/FramesBG.png')",
+            backgroundImage: "url('/images/FramesBG2.png')",
             backgroundAttachment: 'fixed',
             backgroundSize: 'cover',
             backgroundPosition: 'center',

@@ -69,8 +69,8 @@ const InfoCentreHomePage = () => {
     const descriptions = {
       'Refractive conditions': 'Discover how nearsightedness, farsightedness, and astigmatism shape your world and the innovative solutions to see clearly again.',
       'Rx lens options': 'Explore the perfect lens match for your lifestyle, from sleek single vision to versatile progressives - clarity has never looked so good!',
-      'External & lid pathology': "Don't let eye irritation slow you down! Get the lowdown on common eyelid conditions and how to keep your eyes feeling fresh and comfortable.",
-      'Anterior & corneal pathology': 'The window to your soul deserves the best care! Learn how to protect and treat the delicate front surface of your eyes for lasting comfort and vision.',
+      'External & lid pathology': "Get the lowdown on common eyelid conditions and how to keep your eyes feeling fresh and comfortable.",
+      'Anterior & corneal pathology': 'Learn how to protect and treat the delicate front surface of your eyes for lasting comfort and vision.',
       'Posterior & retinal pathology': 'See the bigger picture of eye health! Explore essential insights about retinal conditions and how early detection can save your sight.',
       'CooperVision': 'Experience vision freedom with CooperVision! Discover how their innovative contact lenses bring comfort and clarity to every blink.',
       'General Eyecare': 'Bright eyes start here! Your go-to guide for keeping your vision sharp and your eyes healthy at every stage of life.',
@@ -192,7 +192,7 @@ const InfoCentreHomePage = () => {
                       className="block"
                     >
                       <h2 className="text-3xl font-bold text-gray-800 mb-4">{category.name}</h2>
-                      <p className="text-gray-600 mb-6 text-lg leading-relaxed">
+                      <p className="text-gray-600 mb-6 text-lg leading-relaxed line-clamp-2">
                         {getCategoryDescription(category.name)}
                       </p>
                       <span className="inline-block bg-primary text-white px-6 py-3 rounded-full shadow-md hover:bg-opacity-90 transition-transform transform hover:scale-105">
