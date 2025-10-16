@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@400;700&family=Open+Sans:wght@400;600;700&display=swap');
+
+/* Main content area - single container with all styling */
+.mainContent {
+  width: 100%;
+  max-width: 64rem; /* max-w-5xl */
+  min-height: 100vh;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 0.5rem; /* rounded-lg */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+  border: 2px solid #6b7280; /* border-2 border-gray-500 */
+}
+
+/* Content wrapper */
+.contentWrapper {
+  width: 100%;
+  height: 100%;
+  padding: 1rem 0; /* Add some vertical spacing */
+}
+
+/* Loading and error states */
+.loadingContainer {
+  text-align: center;
+  padding: 50px 0;
+}
+
+.contentWrapper p {
+  margin-left: 0;
+  margin-top: 10px;
+}
+
+.errorContainer {
+  text-align: center;
+  padding: 50px 0;
+}
+
+.errorIcon {
+  color: #e74c3c;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.errorTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1rem;
+  font-family: 'Merriweather Sans', sans-serif;
+}
+
+.errorMessage {
+  color: #666;
+  margin-bottom: 2rem;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.retryButton {
+  background-color: #d8ae76;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.retryButton:hover {
+  background-color: #c79b5f;
+}
+
+/* Content wrapper for the API content */
+.contentWrapper {
+  color: #666;
+  font-size: 15px;
+  line-height: 1.8;
+  font-family: 'Open Sans', sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 30px 50px;
+}
+
+/* Typography */
+.contentWrapper h1,
+.contentWrapper h2,
+.contentWrapper h3,
+.contentWrapper h4,
+.contentWrapper h5,
+.contentWrapper h6 {
+  font-family: 'Merriweather Sans', sans-serif;
+  margin: 40px 0 20px !important;
+  font-size: 1.5em !important;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.contentWrapper h1 { font-size: 2.25rem; }
+.contentWrapper h2 { font-size: 2rem; }
+.contentWrapper h3 { font-size: 1.75rem; }
+.contentWrapper h5 { font-size: 1.25rem; }
+.contentWrapper h6 { font-size: 1rem; }
+
+.contentWrapper p {
+  margin-bottom: 1.25rem;
+  line-height: 1.8;
+}
+
+.contentWrapper a {
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.contentWrapper a:hover {
+  color: #363636;
+  text-decoration: underline;
+}
+
+.contentWrapper ul,
+.contentWrapper ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.contentWrapper li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.contentWrapper img {
+  max-width: 100%;
+  height: auto;
+  margin: 1.25rem 0;
+  border-radius: 4px;
+}
+
+.contentWrapper blockquote {
+  border-left: 4px solid #d8ae76;
+  padding: 1.25rem 1.875rem;
+  margin: 1.875rem 0;
+  background-color: #f9f9f9;
+  font-style: italic;
+  color: #555;
+}
+
+.contentWrapper table {
+  width: 100%;
+  margin: 1.875rem 0;
+  border-collapse: collapse;
+}
+
+.contentWrapper table th,
+.contentWrapper table td {
+  padding: 0.75rem 0.9375rem;
+  border: 1px solid #eee;
+  text-align: left;
+}
+
+.contentWrapper table th {
+  background-color: #f5f5f5;
+  font-weight: 700;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .contentWrapper {
+    padding: 0 20px 40px;
+  }
+  
+  .contentWrapper h1 { font-size: 1.875rem; }
+  .contentWrapper h2 { font-size: 1.625rem; }
+  .contentWrapper h3 { font-size: 1.375rem; }
+  .contentWrapper h5 { font-size: 1.125rem; }
+  .contentWrapper h6 { font-size: 1rem; }
+}
+
+/* Print styles */
+@media print {
+  .contentWrapper {
+    padding: 0;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+  
+  .contentWrapper a {
+    text-decoration: underline;
+  }
+  
+  .contentWrapper h1,
+  .contentWrapper h2,
+  .contentWrapper h3,
+  .contentWrapper h4,
+  .contentWrapper h5,
+  .contentWrapper h6 {
+    page-break-after: avoid;
+  }
+  
+  .contentWrapper p,
+  .contentWrapper ul,
+  .contentWrapper ol {
+    page-break-inside: avoid;
+  }
+}

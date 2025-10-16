@@ -177,7 +177,7 @@ export function SiteSettingsProvider({ children, initialPracticeId, customerCode
                 const dayNames = days
                   .split('|')
                   .map(day => daysMap[day] || day)
-                  .filter(Boolean) // Remove any undefined/null values
+                  .filter(Boolean)
                   .join(', ');
                   
                 return {
@@ -187,7 +187,7 @@ export function SiteSettingsProvider({ children, initialPracticeId, customerCode
                   open: start && start !== 'Closed' && start !== 'closed'
                 };
               })
-              .filter(Boolean); // Remove any null entries from the array
+              .filter(Boolean);
           } catch (error) {
             console.error('Error parsing working hours:', error);
             return [];
@@ -227,7 +227,6 @@ export function SiteSettingsProvider({ children, initialPracticeId, customerCode
           featured_services: []
         };
 
-        // Merge default settings with actual data
         const settings = {
           ...defaultSettings,
           counterSettings: {
@@ -286,7 +285,6 @@ export function SiteSettingsProvider({ children, initialPracticeId, customerCode
             member: data.member || []
           },
           statitems: data.statitems || [],
-          // Safely access data3 properties with null checks
           name: data3?.name || '',
           short_name: data3?.short_name || '',
           address_1: data3?.address_1 || '',

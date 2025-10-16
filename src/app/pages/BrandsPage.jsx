@@ -74,19 +74,30 @@ const BrandsPage = () => {
   );
 };
 
-const BrandCard = ({ image, title }) => (
-  <div className="bg-white shadow-lg p-6 rounded-lg h-full flex items-center justify-center my-4">
-    <div className="relative w-full h-24">
-      <Image
-        src={image}
-        alt={title}
-        fill
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
-        className="object-contain p-2"
-        priority={false}
-      />
+const BrandCard = ({ image, title }) => {
+  // Fallback to a placeholder if image is empty or undefined
+  const imageSrc = image || '/images/placeholder-logo.png';
+  
+  return (
+    <div className="bg-white shadow-lg p-6 rounded-lg h-full flex items-center justify-center my-4">
+      <div className="relative w-full h-24">
+        <Image
+          src={imageSrc}
+          alt={title}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
+          className="object-contain p-2"
+          priority={false}
+          onError={(e) => {
+            // Fallback to placeholder if image fails to load
+            if (imageSrc !== '/images/placeholder-logo.png') {
+              e.target.src = '/images/placeholder-logo.png';
+            }
+          }}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default BrandsPage;

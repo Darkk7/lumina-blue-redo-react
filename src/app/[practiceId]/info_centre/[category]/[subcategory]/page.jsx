@@ -6,7 +6,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import Navbar from '../../../../pages/Navbar';
 import { useSiteSettings } from '../../../../context/SiteSettingsContext';
-
+import styles from './page.module.css';
 
 export default function SubcategoryPage() {
   const { practiceId, category, subcategory } = useParams();
@@ -57,44 +57,33 @@ export default function SubcategoryPage() {
         const attributesResponse = await axios.get(`https://www.ocumail.com/api/item_attributes/${item.id}`);
         let attributes = attributesResponse.data;
 
-        // Process attributes to handle image paths in the data field
+        // Process attributes to modify image paths in the data field
         attributes = attributes.map(attr => {
-          if (!attr.data || typeof attr.data !== 'string') return attr;
-          
-          // Handle image paths in the content
-          let modifiedData = attr.data.replace(/src=["']([^"']+)["']/g, (match, src) => {
-            // If it's already a full URL, use it as is
-            if (src.startsWith('http')) {
-              return match;
-            }
-            // If it's a local image path (starts with images/Body/)
-            if (src.startsWith('images/Body/')) {
-              return `src="/${src}"`; // Add leading slash for public folder
-            }
-            // Otherwise, use the S3 URL
-            return `src="https://ocumail-content.s3.eu-west-2.amazonaws.com/${src.split('/').pop().split('\\').pop()}"`;
-          });
-          
-          return { ...attr, data: modifiedData };
+          if (attr.data && typeof attr.data === 'string') {
+            let modifiedData = attr.data;
+            // Handle image paths in the content
+            modifiedData = modifiedData.replace(/<img[^>]+src=["']([^"']+)["']/g, (match, src) => {
+              // If it's already a full URL, leave it as is
+              if (src.startsWith('http') || src.startsWith('//')) {
+                return match;
+              }
+              // If it's a local path starting with /images/, use it as is (will be served from public folder)
+              if (src.startsWith('/images/')) {
+                return match;
+              }
+              // For any other relative paths, construct the full URL
+              const baseUrl = 'https://ocumail-content.s3.eu-west-2.amazonaws.com';
+              const filename = src.split('/').pop().split('\\').pop();
+              return match.replace(src, `${baseUrl}/${filename}`);
+            });
+            return { ...attr, data: modifiedData };
+          }
+          return attr;
         });
 
-        // Handle banner image URL
+        // Find banner image URL from attributes
         const bannerImgAttr = attributes.find(attr => attr.name === 'bannerImg');
-        let bannerUrl = bannerImgAttr?.data?.trim() || '';  // Trim any whitespace
-        
-        // Process banner URL if it exists
-        if (bannerUrl) {
-          if (bannerUrl.startsWith('http')) {
-            // Already a full URL, use as is
-          } else if (bannerUrl.startsWith('/images/') || bannerUrl.startsWith('images/')) {
-            // Local image in public folder
-            bannerUrl = bannerUrl.startsWith('/') ? bannerUrl : `/${bannerUrl}`;
-          } else {
-            // Assume it's an S3 image
-            const filename = bannerUrl.split('/').pop().split('\\').pop();
-            bannerUrl = `https://ocumail-content.s3.eu-west-2.amazonaws.com/${filename}`;
-          }
-        }
+        const bannerUrl = bannerImgAttr?.data || '';
         
         // Check if there's an Overview attribute
         const overviewAttr = attributes.find(attr => attr.name === 'Overview');
@@ -166,18 +155,50 @@ export default function SubcategoryPage() {
 
   const renderContent = () => {
     if (!content) return null;
-    if (loading) return <div className="flex justify-center p-8"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div></div>;
-    if (error) return <p className="text-red-600 p-4">{error}</p>;
+    
+    if (loading) {
+      return (
+        <div className={styles.mainContent}>
+          <Navbar />
+          <div className={styles.loadingContainer}>
+            <div className={styles.loadingSpinner}></div>
+            <p>Loading content...</p>
+          </div>
+        </div>
+      );
+    }
+    
+    if (error) {
+      return (
+        <div className={styles.mainContent}>
+          <Navbar />
+          <div className={styles.errorContainer}>
+            <div className={styles.errorIcon}>⚠️</div>
+            <h1 className={styles.errorTitle}>Error Loading Content</h1>
+            <p className={styles.errorMessage}>{error}</p>
+            <button 
+              className={styles.retryButton}
+              onClick={() => window.location.reload()}
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      );
+    }
 
     // If we have an overview, use that as the main content
     if (content.overview) {
       return (
-        <div className="space-y-12">
-          <div 
-            className="reset-styles max-w-6xl mx-auto"
-            dangerouslySetInnerHTML={{ __html: content.overview }}
-          />
-          {renderReferences()}
+        <div className={styles.mainContent}>
+          <Navbar />
+          <div className={styles.contentWrapper}>
+            <div 
+              className={styles.contentBody}
+              dangerouslySetInnerHTML={{ __html: content.overview }}
+            />
+            {renderReferences()}
+          </div>
         </div>
       );
     }
@@ -189,12 +210,15 @@ export default function SubcategoryPage() {
 
     if (mainContent?.data) {
       return (
-        <div className="space-y-8">
-          <div 
-            className="reset-styles max-w-6xl mx-auto"
-            dangerouslySetInnerHTML={{ __html: mainContent.data }}
-          />
-          {renderReferences()}
+        <div className={styles.mainContent}>
+          <Navbar />
+          <div className={styles.contentWrapper}>
+            <div 
+              className={styles.contentBody}
+              dangerouslySetInnerHTML={{ __html: mainContent.data }}
+            />
+            {renderReferences()}
+          </div>
         </div>
       );
     }
@@ -203,111 +227,78 @@ export default function SubcategoryPage() {
     const hasReferences = content.attributes.some(attr => attr.name.startsWith('Reference.'));
     
     return (
-      <div className="space-y-12">
-        {/* Render sections */}
-        <div className="space-y-8">
-          {content.attributes
-            .filter(attr => attr.name.includes('.') &&
-                          !attr.name.startsWith('Reference.') &&
-                          !['bannerImg', 'Overview'].includes(attr.name))
-            .sort((a, b) => {
-              const getSectionNumber = (name) => {
-                const match = name.match(/\.(\d+)\./);
-                return match ? parseInt(match[1]) : 0;
-              };
-              return getSectionNumber(a.name) - getSectionNumber(b.name);
-            })
-            .map((attr, idx, arr) => {
-              const sectionNumber = parseInt(attr.name.split('.')[1]) || 0;
-              if (sectionNumber === 0) return null;
+      <div className={styles.pageContainer}>
+        <Navbar />
+        <div className={styles.mainContent}>
+          <div className={styles.contentWrapper}>
+            {content.attributes
+              .filter(attr => attr.name.includes('.') &&
+                            !attr.name.startsWith('Reference.') &&
+                            !['bannerImg', 'Overview'].includes(attr.name))
+              .sort((a, b) => {
+                const getSectionNumber = (name) => {
+                  const match = name.match(/\.(\d+)\./);
+                  return match ? parseInt(match[1]) : 0;
+                };
+                return getSectionNumber(a.name) - getSectionNumber(b.name);
+              })
+              .map((attr, idx, arr) => {
+                const sectionNumber = parseInt(attr.name.split('.')[1]) || 0;
+                if (sectionNumber === 0) return null;
 
-              const isNewSection = idx === 0 ||
-                (parseInt(arr[idx-1]?.name.split('.')[1]) || 0) !== sectionNumber;
+                const isNewSection = idx === 0 ||
+                  (parseInt(arr[idx-1]?.name.split('.')[1]) || 0) !== sectionNumber;
 
-              if (isNewSection) {
-                // Find all attributes for this section
-                const sectionAttrs = content.attributes.filter(a =>
-                  a.name.startsWith(`Section.${sectionNumber}.`)
-                );
+                if (isNewSection) {
+                  // Find all attributes for this section
+                  const sectionAttrs = content.attributes.filter(a =>
+                    a.name.startsWith(`Section.${sectionNumber}.`)
+                  );
 
-                const titleAttr = sectionAttrs.find(a => a.name.endsWith('.Title'));
-                const bodyAttr = sectionAttrs.find(a => a.name.endsWith('.Body'));
-                const imageAttr = sectionAttrs.find(a => a.name.endsWith('.Image'));
+                  const titleAttr = sectionAttrs.find(a => a.name.endsWith('.Title'));
+                  const bodyAttr = sectionAttrs.find(a => a.name.endsWith('.Body'));
+                  const imageAttr = sectionAttrs.find(a => a.name.endsWith('.Image'));
 
-                return (
-                  <div key={`section-${sectionNumber}`} className="space-y-8">
-                    {/* Section Title */}
-                    {titleAttr && (
-                      <div className="flex justify-left">
-                        <h3 className="inline-block px-1 text-3xl font-bold text-gray-900 pb-2 border-b-2 border-primary">
-                          {titleAttr.data}
-                        </h3>
-                      </div>
-                    )}
-
-                    {/* Section Body + Image */}
-                    <div className="flex flex-col items-center space-y-6">
-                      {bodyAttr && (
-                        <div
-                          className="reset-styles max-w-full p-3"
-                          dangerouslySetInnerHTML={{ __html: bodyAttr.data }}
-                        />
-                      )}
-
-                      {imageAttr && (
-                        <div className="my-4 flex justify-center">
-                          <img
-                            src={imageAttr.data}
-                            alt=""
-                            className="rounded-lg shadow-md max-w-2xl w-full h-auto object-contain"
-                          />
+                  return (
+                    <div key={`section-${sectionNumber}`} className={styles.sectionContainer}>
+                      {/* Section Title */}
+                      {titleAttr && (
+                        <div className={styles.sectionTitleContainer}>
+                          <h3 className={styles.sectionTitle}>
+                            {titleAttr.data}
+                          </h3>
                         </div>
                       )}
-                    </div>
-                  </div>
-                );
-              }
-              return null;
-            })}
-        </div>
 
-        {/* References Section */}
-        {hasReferences && (
-          <div className="mt-12 pt-6 border-t border-gray-200">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">References</h3>
-            <ol className="list-decimal list-inside space-y-2 text-gray-700">
-              {content.attributes
-                .filter(attr => attr.name.startsWith('Reference.') && attr.name.endsWith('.Title'))
-                .sort((a, b) => {
-                  const numA = parseInt(a.name.match(/Reference\.(\d+)/)[1]);
-                  const numB = parseInt(b.name.match(/Reference\.(\d+)/)[1]);
-                  return numA - numB;
-                })
-                .map((titleAttr) => {
-                  const refNum = titleAttr.name.match(/Reference\.(\d+)/)[1];
-                  const urlAttr = content.attributes.find(
-                    attr => attr.name === `Reference.${refNum}.Url`
+                      {/* Section Body + Image */}
+                      <div className={styles.sectionContent}>
+                        {bodyAttr && (
+                          <div
+                            className={styles.sectionBody}
+                            dangerouslySetInnerHTML={{ __html: bodyAttr.data }}
+                          />
+                        )}
+
+                        {imageAttr && (
+                          <div className={styles.imageContainer}>
+                            <img
+                              src={imageAttr.data}
+                              alt=""
+                              className={styles.sectionImage}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   );
-                  return (
-                    <li key={titleAttr.id} className="ml-4 pl-2">
-                      {urlAttr ? (
-                        <a
-                          href={urlAttr.data}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline"
-                        >
-                          {titleAttr.data}
-                        </a>
-                      ) : (
-                        <span>{titleAttr.data}</span>
-                      )}
-                    </li>
-                  );
-                })}
-            </ol>
+                }
+                return null;
+              })}
           </div>
-        )}
+
+          {/* References Section - Rendered conditionally in the renderReferences function */}
+          {renderReferences()}
+        </div>
       </div>
     );
   };
@@ -446,18 +437,16 @@ export default function SubcategoryPage() {
               </div>
             </div>
 
-            {/* Main Content with SimonPage styling */}
-            <div className="bg-white rounded-lg shadow-lg p-8 sm:p-10 max-w-5xl mx-auto border-2 border-gray-500">
-              {loading ? (
-                <div className="flex justify-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                </div>
-              ) : error ? (
-                <div className="text-center text-red-600">{error}</div>
-              ) : (
-                renderContent()
-              )}
-            </div>
+            {/* Main Content */}
+            {loading ? (
+              <div className="flex justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : error ? (
+              <div className="text-center text-red-600">{error}</div>
+            ) : (
+              renderContent()
+            )}
           </div>
         </div>
       </div>
